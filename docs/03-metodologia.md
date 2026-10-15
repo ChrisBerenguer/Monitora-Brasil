@@ -96,7 +96,7 @@ Para cada indicador, país e mandato, sobre os anos com dado observado: `n`, `me
 - O mandato capta o período, não prova autoria. Indicadores têm defasagem (o resultado de um ano reflete decisões de anos anteriores) e choques externos (crise de 2008, pandemia de 2020, ciclo de commodities).
 - Mandatos com menos anos de dado (2023–2026 tem até 3) têm médias menos estáveis.
 
-A variação entre mandatos é calculada no próprio dashboard (`dash.calc('variacao_periodos')`): `delta = media_B − media_A` e `delta_pct = delta / |media_A| × 100`.
+A variação entre mandatos é calculada no navegador (`calcVariacaoPeriodos` em `site/assets/js/app.js`): `delta = media_B − media_A` e `delta_pct = delta / |media_A| × 100`.
 
 ## 6. Imputação (somente para o escore)
 

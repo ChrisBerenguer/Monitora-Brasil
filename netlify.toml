@@ -1,0 +1,4 @@
+# Netlify: publica a pasta site/ sem etapa de build.
+[build]
+  publish = "site"
+  command = ""

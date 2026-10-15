@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Monitora Brasil</title>
+  <meta name="description" content="O Brasil comparado com o mundo em 40 indicadores econômicos, sociais, institucionais e ambientais, de 1995 a 2025, com escores por tema, coortes de países e comparação entre mandatos.">
+  <meta property="og:title" content="Monitora Brasil">
+  <meta property="og:description" content="O Brasil comparado com o mundo em 40 indicadores, de 1995 a 2025.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#f3f5f2" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#101614" media="(prefers-color-scheme: dark)">
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="topo">
+    <div class="wrap topo-in">
+      <a class="marca" href="./" aria-label="Monitora Brasil, início">
+        <svg viewBox="0 0 32 32" width="28" height="28" aria-hidden="true"><rect x="2" y="18" width="6" height="12" rx="1.5"/><rect x="13" y="10" width="6" height="20" rx="1.5"/><rect x="24" y="3" width="6" height="27" rx="1.5"/></svg>
+        <span>Monitora Brasil</span>
+      </a>
+      <div class="topo-acoes">
+        <button class="tema-btn" id="tema-btn" type="button" aria-label="Alternar tema claro e escuro">
+          <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true"><path d="M12 3a9 9 0 1 0 9 9 7 7 0 0 1-9-9z"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="conteudo" class="wrap">
+    <section class="abertura" aria-labelledby="titulo">
+      <p class="sobretitulo">Painel de desenvolvimento · 1995–2025</p>
+      <h1 id="titulo">O Brasil comparado com o mundo</h1>
+      <p class="resumo" id="resumo" aria-live="polite"><span class="esqueleto" style="width:32ch"></span></p>
+    </section>
+
+    <nav class="abas" role="tablist" aria-label="Seções do painel">
+      <button class="aba" role="tab" id="aba-visao" aria-controls="visao" data-page="visao" aria-selected="true">Visão geral</button>
+      <button class="aba" role="tab" id="aba-series" aria-controls="series" data-page="series" aria-selected="false">Séries temporais</button>
+      <button class="aba" role="tab" id="aba-coortes" aria-controls="coortes" data-page="coortes" aria-selected="false">Coortes</button>
+      <button class="aba" role="tab" id="aba-metodo" aria-controls="metodo" data-page="metodo" aria-selected="false">Metodologia</button>
+    </nav>
+
+    <div class="erro" id="erro" hidden role="alert"></div>
+
+    <!-- VISÃO GERAL -->
+    <section class="pagina" id="visao" role="tabpanel" aria-labelledby="aba-visao">
+      <div class="controles">
+        <label class="ctl">Comparar com
+          <select id="v-coorte"></select></label>
+        <label class="ctl">Variação desde
+          <select id="v-base"><option>2000</option><option>2010</option><option selected>2015</option><option>2020</option></select></label>
+      </div>
+      <div class="cartoes" id="cartoes"></div>
+      <div class="grade2">
+        <article class="card">
+          <h2 id="ev-titulo">Escore ao longo do tempo</h2>
+          <p class="nota">Brasil contra a mediana da coorte. A faixa sombreada vai do 1º ao 3º quartil da coorte.</p>
+          <div class="grafico alto" id="ev-chart"></div>
+        </article>
+        <article class="card">
+          <h2 id="dc-titulo">O que puxa o escore</h2>
+          <p class="nota">Percentil do Brasil em cada indicador no último ano (0 = pior país do mundo, 100 = melhor). O traço vertical marca o ano-base.</p>
+          <div class="grafico" id="dc-chart"></div>
+        </article>
+      </div>
+      <article class="card">
+        <div class="card-topo">
+          <div>
+            <h2>Países comparados no último ano</h2>
+            <p class="nota">Escores de 0 a 100. Clique no cabeçalho para ordenar. Verde acima de 60, vermelho abaixo de 40.</p>
+          </div>
+          <button class="botao" type="button" id="csv-ranking">Baixar CSV</button>
+        </div>
+        <div class="tabela-box">
+          <table id="rank-table">
+            <thead><tr>
+              <th data-sort="pais" scope="col"><button>País</button></th>
+              <th data-sort="geral" scope="col"><button>Geral</button></th>
+              <th data-sort="macro" scope="col"><button>Estab. macro</button></th>
+              <th data-sort="prod" scope="col"><button>Produção e inovação</button></th>
+              <th data-sort="social" scope="col"><button>Coesão social</button></th>
+              <th data-sort="inst" scope="col"><button>Instituições</button></th>
+              <th data-sort="bem" scope="col"><button>Bem-estar</button></th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <!-- SÉRIES -->
+    <section class="pagina" id="series" role="tabpanel" aria-labelledby="aba-series" hidden>
+      <div class="controles">
+        <label class="ctl">Indicador <select id="s-ind"></select></label>
+        <label class="ctl">Faixa da coorte <select id="s-banda"></select></label>
+        <label class="ctl">De <select id="s-y0"></select></label>
+        <label class="ctl">Até <select id="s-y1"></select></label>
+      </div>
+      <div class="chips" id="s-paises" role="group" aria-label="Países no gráfico"></div>
+      <article class="card">
+        <div class="card-topo">
+          <div>
+            <h2 id="s-titulo">—</h2>
+            <p class="nota" id="s-nota"></p>
+          </div>
+          <button class="botao" type="button" id="csv-serie">Baixar CSV</button>
+        </div>
+        <div class="grafico alto" id="s-chart"></div>
+      </article>
+      <article class="card">
+        <h2>Comparar dois mandatos presidenciais</h2>
+        <p class="nota">Cada período é um mandato de quatro anos, de 1º de janeiro do ano seguinte à eleição até o fim do quarto ano. O mandato atual (2023–2026) usa os dados disponíveis até 2025. Tendência é a inclinação da reta de regressão no mandato, em unidades por ano. Para os outros países, os períodos seguem o calendário brasileiro.</p>
+        <div class="controles">
+          <label class="ctl">Mandato A <select id="p-a"></select></label>
+          <label class="ctl">Mandato B <select id="p-b"></select></label>
+        </div>
+        <p class="nota" id="p-msg" hidden></p>
+        <div class="tabela-box">
+          <table id="per-table">
+            <thead><tr>
+              <th scope="col">País</th><th scope="col">Média A</th><th scope="col">Média B</th>
+              <th scope="col">Variação</th><th scope="col">Variação %</th>
+              <th scope="col" class="some-p">Mediana B</th><th scope="col" class="some-p">Desvio B</th>
+              <th scope="col" class="some-p">Tendência A</th><th scope="col">Tendência B</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <!-- COORTES -->
+    <section class="pagina" id="coortes" role="tabpanel" aria-labelledby="aba-coortes" hidden>
+      <div class="controles">
+        <label class="ctl">Indicador <select id="c-ind"></select></label>
+        <label class="ctl">Ano <select id="c-ano"></select></label>
+      </div>
+      <div class="grade2">
+        <article class="card">
+          <h2 id="c-titulo">Distribuição por coorte</h2>
+          <p class="nota">Caixa: 1º ao 3º quartil. Traço: mediana. Losango: média. Hastes: mínimo e máximo. Ponto verde: Brasil.</p>
+          <div class="grafico" id="c-box"></div>
+        </article>
+        <article class="card">
+          <h2 id="cs-titulo">Escore por coorte</h2>
+          <div class="controles"><label class="ctl">Tema <select id="cs-tema"></select></label></div>
+          <div class="grafico" id="cs-box"></div>
+        </article>
+      </div>
+      <article class="card">
+        <h2>Medidas de tendência central e dispersão</h2>
+        <p class="nota">Para o indicador e o ano escolhidos. "Z do Brasil" é quantos desvios-padrão o Brasil está acima (+) ou abaixo (−) da média da coorte.</p>
+        <div class="tabela-box">
+          <table id="c-table">
+            <thead><tr>
+              <th scope="col">Coorte</th><th scope="col">Países</th><th scope="col">Média</th><th scope="col">Mediana</th><th scope="col">Desvio</th>
+              <th scope="col" class="some-p">1º quartil</th><th scope="col" class="some-p">3º quartil</th>
+              <th scope="col" class="some-p">Mínimo</th><th scope="col" class="some-p">Máximo</th>
+              <th scope="col">Brasil</th><th scope="col">Z do Brasil</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
+    <!-- METODOLOGIA -->
+    <section class="pagina" id="metodo" role="tabpanel" aria-labelledby="aba-metodo" hidden>
+      <article class="card texto">
+        <h2>Como os escores são calculados</h2>
+        <ol>
+          <li>Para cada indicador e cada ano, todos os países do mundo com dado são ordenados do pior para o melhor desempenho. A posição vira um percentil de 0 a 100.</li>
+          <li>Indicadores com sentido "menor é melhor" (dívida, Gini, homicídios, emissões) são invertidos antes da ordenação. Inflação e juros reais são medidos pela distância de um nível saudável (3% e 2% ao ano).</li>
+          <li>O escore de um tema é a média dos percentis dos seus indicadores. Ele só é calculado quando o país tem dado em pelo menos metade deles.</li>
+          <li>O escore geral é a média dos cinco temas, com pelo menos quatro disponíveis.</li>
+          <li>Indicadores de pesquisa domiciliar, como Gini e pobreza, não saem todo ano. Para o escore, o último valor conhecido vale por até cinco anos. As séries temporais mostram só os valores observados.</li>
+        </ol>
+        <p>O escore é relativo: mede a posição do país frente ao resto do mundo, não o nível absoluto. Um escore estável com indicadores melhorando quer dizer que os outros países melhoraram no mesmo ritmo.</p>
+        <h3>Coortes</h3>
+        <ul id="m-coortes"></ul>
+        <h3>Limitações</h3>
+        <ul>
+          <li>Os anos mais recentes (2024–2025) têm menos países com dado, e os escores desses anos se apoiam mais nos valores carregados de anos anteriores.</li>
+          <li>Ficaram de fora o índice de democracia (série parada em 2018), pesquisadores por milhão (Brasil sem dado desde 2014) e o Índice de Complexidade Econômica. Exportações de alta tecnologia e indústria de transformação servem de aproximação.</li>
+          <li>Os juros reais do Banco Mundial usam a taxa de empréstimo bancário menos o deflator do PIB, não a Selic.</li>
+          <li>As emissões de CO₂ excluem uso da terra e, por isso, não captam o desmatamento.</li>
+        </ul>
+      </article>
+      <article class="card">
+        <h2>Indicadores usados</h2>
+        <div class="tabela-box">
+          <table id="m-table">
+            <thead><tr>
+              <th scope="col">Indicador</th><th scope="col">Tema</th><th scope="col">Unidade</th>
+              <th scope="col">Sentido</th><th scope="col" class="some-p">Fonte</th><th scope="col">Último ano</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+  </main>
+
+  <footer class="rodape">
+    <div class="wrap rodape-in">
+      <p><strong>Fontes:</strong> Banco Mundial (World Development Indicators e Worldwide Governance Indicators) e PNUD (Índice de Desenvolvimento Humano), via Gapminder/open-numbers, licença CC BY 4.0. Cálculos: Monitora Brasil.</p>
+      <p><a href="https://github.com/ChrisBerenguer/monitora-brasil" rel="noopener">Código, dados e documentação no GitHub</a> · <span id="atualizado"></span></p>
+    </div>
+  </footer>
+
+  <div class="tip" id="tip" hidden role="status"></div>
+
+  <script src="assets/js/d3.v7.9.0.min.js"></script>
+  <script src="assets/js/app.js"></script>
+</body>
+</html>

@@ -214,9 +214,12 @@ for g in ['chl','mex','chn','usa','arg']: print(g, out['scores'][g]['geral'][-3:
 import os
 OUT = os.path.join(BASE, 'dados')
 os.makedirs(OUT, exist_ok=True)
+SITE_DATA = os.path.join(BASE, 'site', 'data')  # cópia usada pelo site estático
+os.makedirs(SITE_DATA, exist_ok=True)
 def dump(name, rows):
     p=os.path.join(OUT, name)
     json.dump(rows, open(p,'w'), ensure_ascii=False, separators=(',',':'))
+    json.dump(rows, open(os.path.join(SITE_DATA, name),'w'), ensure_ascii=False, separators=(',',':'))
     print(name, len(rows), os.path.getsize(p))
 
 dump('indicadores.json', [{'id':i['id'],'nome':i['name'],'unidade':i['unit'],'tema':i['theme'],

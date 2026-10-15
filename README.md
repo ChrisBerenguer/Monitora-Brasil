@@ -2,7 +2,7 @@
 
 Painel que acompanha o desenvolvimento do Brasil em comparação com outros países. Ele cruza 40 indicadores econômicos, sociais, institucionais e ambientais, de 1995 a 2025, e os resume em **escores de 0 a 100** para cinco macrotemas.
 
-- **Dashboard publicado:** https://claude.ai/artifact/1VN97WbaUYChpm2aESA54X (privado até ser compartilhado pelo dono)
+- **Site:** pasta `site/`, um site estático pronto para hospedar em domínio próprio (ver [docs/10](docs/10-publicacao.md))
 - **Base conceitual:** Dossiê de Indicadores de Desenvolvimento (21 categorias, 5 macrotemas): https://claude.ai/artifact/1nwmHfoeYXmQ5RZhytXXVM
 - **Projeto da:** WizzyBots, Agência de Automação e IA para PMEs (produto interno)
 
@@ -37,16 +37,18 @@ monitora-brasil/
 │   ├── 04-dicionario-de-indicadores.md
 │   ├── 05-nomenclatura-e-glossario.md
 │   ├── 06-dados-fontes-e-esquemas.md
-│   ├── 07-dashboard.md
+│   ├── 07-site.md
 │   ├── 08-limitacoes-e-roadmap.md
-│   └── 09-como-atualizar.md
+│   ├── 09-como-atualizar.md
+│   └── 10-publicacao.md
 ├── scripts/
 │   ├── baixar_brutos.py       baixa as séries brutas para brutos/ (fora do git)
 │   ├── build_dados.py         calcula percentis, escores e estatísticas → dados/
 │   └── gerar_dicionario.py    gera docs/04 a partir dos dados
-├── dados/                     8 conjuntos de dados em JSON, os mesmos do dashboard
-└── dashboard/
-    └── index.html             página do dashboard (HTML + JavaScript + d3)
+├── dados/                     8 conjuntos de dados em JSON (cópia em site/data/)
+├── site/                      o painel web: HTML, CSS, JavaScript, d3 local e dados
+├── .github/workflows/pages.yml publicação automática no GitHub Pages
+└── netlify.toml               configuração para Netlify
 ```
 
 ## Começo rápido
@@ -59,7 +61,13 @@ python scripts/build_dados.py       # gera dados/*.json
 python scripts/gerar_dicionario.py  # atualiza docs/04
 ```
 
-Para levar os dados novos ao dashboard, veja [docs/09-como-atualizar.md](docs/09-como-atualizar.md).
+Para ver o painel localmente:
+
+```bash
+cd site && python -m http.server 8000   # abra http://localhost:8000
+```
+
+Para publicar num domínio próprio, veja [docs/10-publicacao.md](docs/10-publicacao.md).
 
 ## Guia de leitura
 
@@ -71,9 +79,10 @@ Para levar os dados novos ao dashboard, veja [docs/09-como-atualizar.md](docs/09
 | Consultar a definição de um indicador | [04 · Dicionário de indicadores](docs/04-dicionario-de-indicadores.md) |
 | Entender códigos, siglas e nomes de campos | [05 · Nomenclatura e glossário](docs/05-nomenclatura-e-glossario.md) |
 | Ver as fontes, licenças e o formato dos arquivos | [06 · Dados, fontes e esquemas](docs/06-dados-fontes-e-esquemas.md) |
-| Usar ou modificar o dashboard | [07 · Dashboard](docs/07-dashboard.md) |
+| Usar ou modificar o site | [07 · Site](docs/07-site.md) |
 | Saber o que falta e o que vem depois | [08 · Limitações e roadmap](docs/08-limitacoes-e-roadmap.md) |
 | Atualizar os dados | [09 · Como atualizar](docs/09-como-atualizar.md) |
+| Publicar em domínio próprio | [10 · Publicação](docs/10-publicacao.md) |
 
 ## Fontes e licença dos dados
 

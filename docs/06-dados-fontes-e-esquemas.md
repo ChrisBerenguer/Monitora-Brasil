@@ -32,7 +32,7 @@ Gerados por `scripts/baixar_brutos.py`:
 
 ## Conjuntos de dados gerados (`dados/`)
 
-Todos são arrays JSON de objetos (uma linha por objeto), em UTF-8. Esses mesmos arquivos alimentam o dashboard.
+Todos são arrays JSON de objetos (uma linha por objeto), em UTF-8. O pipeline grava uma cópia idêntica em `site/data/`, que é a que o site carrega.
 
 ### `indicadores.json` (40 linhas): metadados
 
@@ -110,15 +110,15 @@ Todos são arrays JSON de objetos (uma linha por objeto), em UTF-8. Esses mesmos
 | `posicao` | inteiro | Posição do Brasil no escore geral (1 = melhor) |
 | `paises` | inteiro | Total de países com escore geral no ano |
 
-## Cálculos feitos no dashboard
+## Cálculos feitos no navegador
 
-Três conjuntos são derivados no navegador por `dash.calc`, com a fórmula visível no painel Fontes:
+Três conjuntos são derivados em `site/assets/js/app.js`:
 
-| Id | Entrada | Saída |
+| Função | Entrada | Saída |
 |---|---|---|
-| `variacao_escores` | `escores` | Escore do último ano menos o escore dos anos-base 2000, 2010, 2015 e 2020, por país e tema |
-| `ranking_ultimo` | `escores` | Tabela larga com os seis escores de cada país no último ano |
-| `variacao_periodos` | `periodos` | Para cada par de mandatos (A < B), indicador e país: médias, `delta`, `delta_pct`, mediana e desvio de B, tendências de A e B |
+| `calcVariacaoEscores` | `escores` | Escore do último ano menos o escore dos anos-base 2000, 2010, 2015 e 2020, por país e tema |
+| `calcRankingUltimo` | `escores` | Tabela larga com os seis escores de cada país no último ano |
+| `calcVariacaoPeriodos` | `periodos` | Para cada par de mandatos (A < B), indicador e país: médias, `delta`, `delta_pct`, mediana e desvio de B, tendências de A e B |
 
 ## Atribuição exigida
 
