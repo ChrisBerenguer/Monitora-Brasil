@@ -126,7 +126,7 @@ Três conjuntos são derivados em `site/assets/js/app.js`:
 
 | Função | Entrada | Saída |
 |---|---|---|
-| `calcVariacaoEscores` | `escores` | Escore do último ano menos o escore dos anos-base 2000, 2010, 2015 e 2020, por país e tema |
+| `calcVariacaoMandatos` | `escores` | Para cada país, tema e mandato: escore no fim do mandato menos o do ano anterior à posse |
 | `calcRankingUltimo` | `escores` | Tabela larga com os seis escores de cada país no último ano |
 | `calcVariacaoPeriodos` | `periodos` | Para cada par de mandatos (A < B), indicador e país: médias, `delta`, `delta_pct`, mediana e desvio de B, tendências de A e B |
 

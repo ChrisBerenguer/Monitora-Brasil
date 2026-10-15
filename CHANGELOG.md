@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.4 — 15/10/2026
+
+### Alterado
+- **Visão geral: o seletor "Variação desde" virou "Variação no mandato".** As opções são os mandatos presidenciais de 4 anos, de FHC 2 (1999–2002) a Lula 3 (2023–2026). A variação de cada tema compara o ano anterior à posse com o último ano do mandato (ou o último ano com dado, no mandato atual). Como os escores começam em 2000, FHC 2 é medido de 2000 a 2002.
+- O minigráfico de cada cartão e o gráfico "Escore ao longo do tempo" destacam o mandato escolhido. "O que puxa o escore" mostra os percentis do último ano do mandato, com um traço no ano anterior à posse.
+
 ## 1.3 — 15/10/2026
 
 ### Adicionado

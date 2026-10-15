@@ -14,7 +14,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=1.4">
+  <link rel="stylesheet" href="assets/css/styles.css?v=1.5">
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -54,19 +54,20 @@
       <div class="controles">
         <label class="ctl">Comparar com
           <select id="v-coorte"></select></label>
-        <label class="ctl">Variação desde
-          <select id="v-base"><option>2000</option><option>2010</option><option selected>2015</option><option>2020</option></select></label>
+        <label class="ctl">Variação no mandato
+          <select id="v-mandato"></select></label>
       </div>
+      <p class="nota" id="v-nota">Cada cartão mostra o escore mais recente do Brasil e quanto ele mudou no mandato escolhido, comparando o ano anterior à posse com o último ano do mandato. Passe o mouse sobre a variação para ver os dois valores.</p>
       <div class="cartoes" id="cartoes"></div>
       <div class="grade2">
         <article class="card">
           <h2 id="ev-titulo">Escore ao longo do tempo</h2>
-          <p class="nota">Brasil contra a mediana da coorte. A faixa sombreada vai do 1º ao 3º quartil da coorte.</p>
+          <p class="nota">Brasil contra a mediana da coorte. A faixa cinza vai do 1º ao 3º quartil da coorte. A faixa verde marca o mandato escolhido.</p>
           <div class="grafico alto" id="ev-chart"></div>
         </article>
         <article class="card">
           <h2 id="dc-titulo">O que puxa o escore</h2>
-          <p class="nota">Percentil do Brasil em cada indicador no último ano (0 = pior país do mundo, 100 = melhor). O traço vertical marca o ano-base. Passe o mouse ou toque no ícone ⓘ para entender cada indicador.</p>
+          <p class="nota">Percentil do Brasil em cada indicador no fim do mandato escolhido (0 = pior país do mundo, 100 = melhor). O traço vertical marca o início do mandato escolhido. Passe o mouse ou toque no ícone ⓘ para entender cada indicador.</p>
           <div class="grafico" id="dc-chart"></div>
         </article>
       </div>
@@ -263,6 +264,6 @@
   <div class="info-tip" id="info-tip" role="tooltip" hidden></div>
 
   <script src="assets/js/d3.v7.9.0.min.js"></script>
-  <script src="assets/js/app.js?v=1.4"></script>
+  <script src="assets/js/app.js?v=1.5"></script>
 </body>
 </html>

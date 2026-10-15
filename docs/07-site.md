@@ -42,7 +42,7 @@ As mesmas fórmulas do [doc 03](03-metodologia.md), implementadas em `app.js`:
 
 | Função | Entrada | Saída |
 |---|---|---|
-| `calcVariacaoEscores` | `escores.json` | Escore do último ano menos o escore dos anos-base 2000, 2010, 2015 e 2020, por país e tema |
+| `calcVariacaoMandatos` | `escores.json` | Para cada país, tema e mandato: escore no último ano do mandato (ou no último ano com dado) menos o escore no ano anterior à posse. Os escores começam em 2000, então FHC 2 é medido de 2000 a 2002 |
 | `calcRankingUltimo` | `escores.json` | Tabela com os seis escores de cada país no último ano |
 | `calcVariacaoPeriodos` | `periodos.json` | Para cada par de mandatos (A < B), indicador e país: médias, `delta`, `delta_pct`, mediana e desvio de B, tendências de A e B |
 
@@ -52,10 +52,10 @@ Todos os outros números exibidos vêm diretamente dos JSON. Nenhum número est�
 
 ### Visão geral (`#visao`)
 - **Resumo** no topo: escore geral, posição no ranking, temas mais forte e mais fraco do último ano.
-- **Controles:** coorte de comparação e ano-base da variação.
-- **6 cartões de tema:** escore no último ano, variação desde o ano-base (verde se subiu mais de 0,5, vermelho se caiu mais de 0,5), mediana da coorte e minigráfico de 2000 a 2025. **Clicar num cartão** muda o tema dos dois gráficos abaixo.
-- **Escore ao longo do tempo:** Brasil contra a mediana da coorte, com a faixa do 1º ao 3º quartil.
-- **O que puxa o escore:** percentil do Brasil em cada indicador do tema (verde ≥ 60, vermelho < 40), com um traço no ano-base.
+- **Controles:** coorte de comparação e **mandato presidencial** (intervalos de 4 anos, de FHC 2, 1999–2002, até Lula 3, 2023–2026).
+- **6 cartões de tema:** escore no último ano, **variação no mandato escolhido** (escore no fim do mandato menos o do ano anterior à posse; verde se subiu mais de 0,5, vermelho se caiu mais de 0,5; passar o mouse mostra os dois valores), mediana da coorte e minigráfico de 2000 a 2025 com o mandato sombreado. **Clicar num cartão** muda o tema dos dois gráficos abaixo.
+- **Escore ao longo do tempo:** Brasil contra a mediana da coorte, com a faixa do 1º ao 3º quartil e o mandato escolhido destacado em verde.
+- **O que puxa o escore:** percentil do Brasil em cada indicador do tema no último ano do mandato escolhido (verde ≥ 60, vermelho < 40), com um traço no ano anterior à posse.
 - **Países comparados:** tabela ordenável dos 23 países, com cor de calor e botão **Baixar CSV**.
 
 ### Séries temporais (`#series`)

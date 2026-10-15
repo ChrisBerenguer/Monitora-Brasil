@@ -40,11 +40,16 @@
   const PERIODOS = ['1995–1998', '1999–2002', '2003–2006', '2007–2010', '2011–2014', '2015–2018', '2019–2022', '2023–2026'];
   const MANDATO = { '1995–1998': 'FHC 1', '1999–2002': 'FHC 2', '2003–2006': 'Lula 1', '2007–2010': 'Lula 2', '2011–2014': 'Dilma 1', '2015–2018': 'Dilma 2 / Temer', '2019–2022': 'Bolsonaro', '2023–2026': 'Lula 3 (até 2025)' };
   const PAGINAS = ['visao', 'series', 'coortes', 'metodo'];
+  // Mandatos usados na variação dos escores (Visão geral). Os escores começam em 2000,
+  // então FHC 2 é medido de 2000 a 2002.
+  const MANDATOS_ESC = PERIODOS.filter((p) => +p.slice(0, 4) + 3 >= 2000).map((p) => ({ id: p, ini: +p.slice(0, 4), fim: +p.slice(0, 4) + 3, nome: MANDATO[p] }));
+  /** Anos comparados: o ano anterior à posse (ou 2000) contra o fim do mandato (ou o último ano com dado). */
+  const anosMandato = (m, last) => ({ a: Math.max(2000, m.ini - 1), b: Math.min(m.fim, last) });
   const ANOS = d3.range(1995, 2026);
 
   // ---------------------------------------------------------------- estado
   const st = {
-    page: 'visao', coorte: 'latam', base: 2015, tema: 'geral', ind: 'ny_gdp_pcap_pp_kd', banda: 'latam',
+    page: 'visao', coorte: 'latam', mandato: '2023–2026', tema: 'geral', ind: 'ny_gdp_pcap_pp_kd', banda: 'latam',
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
     cano: null, canoInd: null, cstema: 'geral', sort: { key: 'geral', dir: -1 },
   };
@@ -137,19 +142,21 @@
     ix.pct = d3.group(raw.percentis_br, (r) => r.ind);
     ix.rank = new Map(raw.ranking_br.map((r) => [+r.ano, r]));
     // cálculos derivados (mesmas fórmulas documentadas em docs/03)
-    ix.vEsc = calcVariacaoEscores(raw.escores, ix.escLast);
+    ix.vEsc = calcVariacaoMandatos(raw.escores, ix.escLast);
     ix.ranking = calcRankingUltimo(raw.escores, ix.escLast);
     ix.vPer = calcVariacaoPeriodos(raw.periodos);
     return ix;
   }
 
-  /** Escore do último ano menos o escore nos anos-base, por país e tema. */
-  function calcVariacaoEscores(escores, last) {
+  /** Variação do escore dentro de cada mandato: fim do mandato menos o ano anterior à posse, por país e tema. */
+  function calcVariacaoMandatos(escores, last) {
     const by = new Map(escores.map((r) => [`${r.pais}|${r.tema}|${r.ano}`, +r.escore]));
+    const pares = new Set(escores.map((r) => `${r.pais}|${r.tema}`));
     const out = new Map();
-    for (const r of escores) if (+r.ano === last) for (const base of [2000, 2010, 2015, 2020]) {
-      const b = by.get(`${r.pais}|${r.tema}|${base}`);
-      if (b != null) out.set(`${r.pais}|${r.tema}|${base}`, Math.round((+r.escore - b) * 10) / 10);
+    for (const pt of pares) for (const m of MANDATOS_ESC) {
+      const { a, b } = anosMandato(m, last);
+      const va = by.get(`${pt}|${a}`), vb = by.get(`${pt}|${b}`);
+      if (va != null && vb != null) out.set(`${pt}|${m.id}`, { delta: Math.round((vb - va) * 10) / 10, a, b, va, vb });
     }
     return out;
   }
@@ -181,7 +188,7 @@
   function vazio(box, msg = 'Sem dados para essa seleção.') { box.replaceChildren(el('p', { class: 'vazio' }, msg)); }
 
   /** Linhas com faixa opcional, rótulos finais e régua com tooltip. */
-  function lineChart(box, { series, band, yfmt, xdomain, height = 340, endLabels = true }) {
+  function lineChart(box, { series, band, yfmt, xdomain, height = 340, endLabels = true, destaque = null }) {
     box.replaceChildren();
     box.classList.remove('carregando');
     const W = largura(box), H = height;
@@ -206,6 +213,12 @@
     const xt = x.ticks(Math.min(xdomain[1] - xdomain[0], Math.floor((W - ml - mr) / 56))).filter(Number.isInteger);
     svg.append('g').selectAll('text').data(xt).join('text').attr('x', x).attr('y', H - 6).attr('text-anchor', 'middle').text((d) => d);
     svg.append('line').attr('x1', ml).attr('x2', W - mr).attr('y1', H - 24).attr('y2', H - 24).style('stroke', css('--axis'));
+    if (destaque) { // período em destaque (ex.: mandato escolhido)
+      const x0 = x(Math.max(xdomain[0], destaque.de)), x1 = x(Math.min(xdomain[1], destaque.ate));
+      svg.append('rect').attr('x', x0).attr('y', 10).attr('width', Math.max(2, x1 - x0)).attr('height', H - 34).attr('rx', 3)
+        .style('fill', cor(0)).style('fill-opacity', 0.08);
+      if (destaque.rotulo) svg.append('text').attr('x', (x0 + x1) / 2).attr('y', 22).attr('text-anchor', 'middle').style('fill', cor(0)).style('font-weight', 600).text(destaque.rotulo);
+    }
     if (band && band.pts.some((p) => p.lo != null)) {
       const area = d3.area().defined((d) => d.lo != null && d.hi != null).x((d) => x(d.x)).y0((d) => y(d.lo)).y1((d) => y(d.hi));
       svg.append('path').attr('d', area(band.pts)).style('fill', band.color).style('fill-opacity', 0.16);
@@ -242,7 +255,7 @@
   }
 
   /** Minigráfico do cartão de tema. */
-  function spark(box, a, b, base) {
+  function spark(box, a, b, faixa) {
     box.replaceChildren();
     const W = Math.max(140, box.clientWidth), H = 46;
     const all = a.concat(b).map((d) => d.y).filter((v) => v != null);
@@ -251,7 +264,7 @@
     const y = d3.scaleLinear(d3.extent(all), [H - 4, 4]);
     const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('aria-hidden', 'true');
     const line = d3.line().defined((d) => d.y != null).x((d) => x(d.x)).y((d) => y(d.y));
-    svg.append('line').attr('x1', x(base)).attr('x2', x(base)).attr('y1', 0).attr('y2', H).style('stroke', css('--ref')).attr('stroke-dasharray', '2 3');
+    if (faixa) svg.append('rect').attr('x', x(faixa.a)).attr('y', 0).attr('width', Math.max(2, x(faixa.b) - x(faixa.a))).attr('height', H).style('fill', cor(0)).style('fill-opacity', 0.1);
     svg.append('path').attr('d', line(b)).style('fill', 'none').style('stroke', css('--chart-muted')).attr('stroke-width', 1.5).attr('stroke-dasharray', '4 3');
     svg.append('path').attr('d', line(a)).style('fill', 'none').style('stroke', cor(0)).attr('stroke-width', 2).attr('stroke-linecap', 'round');
     const last = [...a].reverse().find((d) => d.y != null);
@@ -339,10 +352,10 @@
       const cur = br.find((r) => +r.ano === last);
       const linha = el('div', { class: 'linha' });
       linha.appendChild(el('span', { class: 'grande' }, cur ? f1(cur.escore) : '—'));
-      const dv = D.vEsc.get(`bra|${t.id}|${st.base}`);
-      if (dv != null) {
-        const cls = dv > 0.5 ? 'bom' : dv < -0.5 ? 'ruim' : 'neutro';
-        linha.appendChild(el('span', { class: 'delta ' + cls }, `${sgn(dv, f1)} desde ${st.base}`));
+      const dv = D.vEsc.get(`bra|${t.id}|${st.mandato}`);
+      if (dv) {
+        const cls = dv.delta > 0.5 ? 'bom' : dv.delta < -0.5 ? 'ruim' : 'neutro';
+        linha.appendChild(el('span', { class: 'delta ' + cls, title: `Escore em ${dv.a}: ${f1(dv.va)} · em ${dv.b}: ${f1(dv.vb)}` }, `${sgn(dv.delta, f1)} no mandato`));
       }
       card.appendChild(linha);
       const cr = D.escC.get(st.coorte)?.get(t.id) || [];
@@ -351,7 +364,7 @@
       const sp = el('div', { class: 'mini' });
       card.appendChild(sp);
       box.appendChild(card);
-      spark(sp, br.map((r) => ({ x: +r.ano, y: +r.escore })), cr.map((r) => ({ x: +r.ano, y: +r.mediana })), st.base);
+      spark(sp, br.map((r) => ({ x: +r.ano, y: +r.escore })), cr.map((r) => ({ x: +r.ano, y: +r.mediana })), anosMandato(mandatoAtual(), last));
       card.addEventListener('click', () => { st.tema = t.id; render(); });
     }
   }
@@ -367,6 +380,7 @@
       ],
       band: { color: css('--chart-muted'), pts: cr.map((r) => ({ x: +r.ano, lo: +r.p25, hi: +r.p75 })) },
       yfmt: (v) => f1(v), xdomain: [2000, D.escLast], endLabels: $('#ev-chart').clientWidth > 520,
+      destaque: (() => { const m = mandatoAtual(), { a, b } = anosMandato(m, D.escLast); return { de: a, ate: b, rotulo: m.nome.replace(' (até 2025)', '') }; })(),
     });
   }
 
@@ -374,11 +388,12 @@
     const box = $('#dc-chart');
     box.replaceChildren(); box.classList.remove('carregando');
     const temaDc = st.tema === 'geral' ? null : st.tema;
-    $('#dc-titulo').textContent = temaDc ? `O que puxa o escore: ${TNOME[temaDc].toLowerCase()}` : 'O que puxa o escore: todos os indicadores';
+    const anosDc = anosMandato(mandatoAtual(), D.escLast);
+    $('#dc-titulo').textContent = (temaDc ? `O que puxa o escore: ${TNOME[temaDc].toLowerCase()}` : 'O que puxa o escore: todos os indicadores') + ` em ${anosDc.b}`;
     const rows = D.indicadores.filter((r) => r.entra_no_escore && (!temaDc || r.tema === temaDc)).map((r) => {
       const ps = D.pct.get(r.id) || [];
-      const last = d3.max(ps, (p) => +p.ano);
-      return { r, cur: ps.find((p) => +p.ano === last), base: ps.find((p) => +p.ano === st.base) };
+      const { a, b } = anosMandato(mandatoAtual(), D.escLast);
+      return { r, cur: ps.find((p) => +p.ano === b), base: ps.find((p) => +p.ano === a), a, b };
     }).filter((d) => d.cur).sort((a, b) => b.cur.percentil - a.cur.percentil);
     if (!rows.length) return vazio(box);
     const W = largura(box), rowH = 24, H = rows.length * rowH + 26;
@@ -408,12 +423,14 @@
       svg.append('rect').attr('x', ml).attr('y', cy - rowH / 2).attr('width', W - ml).attr('height', rowH).style('fill', 'transparent')
         .on('pointermove', (ev) => tip.show(ev, d.r.nome, [
           { name: `Percentil ${d.cur.ano}`, value: f1(v) },
-          ...(d.base ? [{ name: `Percentil ${st.base}`, value: f1(+d.base.percentil) }] : []),
+          ...(d.base ? [{ name: `Percentil ${d.a} (antes do mandato)`, value: f1(+d.base.percentil) }] : []),
           { name: 'Sentido', value: d.r.direcao },
         ]))
         .on('pointerleave', () => tip.hide());
     });
   }
+
+  const mandatoAtual = () => MANDATOS_ESC.find((m) => m.id === st.mandato) || MANDATOS_ESC.at(-1);
 
   const COLS_RANK = ['geral', 'macro', 'prod', 'social', 'inst', 'bem'];
   function rankingOrdenado() {
@@ -690,7 +707,7 @@
 
   const on = (sel, fn) => $(sel).addEventListener('change', (e) => { fn(e.target.value); render(); });
   on('#v-coorte', (v) => { st.coorte = v; });
-  on('#v-base', (v) => { st.base = +v; });
+  on('#v-mandato', (v) => { st.mandato = v; });
   on('#s-ind', (v) => { st.ind = v; });
   on('#c-ind', (v) => { st.ind = v; });
   on('#s-banda', (v) => { st.banda = v; });
@@ -706,7 +723,7 @@
     tip.hide();
     if (st.page === 'visao') {
       fillSelect($('#v-coorte'), cohortOpts, st.coorte);
-      $('#v-base').value = String(st.base);
+      fillSelect($('#v-mandato'), [...MANDATOS_ESC].reverse().map((m) => ({ label: `${m.id} · ${m.nome}`, value: m.id })), st.mandato);
       drawCartoes(); drawEvolucao(); drawDecomp(); drawRanking();
     } else if (st.page === 'series') { drawSeries(); drawPeriodos(); }
     else if (st.page === 'coortes') drawCoortes();
