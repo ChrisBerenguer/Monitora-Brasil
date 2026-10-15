@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.5 — 15/10/2026
+
+### Adicionado
+- **Google Analytics** (tag `G-8GFHJSPY8T`) no início do `<head>` do site.
+- Política de segurança (CSP) ajustada em `vercel.json`, `site/_headers`, `site/.htaccess` e no exemplo de Nginx: libera os domínios do Google Analytics e o trecho de configuração da tag pela impressão digital (hash `sha256`), sem `'unsafe-inline'`. O `docs/10` explica como recalcular o hash se o trecho mudar e traz uma recomendação sobre a LGPD.
+
 ## 1.4 — 15/10/2026
 
 ### Alterado

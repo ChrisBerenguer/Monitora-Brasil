@@ -19,7 +19,7 @@ site/
 └── robots.txt
 ```
 
-Dependências externas em tempo de execução: só as fontes do Google Fonts (IBM Plex Sans, IBM Plex Mono e Source Serif 4). Se elas não carregarem, a página usa as fontes do sistema. A d3 é servida pelo próprio site.
+Dependências externas em tempo de execução: as fontes do Google Fonts (IBM Plex Sans, IBM Plex Mono e Source Serif 4) e o Google Analytics (tag `G-8GFHJSPY8T`, no início do `<head>`). Se as fontes não carregarem, a página usa as fontes do sistema. Se o Analytics for bloqueado (por um bloqueador de anúncios, por exemplo), o painel funciona normalmente. A d3 é servida pelo próprio site. Detalhes da política de segurança e do hash da tag em [doc 10](10-publicacao.md).
 
 ## Como roda
 

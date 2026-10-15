@@ -63,7 +63,7 @@ server {
 
     add_header X-Content-Type-Options nosniff;
     add_header Referrer-Policy strict-origin-when-cross-origin;
-    add_header Content-Security-Policy "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'self'";
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-QAdpsusHQkApaCn0JipoVw3UHaUNmse8nFKWDdJ8L4s=' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-ancestors 'self'; base-uri 'self'";
 
     ssl_certificate     /etc/letsencrypt/live/monitorabrasil.com.br/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/monitorabrasil.com.br/privkey.pem;
@@ -72,7 +72,15 @@ server {
 
 ## Segurança e desempenho
 
-- **CSP:** a política só permite scripts do próprio site (d3 está em `assets/js/`) e fontes do Google. `'unsafe-inline'` em `style-src` é necessário porque os gráficos aplicam estilos por atributo. Se trocar as fontes por arquivos locais, remova `fonts.googleapis.com` e `fonts.gstatic.com` da política.
+- **CSP:** a política só permite scripts do próprio site (d3 está em `assets/js/`), o Google Analytics e as fontes do Google. `'unsafe-inline'` em `style-src` é necessário porque os gráficos aplicam estilos por atributo. Se trocar as fontes por arquivos locais, remova `fonts.googleapis.com` e `fonts.gstatic.com` da política.
+- **Google Analytics (G-8GFHJSPY8T):** a tag fica no início do `<head>` do `site/index.html`. O trecho de configuração escrito dentro do HTML é liberado na CSP pela impressão digital (hash `sha256-…`) do seu conteúdo, em vez de `'unsafe-inline'`, que liberaria qualquer script. Também estão liberados `*.googletagmanager.com` (script e imagens), `*.google-analytics.com` e `*.analytics.google.com` (envio dos dados). **Se mudar uma vírgula ou um espaço desse trecho, o hash muda e o navegador passa a bloqueá-lo.** Para recalcular e atualizar a política:
+
+  ```bash
+  python3 -c "import re,hashlib,base64;s=open('site/index.html').read();t=re.search(r'<script>(.*?)</script>',s,re.S).group(1);print(\"'sha256-\"+base64.b64encode(hashlib.sha256(t.encode()).digest()).decode()+\"'\")"
+  ```
+
+  Troque o valor `'sha256-…'` em `vercel.json`, `site/_headers`, `site/.htaccess` e no exemplo de Nginx acima. Isso vale também para trocar o ID do Analytics, que fica dentro do trecho.
+- **Privacidade (LGPD):** o Google Analytics grava cookies e coleta dados de navegação. É recomendável informar isso aos visitantes (por exemplo, uma linha no rodapé com link para uma página de privacidade) e, se quiser seguir a prática mais conservadora, só ativar a medição depois do consentimento.
 - **Cache:** os arquivos em `assets/` são imutáveis (1 ano). Por isso o `index.html` chama `styles.css?v=…` e `app.js?v=…`: **ao alterar esses arquivos, aumente o número da versão** no `index.html` (ex.: `?v=1.3` → `?v=1.4`), senão quem já visitou o site continua com a versão antiga. Os dados em `data/` são sempre revalidados (`max-age=0, must-revalidate`, e o `app.js` busca com `cache: 'no-cache'`), então uma atualização de dados aparece na próxima visita.
 - **Tamanho:** cerca de 4,2 MB de dados sem compressão, menos de 1 MB com gzip/brotli. A primeira visita baixa tudo de uma vez, e a navegação seguinte não faz mais requisições.
 
