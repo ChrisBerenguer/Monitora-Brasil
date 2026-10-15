@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.1.1 — 15/10/2026
+
+### Corrigido
+- Deploy na Vercel retornava "404: NOT_FOUND" porque a Vercel servia a raiz do repositório. O novo `vercel.json` publica a pasta `site/` com os cabeçalhos de cache e segurança. Instruções e solução de problemas em `docs/10-publicacao.md`.
+
 ## 1.1 — 15/10/2026
 
 ### Posicionamento

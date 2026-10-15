@@ -13,7 +13,7 @@ site/
 │   ├── js/d3.v7.9.0.min.js     biblioteca d3 (cópia local, ISC License)
 │   └── favicon.svg
 ├── data/                       os 8 JSON gerados por scripts/build_dados.py
-├── _headers                    cabeçalhos de cache e segurança (Netlify, Cloudflare Pages)
+├── _headers                    cabeçalhos de cache e segurança (Netlify, Cloudflare Pages; na Vercel, ver vercel.json na raiz)
 ├── .htaccess                   o mesmo para Apache
 ├── .nojekyll                   impede o GitHub Pages de processar a pasta com Jekyll
 └── robots.txt

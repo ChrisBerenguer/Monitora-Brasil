@@ -30,6 +30,16 @@ Os dois leem o arquivo `site/_headers` (cache e segurança).
 2. Build command: vazio. Build output directory: `site`.
 3. **Custom domains → Set up a domain**. Se o domínio já usa o DNS da Cloudflare, o registro é criado automaticamente.
 
+## Opção B2 — Vercel
+
+O arquivo `vercel.json` na raiz já diz à Vercel para publicar a pasta `site/` (`"outputDirectory": "site"`), sem etapa de build, com os cabeçalhos de cache e segurança.
+
+1. **Add New → Project** → importe o repositório `Monitora-Brasil`.
+2. Em **Configure Project**, deixe **Framework Preset: Other** e **Root Directory** na raiz (`./`). Não preencha Build Command nem Output Directory: o `vercel.json` cuida disso.
+3. **Deploy**. Depois, em **Settings → Domains**, adicione o domínio e crie no registrador o registro que a Vercel indicar (em geral um CNAME para `cname.vercel-dns.com`, ou um registro A para o domínio raiz).
+
+**Se aparecer "404: NOT_FOUND"**, a Vercel está servindo a raiz do repositório, onde não há `index.html`. Confirme que o `vercel.json` está no commit publicado e faça um novo deploy (**Deployments → ⋯ → Redeploy**). Se em **Settings → Build and Deployment** alguém tiver preenchido manualmente o Output Directory com outro valor, apague ou ajuste para `site`. Uma alternativa é definir **Root Directory = `site`**; nesse caso, os cabeçalhos do `vercel.json` da raiz não são aplicados.
+
 ## Opção C — Hospedagem compartilhada (cPanel, Apache)
 
 1. Envie **o conteúdo** da pasta `site/` (não a pasta em si) para `public_html/` ou para a pasta do subdomínio, pelo Gerenciador de Arquivos ou por FTP.

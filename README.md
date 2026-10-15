@@ -52,7 +52,8 @@ Monitora-Brasil/
 ├── dados/                     8 conjuntos de dados em JSON (cópia em site/data/)
 ├── site/                      o painel web: HTML, CSS, JavaScript, d3 local e dados
 ├── .github/workflows/pages.yml publicação automática no GitHub Pages
-└── netlify.toml               configuração para Netlify
+├── netlify.toml               configuração para Netlify
+└── vercel.json                configuração para Vercel (publica a pasta site/)
 ```
 
 ## Começo rápido
