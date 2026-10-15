@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.7 — 15/10/2026
+
+### Adicionado
+- **Botão "i" em cada cartão da aba Coortes**, com explicação para leigos do que o gráfico mostra, como ler, por que importa e um cuidado de interpretação: posição do Brasil em cada grupo, países de cada grupo, os dois histogramas, escore por grupo (e suas duas partes) e estatísticas de cada grupo (com o significado de média, mediana, desvio, quartis, Z do Brasil e do box plot). Funciona como o "i" dos indicadores: ao passar o mouse, com um toque no celular ou com Tab.
+
 ## 1.6 — 15/10/2026
 
 ### Alterado

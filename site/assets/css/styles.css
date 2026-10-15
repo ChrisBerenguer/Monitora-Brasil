@@ -124,6 +124,8 @@ select { font: inherit; font-size: var(--t-md); color: var(--fg); background: va
 
 /* ícone de informação e explicação ao passar o mouse */
 .titulo-info { display: flex; align-items: center; gap: 6px; }
+.titulo-info.sub { margin-top: 8px; }
+.titulo-info h3 { margin-top: 0; }
 .ctl-rotulo { display: inline-flex; align-items: center; gap: 4px; }
 .nome-info { display: inline-flex; align-items: center; gap: 4px; }
 .info-btn { position: relative; flex: none; display: inline-grid; place-items: center; width: 18px; height: 18px; padding: 0; margin: 0;

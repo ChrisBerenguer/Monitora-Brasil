@@ -473,7 +473,66 @@
     if (/–| a /.test(u) && !u.startsWith('%')) return `${fmtv(v)} (escala ${u})`;
     return u.startsWith('%') ? `${fmtv(v)}${u}` : `${fmtv(v)} ${u}`;
   }
+  /** Explicações dos cartões da aba Coortes (o que o gráfico mostra e como ler). */
+  const CARD_INFO = {
+    regua: { titulo: 'Posição do Brasil em cada grupo', blocos: [
+      ['O que mostra', 'Para cada grupo de países, quantos deles o Brasil supera neste indicador, no ano escolhido.'],
+      ['Como ler', 'A barra vai de 0% (o Brasil fica atrás de todos) a 100% (o Brasil fica à frente de todos). O traço escuro marca a posição do Brasil. 50% quer dizer que metade do grupo está à frente e metade atrás. Verde a partir de 60%, vermelho abaixo de 40%.'],
+      ['Por que importa', 'O mesmo número pode ser bom ou ruim conforme a comparação. O Brasil pode estar à frente da maioria do mundo e atrás de quase toda a OCDE no mesmo indicador.'],
+      ['Atenção', '"Superar" leva em conta o sentido do indicador: em homicídios ou dívida, superar é ter menos. Empates contam como meio país. Nos indicadores só de contexto, como população, a frase diz apenas de quantos o Brasil está acima, sem julgar se é bom.'],
+    ] },
+    pontos: { titulo: 'Os países de cada grupo', blocos: [
+      ['O que mostra', 'O valor de cada país da América Latina, dos BRICS e da OCDE neste indicador, no ano escolhido. Cada bolinha é um país, e o Brasil (em verde) aparece em todas as linhas para servir de régua.'],
+      ['Como ler', 'Todos os grupos usam a mesma escala, de valores menores à esquerda a maiores à direita. Quanto mais longe uma bolinha está da do Brasil, maior a diferença. Passe o mouse ou toque numa bolinha para ver o valor exato.'],
+      ['Por que importa', 'Aqui dá para ver com quem o Brasil se parece de fato, e se um grupo é homogêneo (bolinhas juntas) ou muito desigual (bolinhas espalhadas).'],
+      ['Atenção', 'Direita não quer dizer melhor: depende do indicador. A linha abaixo do título do primeiro cartão diz se é melhor ter valor alto ou baixo. Se um país não tem dado no ano, ele não aparece.'],
+    ] },
+    'hist-mundo': { titulo: 'Onde o Brasil cai no mundo', blocos: [
+      ['O que mostra', 'Um histograma: os valores de todos os países do mundo divididos em faixas, e a altura de cada barra é quantos países estão naquela faixa. A barra verde é a faixa onde o Brasil está.'],
+      ['Como ler', 'Barras altas mostram onde a maioria dos países se concentra. Se a barra verde está perto do pico, o Brasil é um caso comum; se está numa ponta, é um caso fora do padrão. Passe o mouse numa barra para ver a faixa e quantos países tem nela.'],
+      ['Por que importa', 'A média do mundo esconde a forma da distribuição. Em renda, por exemplo, muitos países são pobres e poucos são muito ricos, e o histograma deixa isso visível.'],
+      ['Atenção', 'Para que um único caso extremo (uma hiperinflação, por exemplo) não esprema todos os outros países numa barra só, os poucos países muito acima ou muito abaixo do resto entram na primeira ou na última barra. Por isso elas dizem "até" e "ou mais".'],
+    ] },
+    'hist-umic': { titulo: 'Entre os países de renda média-alta', blocos: [
+      ['O que mostra', 'O mesmo histograma, só com os países que o Banco Mundial classifica como de renda média-alta, a mesma faixa de renda do Brasil (cerca de 60 países, como México, China, Turquia, África do Sul e Tailândia).'],
+      ['Como ler', 'Cada barra conta quantos desses países estão numa faixa de valor. A barra verde é a do Brasil.'],
+      ['Por que importa', 'É a comparação mais justa: países com nível de renda parecido. Ficar atrás dos países ricos é esperado; ficar atrás dos países do mesmo nível de renda é um sinal mais forte.'],
+      ['Atenção', 'Com menos países, cada barra tem poucas unidades, e uma diferença de um ou dois países muda bastante o desenho.'],
+    ] },
+    escore: { titulo: 'Escore por grupo', blocos: [
+      ['O que mostra', 'A mesma comparação, mas usando o escore do tema escolhido (de 0 a 100) em vez de um indicador só. O escore resume vários indicadores do tema.'],
+      ['Como ler', 'Escore 50 quer dizer que o país está no meio do mundo naquele tema. Acima de 50, melhor que a maioria; abaixo, pior. Aqui, maior é sempre melhor.'],
+      ['Por que importa', 'Um indicador sozinho pode enganar. O escore junta vários e mostra a posição no tema como um todo.'],
+      ['Atenção', 'O escore é relativo: mede a posição frente aos outros países, não o nível absoluto. Ele mostra sempre o último ano com dados, mesmo que outro ano esteja escolhido acima.'],
+    ] },
+    'regua-escore': { titulo: 'Posição do Brasil no escore', blocos: [
+      ['O que mostra', 'Quantos países de cada grupo têm escore menor que o do Brasil no tema escolhido.'],
+      ['Como ler', 'A barra vai de 0% (o Brasil atrás de todos do grupo) a 100% (à frente de todos). Verde a partir de 60%, vermelho abaixo de 40%.'],
+      ['Atenção', 'Empates contam como meio país.'],
+    ] },
+    'pontos-escore': { titulo: 'O escore dos países de cada grupo', blocos: [
+      ['O que mostra', 'O escore de cada país da América Latina, dos BRICS e da OCDE no tema escolhido. O Brasil está em verde em todas as linhas.'],
+      ['Como ler', 'Mais à direita é melhor. Quanto mais longe a bolinha de um país está da do Brasil, maior a diferença no tema.'],
+    ] },
+    estatisticas: { titulo: 'Estatísticas de cada grupo', blocos: [
+      ['O que mostra', 'Números que resumem cada grupo no indicador e ano escolhidos.'],
+      ['Como ler', 'Média: a soma dividida pelo número de países. Mediana: o valor do país do meio, quando todos estão em fila; não é puxada por casos extremos. Desvio: o quanto os países se espalham em torno da média. 1º e 3º quartil: os valores que deixam 25% e 75% dos países abaixo, então a metade central do grupo fica entre eles. Mínimo e máximo: o menor e o maior valor.'],
+      ['Z do Brasil', 'Quantos desvios o Brasil está acima (+) ou abaixo (−) da média do grupo. Entre −1 e +1 é perto da média; além de ±2 é bem fora do padrão do grupo.'],
+      ['Box plot', 'O botão "Ver box plot" desenha esses números: a caixa vai do 1º ao 3º quartil, o traço dentro dela é a mediana, o losango é a média, as hastes vão do mínimo ao máximo e o ponto verde é o Brasil.'],
+    ] },
+  };
+  function preencherInfoCard(k) {
+    const c = CARD_INFO[k];
+    const partes = [el('h4', {}, c.titulo)];
+    for (const [t, txt] of c.blocos) {
+      const d = el('div', { class: 'bloco' + (t === 'Atenção' ? ' atencao' : '') });
+      d.append(el('b', {}, t), el('span', {}, txt));
+      partes.push(d);
+    }
+    infoEl.replaceChildren(...partes);
+  }
   function preencherInfo(id) {
+    if (id.startsWith('card:')) return preencherInfoCard(id.slice(5));
     const meta = D.ind.get(id), ex = meta.explicacao || {};
     const partes = [el('h4', {}, meta.nome)];
     const bloco = (titulo, texto, cls = '') => {
@@ -552,6 +611,7 @@
     alvo.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); alvo.dispatchEvent(new MouseEvent('click')); } });
   }
   document.querySelectorAll('[data-info-sel]').forEach((b) => ligarInfo(b, () => st.ind));
+  document.querySelectorAll('[data-info-card]').forEach((b) => ligarInfo(b, () => 'card:' + b.dataset.infoCard));
   infoEl.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') { ultimoToque = performance.now(); esconderInfo(); } }); // tocar na explicação fecha
   document.addEventListener('click', (e) => { if (performance.now() - ultimoToque < 700) return; if (!infoEl.hidden && !infoEl.contains(e.target)) esconderInfo(); });
   document.addEventListener('pointerup', (e) => {   // toque fora fecha

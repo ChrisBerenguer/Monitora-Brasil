@@ -84,9 +84,10 @@ Todo lugar em que aparece o nome de um indicador tem um "i" à direita:
 | Visão geral → "O que puxa o escore" | Cada indicador da lista de barras |
 | Séries temporais → rótulo "Indicador" e título do gráfico | O indicador selecionado |
 | Coortes → rótulo "Indicador" e título do gráfico | O indicador selecionado |
+| Coortes → título de cada cartão (posição do Brasil, países de cada grupo, os dois histogramas, escore por grupo e estatísticas) | O que o gráfico mostra, como ler, por que importa e um cuidado de interpretação |
 | Metodologia → tabela de indicadores | Cada indicador da tabela |
 
-A explicação aparece **ao passar o mouse** e some ao tirar o mouse. Ela tem quatro partes em linguagem simples (o que é, como ler, por que importa e atenção) e o último dado do Brasil, com o valor do primeiro ano da série para comparação. Os textos vêm de `scripts/explicacoes.py` (campo `explicacao` de `indicadores.json`).
+A explicação aparece **ao passar o mouse** e some ao tirar o mouse. Ela tem quatro partes em linguagem simples (o que é, como ler, por que importa e atenção) e o último dado do Brasil, com o valor do primeiro ano da série para comparação. Os textos dos indicadores vêm de `scripts/explicacoes.py` (campo `explicacao` de `indicadores.json`). Os textos dos cartões da aba Coortes ficam em `CARD_INFO`, no `app.js`, e são ligados aos botões com o atributo `data-info-card` do `index.html`.
 
 Outras formas de abrir:
 - **Clique:** fixa a explicação aberta. Clicar de novo no "i", clicar fora ou apertar Esc fecha.
@@ -124,6 +125,7 @@ Outras formas de abrir:
 |---|---|
 | Mudar cores ou fontes | Tokens no topo de `styles.css` (e o link do Google Fonts em `index.html`) |
 | Mudar textos fixos | `index.html` |
+| Mudar a explicação de um cartão da aba Coortes | `CARD_INFO` em `app.js` |
 | Mudar a explicação de um indicador (botão "i") | `scripts/explicacoes.py`, depois rode `build_dados.py` (o texto vai para `indicadores.json`) e `gerar_dicionario.py` |
 | Adicionar um indicador | `IND` em `scripts/build_dados.py` + `CODES` em `scripts/baixar_brutos.py`. Regere os dados. Os seletores do site se atualizam sozinhos a partir de `indicadores.json` |
 | Adicionar uma coorte | `COHORTS` em `build_dados.py` + `COORTES` em `app.js` |
