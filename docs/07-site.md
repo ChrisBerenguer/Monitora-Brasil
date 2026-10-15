@@ -97,7 +97,7 @@ Outras formas de abrir:
 | Bloco | Conteúdo |
 |---|---|
 | config | Arquivos de dados, temas, coortes, países, mandatos |
-| estado | Objeto `st` com tudo o que o usuário escolheu (aba, coorte, ano-base, tema, indicador, países, anos, mandatos, ordenação) |
+| estado | Objeto `st` com tudo o que o usuário escolheu (aba, coorte, mandato da Visão geral, tema, indicador, países, anos, mandatos comparados, ordenação) |
 | utilidades | Formatação pt-BR (`f0`, `f1`, `f2`, `fmtv`, `sgn`), leitura de tokens CSS (`css`, `cor`) |
 | tema claro/escuro | Botão do cabeçalho. A escolha fica no `localStorage` (`mb-tema`). Sem escolha, segue o sistema |
 | tooltip | Um único elemento `#tip`, de posição fixa, que nunca sai da tela |

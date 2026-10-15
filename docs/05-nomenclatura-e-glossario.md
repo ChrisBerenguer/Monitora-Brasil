@@ -84,7 +84,6 @@ Os códigos WDI seguem o padrão `TÓPICO.ASSUNTO.MEDIDA.UNIDADE`:
 
 ## Glossário
 
-**Ano-base.** Ano escolhido na Visão geral (2000, 2010, 2015 ou 2020) contra o qual se mede a variação do escore até o último ano.
 
 **Box plot (diagrama de caixa).** Gráfico que resume uma distribuição: caixa do 1º ao 3º quartil, traço na mediana, hastes até o mínimo e o máximo. No painel, o losango marca a média e o ponto colorido, o Brasil.
 
@@ -102,7 +101,7 @@ Os códigos WDI seguem o padrão `TÓPICO.ASSUNTO.MEDIDA.UNIDADE`:
 
 **Macrotema (ou tema).** Um dos cinco agrupamentos de indicadores (ver doc 01).
 
-**Mandato.** Período de quatro anos de um governo presidencial brasileiro, usado como unidade de comparação temporal.
+**Mandato.** Período de quatro anos de um governo presidencial brasileiro, usado como unidade de comparação temporal: na tabela de comparação entre mandatos (Séries temporais) e na variação dos escores (Visão geral).
 
 **Percentil (posto percentil).** Posição relativa de um país entre todos os países num indicador e ano, de 0 (pior) a 100 (melhor).
 
@@ -112,7 +111,7 @@ Os códigos WDI seguem o padrão `TÓPICO.ASSUNTO.MEDIDA.UNIDADE`:
 
 **Tendência (anual).** Inclinação da reta de regressão linear dos valores de um período, em unidades do indicador por ano.
 
-**Variação (delta).** Diferença entre duas médias (mandato B − mandato A) ou entre dois escores (último ano − ano-base).
+**Variação (delta).** Diferença entre duas médias (mandato B − mandato A) ou entre dois escores (fim do mandato − ano anterior à posse, na Visão geral).
 
 **Z do Brasil.** Quantos desvios-padrão o Brasil está acima (+) ou abaixo (−) da média da coorte.
 
