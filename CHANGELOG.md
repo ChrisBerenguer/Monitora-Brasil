@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.8 — 15/10/2026
+
+### Adicionado
+- **Coortes: "Posição do Brasil ao longo do tempo".** Gráfico de linhas com a porcentagem de países de cada grupo que o Brasil supera no indicador escolhido, ano a ano, com seletores **De** e **Até**. Linha de referência em 50% e faixas com os mandatos presidenciais. O "i" do cartão explica como ler e os cuidados (posição relativa, grupos pequenos oscilam muito, número de países varia por ano, coincidência com mandato não prova causa).
+- `lineChart` ganhou as opções `ydomain`, `ref`, `faixas` e `legenda`.
+
 ## 1.7 — 15/10/2026
 
 ### Adicionado

@@ -166,6 +166,10 @@ svg .info-svg:focus-visible .anel { stroke-width: 2.2; }
   .regua-linha { grid-template-columns: 1fr; gap: 4px; }
 }
 
+.legenda { display: flex; flex-wrap: wrap; gap: 6px 14px; margin-top: 8px; font-size: var(--t-sm); color: var(--muted); }
+.legenda-item { display: inline-flex; align-items: center; gap: 6px; }
+.legenda-item i { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
+
 /* gráficos */
 .grafico { position: relative; min-height: 140px; }
 .grafico.alto { min-height: 340px; }

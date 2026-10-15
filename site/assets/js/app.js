@@ -52,7 +52,7 @@
   const st = {
     page: 'visao', coorte: 'latam', mandato: '2023–2026', tema: 'geral', ind: 'ny_gdp_pcap_pp_kd', banda: 'latam',
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
-    cano: null, canoInd: null, cstema: 'geral', sort: { key: 'geral', dir: -1 },
+    cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
   };
   let D = null; // dados carregados e indexados
 
@@ -190,20 +190,20 @@
   function vazio(box, msg = 'Sem dados para essa seleção.') { box.replaceChildren(el('p', { class: 'vazio' }, msg)); }
 
   /** Linhas com faixa opcional, rótulos finais e régua com tooltip. */
-  function lineChart(box, { series, band, yfmt, xdomain, height = 340, endLabels = true, destaque = null }) {
+  function lineChart(box, { series, band, yfmt, xdomain, height = 340, endLabels = true, destaque = null, ydomain = null, faixas = null, ref = null, legenda = false }) {
     box.replaceChildren();
     box.classList.remove('carregando');
     const W = largura(box), H = height;
     const allY = series.flatMap((s) => s.pts.map((p) => p.y)).concat(band ? band.pts.flatMap((p) => [p.lo, p.hi]) : []).filter((v) => v != null);
     if (!allY.length) return vazio(box);
     const ext = d3.extent(allY), pad = (ext[1] - ext[0]) * 0.06 || 1;
-    const y = d3.scaleLinear([ext[0] - pad, ext[1] + pad], [H - 24, 10]).nice();
+    const y = ydomain ? d3.scaleLinear(ydomain, [H - 24, 10]) : d3.scaleLinear([ext[0] - pad, ext[1] + pad], [H - 24, 10]).nice();
     const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img');
     const ticks = y.ticks(5);
     const tf = tickFmt(ticks);
     const probe = svg.append('text').text(ticks.map(tf).reduce((a, b) => (a.length > b.length ? a : b), ''));
     const ml = probe.node().getComputedTextLength() + 10; probe.remove();
-    let mr = 10;
+    let mr = 16;
     if (endLabels) {
       const p2 = svg.append('text').attr('class', 'rotulo-fim');
       for (const s of series) { const last = [...s.pts].reverse().find((q) => q.y != null); if (last) { p2.text(`${s.name} ${yfmt(last.y)}`); mr = Math.max(mr, p2.node().getComputedTextLength() + 14); } }
@@ -215,6 +215,19 @@
     const xt = x.ticks(Math.min(xdomain[1] - xdomain[0], Math.floor((W - ml - mr) / 56))).filter(Number.isInteger);
     svg.append('g').selectAll('text').data(xt).join('text').attr('x', x).attr('y', H - 6).attr('text-anchor', 'middle').text((d) => d);
     svg.append('line').attr('x1', ml).attr('x2', W - mr).attr('y1', H - 24).attr('y2', H - 24).style('stroke', css('--axis'));
+    if (faixas) { // períodos alternados (ex.: mandatos), com rótulo curto quando cabe
+      faixas.forEach((f, i) => {
+        const a = Math.max(xdomain[0], f.de - 0.5), b = Math.min(xdomain[1], f.ate + 0.5);
+        if (b <= a) return;
+        const x0 = x(a), x1 = x(b);
+        if (i % 2 === 0) svg.append('rect').attr('x', x0).attr('y', 10).attr('width', x1 - x0).attr('height', H - 34).style('fill', css('--chart-muted')).style('fill-opacity', 0.1);
+        const t = svg.append('text').attr('x', (x0 + x1) / 2).attr('y', 22).attr('text-anchor', 'middle').style('font-size', '10px').style('fill', css('--muted')).text(f.rotulo);
+        if (t.node().getComputedTextLength() > x1 - x0 - 4) t.remove();
+      });
+    }
+    if (ref != null) {
+      svg.append('line').attr('x1', ml).attr('x2', W - mr).attr('y1', y(ref)).attr('y2', y(ref)).style('stroke', css('--ref')).attr('stroke-dasharray', '4 4');
+    }
     if (destaque) { // período em destaque (ex.: mandato escolhido)
       const x0 = x(Math.max(xdomain[0], destaque.de)), x1 = x(Math.min(xdomain[1], destaque.ate));
       svg.append('rect').attr('x', x0).attr('y', 10).attr('width', Math.max(2, x1 - x0)).attr('height', H - 34).attr('rx', 3)
@@ -254,6 +267,17 @@
         tip.show(ev, String(xv), L.length ? L : [{ name: 'Sem dado neste ano', value: '' }]);
       })
       .on('pointerleave', () => { tip.hide(); rule.attr('visibility', 'hidden'); dots.selectAll('*').remove(); });
+    if (legenda && !endLabels) { // sem rótulos no fim das linhas (tela estreita): legenda embaixo
+      const lg = el('div', { class: 'legenda' });
+      for (const s of series) {
+        const last = [...s.pts].reverse().find((q) => q.y != null);
+        const it = el('span', { class: 'legenda-item' });
+        const sw = el('i'); sw.style.background = s.color;
+        it.append(sw, `${s.name}${last ? ' ' + yfmt(last.y) : ''}`);
+        lg.append(it);
+      }
+      box.append(lg);
+    }
   }
 
   /** Minigráfico do cartão de tema. */
@@ -475,6 +499,12 @@
   }
   /** Explicações dos cartões da aba Coortes (o que o gráfico mostra e como ler). */
   const CARD_INFO = {
+    tempo: { titulo: 'Posição do Brasil ao longo do tempo', blocos: [
+      ['O que mostra', 'Para cada grupo de países, a porcentagem que o Brasil supera neste indicador em cada ano, do ano "De" ao ano "Até". É a mesma conta da régua acima, repetida ano a ano.'],
+      ['Como ler', 'Linha subindo: o Brasil está ganhando posições dentro daquele grupo. Linha descendo: está perdendo. A linha tracejada é 50%: acima dela, o Brasil está à frente da maioria do grupo. As faixas cinzas e brancas marcam os mandatos presidenciais. Passe o mouse para ver os valores de um ano.'],
+      ['Por que importa', 'Responde se o Brasil melhorou ou piorou em comparação com os outros, que é diferente de ver só se o número do Brasil subiu. Comparar as linhas também ajuda: o Brasil pode ganhar terreno no mundo e perder na América Latina ao mesmo tempo.'],
+      ['Atenção', 'A posição é relativa: o Brasil pode melhorar no indicador e mesmo assim cair, se os outros melhoraram mais. Grupos pequenos oscilam muito: nos BRICS, um país a mais ou a menos muda a linha em 25 pontos. O número de países com dado também muda de ano para ano, e o último ano costuma estar incompleto. A coincidência com um mandato não prova que o governo causou a mudança.'],
+    ] },
     regua: { titulo: 'Posição do Brasil em cada grupo', blocos: [
       ['O que mostra', 'Para cada grupo de países, quantos deles o Brasil supera neste indicador, no ano escolhido.'],
       ['Como ler', 'A barra vai de 0% (o Brasil fica atrás de todos) a 100% (o Brasil fica à frente de todos). O traço escuro marca a posição do Brasil. 50% quer dizer que metade do grupo está à frente e metade atrás. Verde a partir de 60%, vermelho abaixo de 40%.'],
@@ -808,6 +838,25 @@
     svg.append('text').attr('x', ml).attr('y', 12).style('font-size', '10px').text('nº de países');
   }
 
+  /** Linha por grupo: % de países que o Brasil supera, ano a ano, entre "De" e "Até". */
+  function drawPosicaoTempo(meta, contexto) {
+    fillSelect($('#ct-y0'), ANOS.map((a) => ({ label: a, value: a })), st.cy0);
+    fillSelect($('#ct-y1'), ANOS.map((a) => ({ label: a, value: a })), st.cy1);
+    const y0 = Math.min(st.cy0, st.cy1), y1 = Math.max(st.cy0, st.cy1), anos = d3.range(y0, y1 + 1);
+    $('#ct-titulo').textContent = `Posição do Brasil ao longo do tempo: ${meta.nome}`;
+    const series = COORTES.map((c, i) => {
+      const por = new Map((D.coo.get(st.ind)?.get(c.id) || []).map((r) => [+r.ano, r.pct_supera]));
+      return { name: c.curto, color: cor([1, 2, 3, 6, 5][i]), width: c.id === 'mundo' ? 2.6 : 2, pts: anos.map((a) => ({ x: a, y: por.get(a) ?? null })) };
+    });
+    const faixas = PERIODOS.map((p) => ({ de: +p.slice(0, 4), ate: +p.slice(0, 4) + 3, rotulo: MANDATO[p].replace(' (até 2025)', '') }));
+    const box = $('#ct-chart');
+    if (y0 === y1) return vazio(box, 'Escolha anos diferentes em "De" e "Até" para ver a evolução.');
+    lineChart(box, {
+      series, yfmt: (v) => `${f0(v)}%`, xdomain: [y0, y1], ydomain: [0, 100], ref: 50, faixas,
+      endLabels: box.clientWidth > 560, height: 320, legenda: true,
+    });
+  }
+
   function drawCoortes() {
     fillSelect($('#c-ind'), indOptions(), st.ind);
     fillSelect($('#cs-tema'), TEMAS.map((t) => ({ label: t.nome, value: t.id })), st.cstema);
@@ -821,6 +870,8 @@
 
     const linhaCoorte = (c) => (D.coo.get(st.ind)?.get(c.id) || []).find((x) => +x.ano === ano);
     regua($('#c-regua'), COORTES.map((c) => { const r = linhaCoorte(c); return { nome: c.nome, pct: r?.pct_supera ?? null, sup: r?.n_supera, n: r?.n_comp }; }), contexto);
+
+    drawPosicaoTempo(meta, contexto);
 
     const valor = (p) => (D.ser.get(st.ind)?.get(p) || []).find((r) => +r.ano === ano)?.valor ?? null;
     const brv = valor('bra');
@@ -912,6 +963,8 @@
   on('#p-b', (v) => { st.pb = v; });
   on('#c-ano', (v) => { st.cano = +v; st.canoInd = st.ind; });
   on('#cs-tema', (v) => { st.cstema = v; });
+  on('#ct-y0', (v) => { st.cy0 = +v; });
+  on('#ct-y1', (v) => { st.cy1 = +v; });
 
   function render() {
     if (!D) return;

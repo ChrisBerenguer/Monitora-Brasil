@@ -67,6 +67,7 @@ Todos os outros números exibidos vêm diretamente dos JSON. Nenhum número est�
 ### Coortes (`#coortes`)
 - Indicador e ano (o padrão é o ano mais recente com dado para pelo menos 60% dos países). O rótulo "Indicador" e o título têm o botão "i", e uma linha abaixo do título diz o sentido do indicador ("maior é melhor", "menor é melhor"...).
 - **Posição do Brasil em cada grupo:** uma régua por coorte com a parcela de países que o Brasil supera e a frase "Supera X de N países (P%)". A barra fica verde a partir de 60%, vermelha abaixo de 40% e neutra no meio. Nos indicadores de contexto, a frase vira "Acima de X de N" e a barra fica neutra. Dados: `pct_supera`, `n_supera`, `n_comp` de `coortes.json`.
+- **Posição do Brasil ao longo do tempo:** uma linha por coorte com a parcela de países que o Brasil supera, ano a ano, entre os anos **De** e **Até** (padrão: 2000 a 2025). Eixo fixo de 0% a 100%, linha tracejada em 50% e faixas alternadas com os mandatos presidenciais. Em telas largas, cada linha tem o nome e o último valor no fim; nas estreitas, uma legenda embaixo. Dados: `pct_supera` de `coortes.json`, para todos os anos.
 - **Os países de cada grupo:** gráfico de pontos com América Latina, BRICS e OCDE, um país por ponto, todos na mesma escala, com nome em cima e o Brasil em verde repetido em cada linha. Quando os nomes se encostam, sobem para uma camada de cima, ligados ao ponto por um traço. Valores de `series.json`.
 - **Histogramas** do Mundo e da renda média-alta: quantos países caem em cada faixa de valor, com a faixa do Brasil em verde. Dados de `histogramas.json`.
 - **Escore por grupo** (tema escolhido, último ano): a mesma régua e o mesmo gráfico de pontos, com os escores.
@@ -84,7 +85,7 @@ Todo lugar em que aparece o nome de um indicador tem um "i" à direita:
 | Visão geral → "O que puxa o escore" | Cada indicador da lista de barras |
 | Séries temporais → rótulo "Indicador" e título do gráfico | O indicador selecionado |
 | Coortes → rótulo "Indicador" e título do gráfico | O indicador selecionado |
-| Coortes → título de cada cartão (posição do Brasil, países de cada grupo, os dois histogramas, escore por grupo e estatísticas) | O que o gráfico mostra, como ler, por que importa e um cuidado de interpretação |
+| Coortes → título de cada cartão (posição do Brasil, posição ao longo do tempo, países de cada grupo, os dois histogramas, escore por grupo e estatísticas) | O que o gráfico mostra, como ler, por que importa e um cuidado de interpretação |
 | Metodologia → tabela de indicadores | Cada indicador da tabela |
 
 A explicação aparece **ao passar o mouse** e some ao tirar o mouse. Ela tem quatro partes em linguagem simples (o que é, como ler, por que importa e atenção) e o último dado do Brasil, com o valor do primeiro ano da série para comparação. Os textos dos indicadores vêm de `scripts/explicacoes.py` (campo `explicacao` de `indicadores.json`). Os textos dos cartões da aba Coortes ficam em `CARD_INFO`, no `app.js`, e são ligados aos botões com o atributo `data-info-card` do `index.html`.
@@ -107,7 +108,7 @@ Outras formas de abrir:
 | tooltip | Um único elemento `#tip`, de posição fixa, que nunca sai da tela |
 | CSV | `baixarCSV()`: separador `;` e vírgula decimal, com BOM UTF-8 para abrir certo no Excel |
 | carga e índices | `carregar()` e os três cálculos derivados |
-| componentes de gráfico | `lineChart`, `spark`, `boxPlot`, `regua`, `pontosPorGrupo`, `histograma` |
+| componentes de gráfico | `lineChart` (com opções de eixo fixo, linha de referência, faixas de mandato e legenda), `spark`, `boxPlot`, `regua`, `pontosPorGrupo`, `histograma` |
 | abas | `drawResumo`, `drawCartoes`, `drawEvolucao`, `drawDecomp`, `drawRanking`, `drawSeries`, `drawPeriodos`, `drawCoortes`, `drawMetodo` |
 | navegação | `show(page)` com o hash da URL, `render()` e o `ResizeObserver`, que redesenha ao mudar a largura |
 
