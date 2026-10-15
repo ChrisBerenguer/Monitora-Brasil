@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.8.1 — 15/10/2026
+
+### Alterado
+- Coortes: ficou explícito que o Brasil é a referência de cada barra e de cada linha, e não uma linha à parte. As linhas de "Posição do Brasil ao longo do tempo" agora se chamam "vs. Am. Latina", "vs. BRICS" etc., o texto do cartão e o "i" explicam a leitura, e a caixa ao passar o mouse mostra o valor do Brasil no ano (ex.: "2003 · Brasil: 14,71% a.a.").
+- A linha abaixo do título do indicador mostra o valor do Brasil no ano escolhido.
+
 ## 1.8 — 15/10/2026
 
 ### Adicionado

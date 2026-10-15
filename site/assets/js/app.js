@@ -190,7 +190,7 @@
   function vazio(box, msg = 'Sem dados para essa seleção.') { box.replaceChildren(el('p', { class: 'vazio' }, msg)); }
 
   /** Linhas com faixa opcional, rótulos finais e régua com tooltip. */
-  function lineChart(box, { series, band, yfmt, xdomain, height = 340, endLabels = true, destaque = null, ydomain = null, faixas = null, ref = null, legenda = false }) {
+  function lineChart(box, { series, band, yfmt, xdomain, height = 340, endLabels = true, destaque = null, ydomain = null, faixas = null, ref = null, legenda = false, tituloTip = null }) {
     box.replaceChildren();
     box.classList.remove('carregando');
     const W = largura(box), H = height;
@@ -264,7 +264,7 @@
         const L = hits.sort((a, b) => b.p.y - a.p.y).map((d) => ({ color: d.s.color, name: d.s.name, value: yfmt(d.p.y) }));
         const bp = band?.pts.find((p) => p.x === xv);
         if (bp && bp.lo != null) L.push({ name: 'Faixa da coorte', value: `${yfmt(bp.lo)} a ${yfmt(bp.hi)}` });
-        tip.show(ev, String(xv), L.length ? L : [{ name: 'Sem dado neste ano', value: '' }]);
+        tip.show(ev, tituloTip ? tituloTip(xv) : String(xv), L.length ? L : [{ name: 'Sem dado neste ano', value: '' }]);
       })
       .on('pointerleave', () => { tip.hide(); rule.attr('visibility', 'hidden'); dots.selectAll('*').remove(); });
     if (legenda && !endLabels) { // sem rótulos no fim das linhas (tela estreita): legenda embaixo
@@ -501,7 +501,7 @@
   const CARD_INFO = {
     tempo: { titulo: 'Posição do Brasil ao longo do tempo', blocos: [
       ['O que mostra', 'Para cada grupo de países, a porcentagem que o Brasil supera neste indicador em cada ano, do ano "De" ao ano "Até". É a mesma conta da régua acima, repetida ano a ano.'],
-      ['Como ler', 'Linha subindo: o Brasil está ganhando posições dentro daquele grupo. Linha descendo: está perdendo. A linha tracejada é 50%: acima dela, o Brasil está à frente da maioria do grupo. As faixas cinzas e brancas marcam os mandatos presidenciais. Passe o mouse para ver os valores de um ano.'],
+      ['Como ler', 'O Brasil não aparece como uma linha própria: cada linha já é o Brasil, comparado com um grupo. "vs. Am. Latina 20%" quer dizer que o Brasil estava à frente de 20% dos países da América Latina naquele ano. Passe o mouse para ver também o valor do Brasil no ano. Linha subindo: o Brasil está ganhando posições dentro daquele grupo. Linha descendo: está perdendo. A linha tracejada é 50%: acima dela, o Brasil está à frente da maioria do grupo. As faixas cinzas e brancas marcam os mandatos presidenciais. Passe o mouse para ver os valores de um ano.'],
       ['Por que importa', 'Responde se o Brasil melhorou ou piorou em comparação com os outros, que é diferente de ver só se o número do Brasil subiu. Comparar as linhas também ajuda: o Brasil pode ganhar terreno no mundo e perder na América Latina ao mesmo tempo.'],
       ['Atenção', 'A posição é relativa: o Brasil pode melhorar no indicador e mesmo assim cair, se os outros melhoraram mais. Grupos pequenos oscilam muito: nos BRICS, um país a mais ou a menos muda a linha em 25 pontos. O número de países com dado também muda de ano para ano, e o último ano costuma estar incompleto. A coincidência com um mandato não prova que o governo causou a mudança.'],
     ] },
@@ -846,14 +846,16 @@
     $('#ct-titulo').textContent = `Posição do Brasil ao longo do tempo: ${meta.nome}`;
     const series = COORTES.map((c, i) => {
       const por = new Map((D.coo.get(st.ind)?.get(c.id) || []).map((r) => [+r.ano, r.pct_supera]));
-      return { name: c.curto, color: cor([1, 2, 3, 6, 5][i]), width: c.id === 'mundo' ? 2.6 : 2, pts: anos.map((a) => ({ x: a, y: por.get(a) ?? null })) };
+      return { name: `vs. ${c.curto}`, color: cor([1, 2, 3, 6, 5][i]), width: c.id === 'mundo' ? 2.6 : 2, pts: anos.map((a) => ({ x: a, y: por.get(a) ?? null })) };
     });
+    const brPorAno = new Map((D.ser.get(st.ind)?.get('bra') || []).map((r) => [+r.ano, r.valor]));
     const faixas = PERIODOS.map((p) => ({ de: +p.slice(0, 4), ate: +p.slice(0, 4) + 3, rotulo: MANDATO[p].replace(' (até 2025)', '') }));
     const box = $('#ct-chart');
     if (y0 === y1) return vazio(box, 'Escolha anos diferentes em "De" e "Até" para ver a evolução.');
     lineChart(box, {
       series, yfmt: (v) => `${f0(v)}%`, xdomain: [y0, y1], ydomain: [0, 100], ref: 50, faixas,
       endLabels: box.clientWidth > 560, height: 320, legenda: true,
+      tituloTip: (a) => { const v = brPorAno.get(a); return `${a} · Brasil: ${v == null ? 'sem dado' : textoUnidade(v, meta.unidade)}`; },
     });
   }
 
@@ -867,6 +869,8 @@
     $('#c-sentido').textContent = contexto
       ? 'Este indicador é só de contexto: não há valor "melhor". A régua mostra de quantos países o Brasil está acima.'
       : `Neste indicador, ${meta.direcao}.`;
+    { const v = (D.ser.get(st.ind)?.get('bra') || []).find((r) => +r.ano === ano)?.valor;
+      $('#c-sentido').textContent += v == null ? ` O Brasil não tem dado em ${ano}.` : ` Brasil em ${ano}: ${textoUnidade(v, meta.unidade).replace(/\.$/, '')}.`; }
 
     const linhaCoorte = (c) => (D.coo.get(st.ind)?.get(c.id) || []).find((x) => +x.ano === ano);
     regua($('#c-regua'), COORTES.map((c) => { const r = linhaCoorte(c); return { nome: c.nome, pct: r?.pct_supera ?? null, sup: r?.n_supera, n: r?.n_comp }; }), contexto);
