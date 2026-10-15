@@ -42,4 +42,4 @@ Toda mudança de regra deve ser registrada em `docs/03-metodologia.md` no mesmo 
 ## 4. Versionamento
 
 - Mensagens de commit em português, no imperativo, descrevendo o que mudou nos dados ou no método (ex.: "Atualiza dados até 2026; inclui ICE no tema produtivo").
-- Os dados derivados (`dados/`) são versionados para que o dashboard possa ser reconstruído sem rodar o pipeline. Os brutos (`brutos/`) não são.
+- Os dados derivados (`dados/`) são versionados para que o site possa ser reconstruído sem rodar o pipeline. Os brutos (`brutos/`) não são.

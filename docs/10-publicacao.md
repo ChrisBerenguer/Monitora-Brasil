@@ -7,7 +7,7 @@ O site é a pasta `site/`. Qualquer hospedagem de arquivos estáticos serve. Aba
 O workflow `.github/workflows/pages.yml` publica a pasta `site/` a cada push na `main` que altere o site.
 
 1. No GitHub: **Settings → Pages → Build and deployment → Source: GitHub Actions**.
-2. Faça um push (ou rode o workflow em **Actions → Publicar site → Run workflow**). O site sai em `https://chrisberenguer.github.io/monitora-brasil/`.
+2. Faça um push (ou rode o workflow em **Actions → Publicar site → Run workflow**). O site sai em `https://chrisberenguer.github.io/Monitora-Brasil/` (o caminho segue o nome do repositório, com maiúsculas).
 3. **Domínio próprio:** em **Settings → Pages → Custom domain**, digite o domínio (ex.: `monitorabrasil.com.br`) e salve. Depois marque **Enforce HTTPS** quando o certificado ficar pronto.
 4. **DNS no registrador:**
    - Para um subdomínio (ex.: `painel.seudominio.com.br`): um registro **CNAME** `painel` → `chrisberenguer.github.io`.
@@ -42,7 +42,7 @@ Os dois leem o arquivo `site/_headers` (cache e segurança).
 server {
     listen 443 ssl http2;
     server_name monitorabrasil.com.br;
-    root /var/www/monitora-brasil/site;
+    root /var/www/Monitora-Brasil/site;
     index index.html;
 
     gzip on;

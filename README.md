@@ -4,7 +4,9 @@ Painel que acompanha o desenvolvimento do Brasil em comparação com outros paí
 
 - **Site:** pasta `site/`, um site estático pronto para hospedar em domínio próprio (ver [docs/10](docs/10-publicacao.md))
 - **Base conceitual:** Dossiê de Indicadores de Desenvolvimento (21 categorias, 5 macrotemas): https://claude.ai/artifact/1nwmHfoeYXmQ5RZhytXXVM
+- **Repositório:** https://github.com/ChrisBerenguer/Monitora-Brasil
 - **Projeto da:** WizzyBots, Agência de Automação e IA para PMEs (produto interno)
+- **Histórico de versões:** [CHANGELOG.md](CHANGELOG.md)
 
 ## O que o painel responde
 
@@ -28,7 +30,7 @@ Em 2025 o Brasil fica na 100ª posição entre 176 países no escore geral. Em 2
 ## Estrutura do repositório
 
 ```
-monitora-brasil/
+Monitora-Brasil/
 ├── README.md                  este arquivo
 ├── docs/                      documentação detalhada (leia em ordem)
 │   ├── 01-visao-geral.md
@@ -56,6 +58,8 @@ monitora-brasil/
 Precisa de Python 3.9 ou mais recente, sem bibliotecas externas.
 
 ```bash
+git clone https://github.com/ChrisBerenguer/Monitora-Brasil.git
+cd Monitora-Brasil
 python scripts/baixar_brutos.py     # 42 arquivos CSV, cerca de 13 MB
 python scripts/build_dados.py       # gera dados/*.json
 python scripts/gerar_dicionario.py  # atualiza docs/04

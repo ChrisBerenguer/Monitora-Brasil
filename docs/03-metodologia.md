@@ -156,7 +156,7 @@ Todos os países com escore geral no ano são ordenados do maior para o menor. A
 
 - Séries e estatísticas: 2 casas decimais (inteiro quando |x| ≥ 1000). Tendências: 3 casas.
 - Escores e percentis: 1 casa decimal.
-- O dashboard formata no padrão brasileiro (vírgula decimal).
+- O site formata no padrão brasileiro (vírgula decimal).
 
 ## Robustez: o que muda o resultado
 

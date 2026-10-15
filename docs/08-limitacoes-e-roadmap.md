@@ -36,8 +36,8 @@
 - [ ] Trocar o espelho pela API oficial do Banco Mundial (`wbgapi`) quando houver acesso.
 - [ ] Incluir o Índice de Complexidade Econômica (Atlas of Economic Complexity, Harvard Growth Lab).
 - [ ] Incluir o V-Dem (índice de democracia liberal) atualizado.
-- [ ] Atualização automática mensal (tarefa agendada que roda os scripts e reenvia os dados ao dashboard).
-- [ ] Botão no dashboard para escolher o ano de referência do escore (hoje é o último).
+- [ ] Atualização automática mensal (tarefa agendada ou GitHub Action que roda os scripts e faz commit de `dados/` e `site/data/`).
+- [ ] Controle no site para escolher o ano de referência do escore (hoje é o último).
 
 ### Médio prazo
 - [ ] Fontes brasileiras de alta frequência: IBGE/SIDRA (PNAD Contínua, IPCA, PIB trimestral), Banco Central/SGS (Selic, DBGG, câmbio, reservas) e Tesouro. Séries mensais e trimestrais em uma aba "Conjuntura".
