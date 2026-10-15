@@ -122,22 +122,28 @@ select { font: inherit; font-size: var(--t-md); color: var(--fg); background: va
 .texto { max-width: 82ch; line-height: 1.6; }
 .texto ol, .texto ul { margin: 0; padding-left: 1.25em; display: grid; gap: 6px; }
 
-/* botão "i" e painel explicativo */
-.titulo-info { display: flex; align-items: center; gap: 10px; }
-.info-btn { flex: none; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--accent); background: var(--panel); color: var(--accent);
-  font-family: var(--f-display); font-style: italic; font-weight: 600; font-size: 15px; line-height: 1; display: grid; place-items: center; cursor: pointer; padding: 0; }
-.info-btn:hover, .info-btn[aria-expanded="true"] { background: var(--accent); color: var(--panel); }
-.explica { background: var(--panel-2); border: 1px solid var(--line); border-radius: var(--r); padding: 16px 18px; display: grid; gap: 12px; }
-.explica-topo { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-.explica-topo h3 { margin: 0; font-family: var(--f-display); font-size: var(--t-lg); font-weight: 600; }
-.explica-fechar { font: inherit; font-size: var(--t-sm); background: none; border: 0; color: var(--muted); cursor: pointer; padding: 2px 4px; text-decoration: underline; text-underline-offset: 2px; }
-.explica-grade { display: grid; gap: 12px 20px; grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr)); }
-.explica-item { display: grid; gap: 4px; align-content: start; }
-.explica-item h4 { margin: 0; font-family: var(--f-mono); font-size: var(--t-xs); font-weight: 500; text-transform: uppercase; letter-spacing: .08em; color: var(--accent); }
-.explica-item p { line-height: 1.55; }
-.explica-item.atencao h4 { color: var(--accent-2); }
-.explica-dado { font-size: var(--t-sm); color: var(--muted); border-top: 1px dashed var(--line); padding-top: 10px; }
-.explica-dado b { color: var(--fg); font-variant-numeric: tabular-nums; }
+/* botão "i" e explicação ao passar o mouse */
+.titulo-info { display: flex; align-items: center; gap: 8px; }
+.ctl-rotulo { display: inline-flex; align-items: center; gap: 6px; }
+.info-btn { flex: none; width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid var(--accent); background: var(--panel); color: var(--accent);
+  font-family: var(--f-display); font-style: italic; font-weight: 600; font-size: 13px; line-height: 1; display: inline-grid; place-items: center; cursor: help; padding: 0; vertical-align: middle; }
+.info-btn:hover, .info-btn:focus-visible, .info-btn[aria-expanded="true"] { background: var(--accent); color: var(--panel); }
+.nome-info { display: inline-flex; align-items: center; gap: 6px; }
+svg .info-svg { cursor: help; }
+svg .info-svg circle { fill: var(--panel); stroke: var(--accent); stroke-width: 1.4; }
+svg .info-svg text { fill: var(--accent); font-family: var(--f-display); font-style: italic; font-weight: 600; font-size: 11px; }
+svg .info-svg:hover circle, svg .info-svg:focus circle { fill: var(--accent); }
+svg .info-svg:hover text, svg .info-svg:focus text { fill: var(--panel); }
+svg .info-svg:focus { outline: none; }
+svg .info-svg:focus-visible circle { stroke-width: 2.5; }
+.info-tip { position: fixed; z-index: 40; width: min(380px, calc(100vw - 24px)); background: var(--popover); border: 1px solid var(--line); border-radius: 10px;
+  box-shadow: var(--shadow); padding: 14px 16px; font-size: var(--t-sm); line-height: 1.5; display: grid; gap: 8px; }
+.info-tip h4 { margin: 0; font-family: var(--f-display); font-size: var(--t-md); font-weight: 600; }
+.info-tip .bloco { display: grid; gap: 2px; }
+.info-tip .bloco b { font-family: var(--f-mono); font-size: var(--t-xs); font-weight: 500; text-transform: uppercase; letter-spacing: .07em; color: var(--accent); }
+.info-tip .bloco.atencao b { color: var(--accent-2); }
+.info-tip .dado { color: var(--muted); font-size: var(--t-xs); border-top: 1px dashed var(--line); padding-top: 8px; }
+.info-tip .dado strong { color: var(--fg); font-weight: 600; }
 
 /* gráficos */
 .grafico { position: relative; min-height: 140px; }

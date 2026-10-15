@@ -3,8 +3,11 @@
 ## 1.2 — 15/10/2026
 
 ### Adicionado
-- **Botão "i" nos gráficos de indicador** (abas Séries temporais e Coortes): abre uma explicação em linguagem simples, com o que o indicador mede, como ler, por que importa e um cuidado de interpretação, além do último dado do Brasil.
+- **Explicação para leigos em cada indicador.** Um "i" à direita do nome de cada indicador mostra, ao passar o mouse, o que o indicador mede, como ler, por que importa, um cuidado de interpretação e o último dado do Brasil. Fica na lista "O que puxa o escore" (Visão geral), no rótulo "Indicador" e no título dos gráficos (Séries temporais e Coortes) e na tabela da Metodologia. No celular, abre com um toque. Pelo teclado, com Tab.
 - `scripts/explicacoes.py` com os textos dos 40 indicadores. Eles entram em `indicadores.json` (campo `explicacao`) e no dicionário (docs/04, seção "Em linguagem simples").
+
+### Corrigido
+- No celular, o gráfico "Escore ao longo do tempo" cortava o rótulo da mediana da coorte. Os rótulos no fim das linhas agora só aparecem em telas largas. Nas estreitas, os valores aparecem ao tocar no gráfico.
 
 ## 1.1.1 — 15/10/2026
 

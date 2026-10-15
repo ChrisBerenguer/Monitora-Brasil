@@ -61,16 +61,34 @@ Todos os outros números exibidos vêm diretamente dos JSON. Nenhum número est�
 ### Séries temporais (`#series`)
 - Indicador, faixa da coorte, ano inicial e final, e botões de países (vários ao mesmo tempo).
 - Gráfico de linhas com rótulo no fim de cada série e tooltip por ano. Botão **Baixar CSV** com as séries exibidas.
-- **Botão "i"** ao lado do título: abre um painel que explica o indicador em linguagem simples (o que é, como ler, por que importa e um cuidado de interpretação), com o último dado do Brasil. O painel acompanha a troca de indicador e fecha com o botão Fechar ou a tecla Esc.
+- **Botão "i"** à direita do rótulo "Indicador" e do título do gráfico (ver "Explicações para leigos" abaixo).
 - **Comparar dois mandatos:** tabela com médias, variação absoluta e percentual (colorida pelo sentido do indicador), mediana e desvio do mandato B e tendências anuais.
 
 ### Coortes (`#coortes`)
 - Indicador e ano (o padrão é o ano mais recente com dado para pelo menos 60% dos países).
-- Box plots por coorte para o indicador e para o escore do tema escolhido, com o Brasil marcado. O título do gráfico do indicador também tem o botão "i".
+- Box plots por coorte para o indicador e para o escore do tema escolhido, com o Brasil marcado. O rótulo "Indicador" e o título do gráfico também têm o botão "i".
 - Tabela de tendência central e dispersão: n, média, mediana, desvio, quartis, mínimo, máximo, valor do Brasil e Z do Brasil.
 
 ### Metodologia (`#metodo`)
 Resumo do cálculo, composição das coortes, limitações e a tabela dos 40 indicadores.
+
+### Explicações para leigos (botão "i")
+
+Todo lugar em que aparece o nome de um indicador tem um "i" à direita:
+
+| Onde | O "i" explica |
+|---|---|
+| Visão geral → "O que puxa o escore" | Cada indicador da lista de barras |
+| Séries temporais → rótulo "Indicador" e título do gráfico | O indicador selecionado |
+| Coortes → rótulo "Indicador" e título do gráfico | O indicador selecionado |
+| Metodologia → tabela de indicadores | Cada indicador da tabela |
+
+A explicação aparece **ao passar o mouse** e some ao tirar o mouse. Ela tem quatro partes em linguagem simples (o que é, como ler, por que importa e atenção) e o último dado do Brasil, com o valor do primeiro ano da série para comparação. Os textos vêm de `scripts/explicacoes.py` (campo `explicacao` de `indicadores.json`).
+
+Outras formas de abrir:
+- **Clique:** fixa a explicação aberta. Clicar de novo no "i", clicar fora ou apertar Esc fecha.
+- **Celular:** um toque abre e outro toque (no "i", na explicação ou fora) fecha.
+- **Teclado:** o "i" recebe foco com Tab e a explicação aparece. Esc fecha.
 
 **Links diretos:** acrescente `#series`, `#coortes` ou `#metodo` ao endereço.
 

@@ -47,7 +47,6 @@
     page: 'visao', coorte: 'latam', base: 2015, tema: 'geral', ind: 'ny_gdp_pcap_pp_kd', banda: 'latam',
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
     cano: null, canoInd: null, cstema: 'geral', sort: { key: 'geral', dir: -1 },
-    info: { 's-info': false, 'c-info': false }, // painéis explicativos abertos
   };
   let D = null; // dados carregados e indexados
 
@@ -367,7 +366,7 @@
         { name: 'Mediana ' + CNOME[st.coorte].split(' (')[0], color: css('--chart-muted'), pts: cr.map((r) => ({ x: +r.ano, y: +r.mediana })), dash: '5 4' },
       ],
       band: { color: css('--chart-muted'), pts: cr.map((r) => ({ x: +r.ano, lo: +r.p25, hi: +r.p75 })) },
-      yfmt: (v) => f1(v), xdomain: [2000, D.escLast],
+      yfmt: (v) => f1(v), xdomain: [2000, D.escLast], endLabels: $('#ev-chart').clientWidth > 520,
     });
   }
 
@@ -386,7 +385,7 @@
     const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img');
     const probe = svg.append('text'); let ml = 0;
     for (const d of rows) { probe.text(d.r.nome); ml = Math.max(ml, probe.node().getComputedTextLength()); }
-    probe.remove(); ml = Math.min(ml + 10, W * 0.5);
+    probe.remove(); ml = Math.min(ml + 30, W * 0.55);
     const x = d3.scaleLinear([0, 100], [ml, W - 34]);
     const marks = [0, 25, 50, 75, 100];
     svg.append('g').selectAll('line').data(marks).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 20)
@@ -395,11 +394,16 @@
     rows.forEach((d, i) => {
       const cy = i * rowH + rowH / 2, v = +d.cur.percentil;
       const c = v >= 60 ? css('--ok') : v < 40 ? css('--critical') : css('--chart-muted');
-      svg.append('text').attr('x', ml - 8).attr('y', cy).attr('dy', '0.32em').attr('text-anchor', 'end').text(d.r.nome);
+      svg.append('text').attr('x', ml - 28).attr('y', cy).attr('dy', '0.32em').attr('text-anchor', 'end').text(d.r.nome);
+      const gi = svg.append('g').attr('class', 'info-svg').attr('transform', `translate(${ml - 16},${cy})`)
+        .attr('tabindex', 0).attr('role', 'button').attr('aria-label', `O que é ${d.r.nome}? Explicação em linguagem simples`);
+      gi.append('circle').attr('r', 7.5);
+      gi.append('text').attr('text-anchor', 'middle').attr('dy', '0.35em').text('i');
+      ligarInfo(gi.node(), () => d.r.id);
       svg.append('rect').attr('x', x(0)).attr('y', cy - 7).attr('width', Math.max(2, x(v) - x(0))).attr('height', 14).attr('rx', 4).style('fill', c).style('fill-opacity', 0.85);
       if (d.base) svg.append('line').attr('x1', x(+d.base.percentil)).attr('x2', x(+d.base.percentil)).attr('y1', cy - 9).attr('y2', cy + 9).style('stroke', css('--fg')).attr('stroke-width', 2);
       svg.append('text').attr('x', x(v) + 5).attr('y', cy).attr('dy', '0.32em').text(f0(v));
-      svg.append('rect').attr('x', 0).attr('y', cy - rowH / 2).attr('width', W).attr('height', rowH).style('fill', 'transparent')
+      svg.append('rect').attr('x', ml).attr('y', cy - rowH / 2).attr('width', W - ml).attr('height', rowH).style('fill', 'transparent')
         .on('pointermove', (ev) => tip.show(ev, d.r.nome, [
           { name: `Percentil ${d.cur.ano}`, value: f1(v) },
           ...(d.base ? [{ name: `Percentil ${st.base}`, value: f1(+d.base.percentil) }] : []),
@@ -440,54 +444,92 @@
     { titulo: 'pais', valor: (r) => PAIS[r.pais] }, ...COLS_RANK.map((t) => ({ titulo: t, valor: (r) => r[t] })),
   ]));
 
-  // ---------------------------------------------------------------- explicação para leigos (botão "i")
-  /** Preenche o painel explicativo do indicador atual e sincroniza o botão. */
-  function drawExplica(id) {
-    const painel = $('#' + id), btn = $('#' + id + '-btn');
-    const aberto = st.info[id];
-    painel.hidden = !aberto;
-    btn.setAttribute('aria-expanded', String(aberto));
-    if (!aberto || !D) return;
-    const meta = D.ind.get(st.ind), ex = meta.explicacao || {};
-    if (painel.dataset.ind === st.ind) return; // já preenchido
-    painel.dataset.ind = st.ind;
-    const topo = el('div', { class: 'explica-topo' });
-    topo.append(el('h3', {}, `Entenda: ${meta.nome}`));
-    const fechar = el('button', { class: 'explica-fechar', type: 'button' }, 'Fechar');
-    fechar.addEventListener('click', () => { st.info[id] = false; drawExplica(id); btn.focus(); });
-    topo.append(fechar);
-    const grade = el('div', { class: 'explica-grade' });
-    const item = (titulo, texto, cls = '') => {
+  // ---------------------------------------------------------------- explicação para leigos (botão "i", ao passar o mouse)
+  const infoEl = $('#info-tip');
+  let infoAncora = null, infoFixo = false, ultimoToque = 0;
+
+  function textoUnidade(v, u) {
+    if (/–| a /.test(u) && !u.startsWith('%')) return `${fmtv(v)} (escala ${u})`;
+    return u.startsWith('%') ? `${fmtv(v)}${u}` : `${fmtv(v)} ${u}`;
+  }
+  function preencherInfo(id) {
+    const meta = D.ind.get(id), ex = meta.explicacao || {};
+    const partes = [el('h4', {}, meta.nome)];
+    const bloco = (titulo, texto, cls = '') => {
       if (!texto) return;
-      const d = el('div', { class: 'explica-item ' + cls });
-      d.append(el('h4', {}, titulo), el('p', {}, texto));
-      grade.append(d);
+      const d = el('div', { class: 'bloco ' + cls });
+      d.append(el('b', {}, titulo), el('span', {}, texto));
+      partes.push(d);
     };
-    item('O que é', ex.o_que_e);
-    item('Como ler', ex.como_ler);
-    item('Por que importa', ex.por_que_importa);
-    item('Atenção', ex.atencao, 'atencao');
-    // último dado observado do Brasil, direto da série
-    const br = (D.ser.get(st.ind)?.get('bra') || []).slice().sort((a, b) => a.ano - b.ano);
+    bloco('O que é', ex.o_que_e);
+    bloco('Como ler', ex.como_ler);
+    bloco('Por que importa', ex.por_que_importa);
+    bloco('Atenção', ex.atencao, 'atencao');
+    const br = (D.ser.get(id)?.get('bra') || []).slice().sort((a, b) => a.ano - b.ano);
     const ult = br.at(-1), pri = br[0];
-    const dado = el('p', { class: 'explica-dado' });
     if (ult) {
-      const u = meta.unidade, escala = /–| a /.test(u) && !/^%/.test(u);
-      const comUnidade = escala ? `${fmtv(ult.valor)} (escala ${u})` : u.startsWith('%') ? `${fmtv(ult.valor)}${u}` : `${fmtv(ult.valor)} ${u}`;
-      dado.append('Último dado do Brasil: ', el('b', {}, comUnidade), ` em ${ult.ano}`);
-      if (pri && pri.ano !== ult.ano) dado.append(' (era ', el('b', {}, fmtv(pri.valor)), ` em ${pri.ano}). `);
-      else dado.append('. ');
+      const p = el('p', { class: 'dado' });
+      p.append('Brasil: ', el('strong', {}, textoUnidade(ult.valor, meta.unidade)), ` em ${ult.ano}`);
+      if (pri && pri.ano !== ult.ano) p.append(' (era ', el('strong', {}, fmtv(pri.valor)), ` em ${pri.ano})`);
+      p.append('.');
+      partes.push(p);
     }
-    dado.append(`Sentido no escore: ${meta.direcao}. Fonte: ${meta.fonte}.`);
-    painel.replaceChildren(topo, grade, dado);
+    infoEl.replaceChildren(...partes);
   }
-  for (const id of ['s-info', 'c-info']) {
-    $('#' + id + '-btn').addEventListener('click', () => { st.info[id] = !st.info[id]; drawExplica(id); });
+  function posicionarInfo(ancora) {
+    const r = ancora.getBoundingClientRect(), w = infoEl.offsetWidth, h = infoEl.offsetHeight, m = 8;
+    let x = r.right + 10, y = r.top - 8;                 // à direita do "i"
+    if (x + w > innerWidth - m) x = r.left - w - 10;     // sem espaço: à esquerda
+    if (x < m) { x = Math.max(m, Math.min(innerWidth - w - m, r.left + r.width / 2 - w / 2)); y = r.bottom + 8; } // celular: embaixo
+    if (y + h > innerHeight - m) y = Math.max(m, innerHeight - h - m);
+    if (y < m) y = m;
+    infoEl.style.left = x + 'px';
+    infoEl.style.top = y + 'px';
   }
-  addEventListener('keydown', (e) => {
-    if (e.key !== 'Escape') return;
-    for (const id of Object.keys(st.info)) if (st.info[id]) { st.info[id] = false; drawExplica(id); $('#' + id + '-btn').focus(); }
+  function mostrarInfo(ancora, id) {
+    if (!D || !id) return;
+    tip.hide();
+    if (infoAncora && infoAncora !== ancora) infoAncora.setAttribute('aria-expanded', 'false');
+    infoAncora = ancora;
+    preencherInfo(id);
+    infoEl.hidden = false;
+    ancora.setAttribute('aria-expanded', 'true');
+    ancora.setAttribute('aria-describedby', 'info-tip');
+    posicionarInfo(ancora);
+  }
+  function esconderInfo() {
+    infoEl.hidden = true; infoFixo = false;
+    if (infoAncora) { infoAncora.setAttribute('aria-expanded', 'false'); infoAncora.removeAttribute('aria-describedby'); }
+    infoAncora = null;
+  }
+  /** Liga um elemento "i" à explicação do indicador devolvido por getId(). */
+  function ligarInfo(alvo, getId) {
+    alvo.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') mostrarInfo(alvo, getId()); });
+    alvo.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse' && !infoFixo) esconderInfo(); });
+    alvo.addEventListener('focus', () => mostrarInfo(alvo, getId()));
+    alvo.addEventListener('blur', () => { if (!infoFixo) esconderInfo(); });
+    const alternar = () => {
+      if (infoAncora === alvo && infoFixo) esconderInfo();
+      else { mostrarInfo(alvo, getId()); infoFixo = true; }
+    };
+    // Toque (celular): trata no pointerup e ignora o clique sintético que vem depois,
+    // que em alguns navegadores chega ao <body> e fecharia a explicação na hora.
+    alvo.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') { ultimoToque = performance.now(); alternar(); } });
+    alvo.addEventListener('click', (e) => {   // clique do mouse fixa ou solta a explicação
+      e.preventDefault(); e.stopPropagation();
+      if (performance.now() - ultimoToque < 700) return;
+      alternar();
+    });
+    alvo.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); alvo.dispatchEvent(new MouseEvent('click')); } });
+  }
+  document.querySelectorAll('[data-info-sel]').forEach((b) => ligarInfo(b, () => st.ind));
+  infoEl.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') { ultimoToque = performance.now(); esconderInfo(); } }); // tocar na explicação fecha
+  document.addEventListener('click', (e) => { if (performance.now() - ultimoToque < 700) return; if (!infoEl.hidden && !infoEl.contains(e.target)) esconderInfo(); });
+  document.addEventListener('pointerup', (e) => {   // toque fora fecha
+    if (e.pointerType !== 'mouse' && !infoEl.hidden && !infoEl.contains(e.target) && !(infoAncora && infoAncora.contains(e.target))) esconderInfo();
   });
+  addEventListener('keydown', (e) => { if (e.key === 'Escape' && !infoEl.hidden) { const a = infoAncora; esconderInfo(); a?.focus?.(); } });
+  addEventListener('scroll', () => { if (!infoEl.hidden) (infoFixo && infoAncora ? posicionarInfo(infoAncora) : esconderInfo()); }, { passive: true });
 
   // ---------------------------------------------------------------- séries
   function drawSeries() {
@@ -509,7 +551,6 @@
     const meta = D.ind.get(st.ind);
     $('#s-titulo').textContent = `${meta.nome} (${meta.unidade})`;
     $('#s-nota').textContent = `Sentido: ${meta.direcao}. Fonte: ${meta.fonte}. Último ano disponível: ${meta.ultimo_ano}.`;
-    drawExplica('s-info');
     const y0 = Math.min(st.y0, st.y1), y1 = Math.max(st.y0, st.y1), yrs = d3.range(y0, y1 + 1);
     const g = D.ser.get(st.ind);
     const series = [...st.paises].sort((a, b) => (a === 'bra') - (b === 'bra')).map((p) => {
@@ -577,7 +618,6 @@
     fillSelect($('#c-ano'), ANOS.map((a) => ({ label: a, value: a })), st.cano);
     const meta = D.ind.get(st.ind);
     $('#c-titulo').textContent = `${meta.nome} em ${st.cano} (${meta.unidade})`;
-    drawExplica('c-info');
     const rows = COORTES.map((c) => {
       const r = (D.coo.get(st.ind)?.get(c.id) || []).find((x) => +x.ano === st.cano);
       return r && { label: c.nome, curto: c.curto, n: r.n, min: r.min, p25: r.p25, median: r.median, p75: r.p75, max: r.max, mean: r.mean, br: r.brasil, raw: r, c };
@@ -611,7 +651,12 @@
     if (tb.children.length) return;
     for (const r of D.indicadores) {
       const tr = el('tr');
-      tr.append(el('td', { class: 'quebra' }, r.nome), el('td', {}, TNOME[r.tema]), el('td', {}, r.unidade), el('td', {}, r.direcao),
+      const nome = el('td', { class: 'quebra' });
+      const wrap = el('span', { class: 'nome-info' }, r.nome);
+      const bi = el('button', { class: 'info-btn', type: 'button', 'aria-label': `O que é ${r.nome}? Explicação em linguagem simples` }, 'i');
+      ligarInfo(bi, () => r.id);
+      wrap.append(bi); nome.append(wrap);
+      tr.append(nome, el('td', {}, TNOME[r.tema]), el('td', {}, r.unidade), el('td', {}, r.direcao),
         el('td', { class: 'some-p' }, r.fonte), el('td', {}, String(r.ultimo_ano)));
       tb.appendChild(tr);
     }

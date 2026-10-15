@@ -66,7 +66,7 @@
         </article>
         <article class="card">
           <h2 id="dc-titulo">O que puxa o escore</h2>
-          <p class="nota">Percentil do Brasil em cada indicador no último ano (0 = pior país do mundo, 100 = melhor). O traço vertical marca o ano-base.</p>
+          <p class="nota">Percentil do Brasil em cada indicador no último ano (0 = pior país do mundo, 100 = melhor). O traço vertical marca o ano-base. Passe o mouse ou toque no "i" para entender cada indicador.</p>
           <div class="grafico" id="dc-chart"></div>
         </article>
       </div>
@@ -98,7 +98,7 @@
     <!-- SÉRIES -->
     <section class="pagina" id="series" role="tabpanel" aria-labelledby="aba-series" hidden>
       <div class="controles">
-        <label class="ctl">Indicador <select id="s-ind"></select></label>
+        <div class="ctl"><span class="ctl-rotulo"><label for="s-ind">Indicador</label><button class="info-btn" type="button" data-info-sel="s-ind" aria-label="O que é este indicador? Explicação em linguagem simples">i</button></span><select id="s-ind"></select></div>
         <label class="ctl">Faixa da coorte <select id="s-banda"></select></label>
         <label class="ctl">De <select id="s-y0"></select></label>
         <label class="ctl">Até <select id="s-y1"></select></label>
@@ -107,12 +107,11 @@
       <article class="card">
         <div class="card-topo">
           <div>
-            <div class="titulo-info"><h2 id="s-titulo">—</h2><button class="info-btn" id="s-info-btn" type="button" aria-expanded="false" aria-controls="s-info" aria-label="O que é este indicador? Explicação em linguagem simples" title="O que é este indicador?">i</button></div>
+            <div class="titulo-info"><h2 id="s-titulo">—</h2><button class="info-btn" type="button" data-info-sel="s-ind" aria-label="O que é este indicador? Explicação em linguagem simples">i</button></div>
             <p class="nota" id="s-nota"></p>
           </div>
           <button class="botao" type="button" id="csv-serie">Baixar CSV</button>
         </div>
-        <section class="explica" id="s-info" hidden aria-label="Explicação do indicador"></section>
         <div class="grafico alto" id="s-chart"></div>
       </article>
       <article class="card">
@@ -140,13 +139,12 @@
     <!-- COORTES -->
     <section class="pagina" id="coortes" role="tabpanel" aria-labelledby="aba-coortes" hidden>
       <div class="controles">
-        <label class="ctl">Indicador <select id="c-ind"></select></label>
+        <div class="ctl"><span class="ctl-rotulo"><label for="c-ind">Indicador</label><button class="info-btn" type="button" data-info-sel="c-ind" aria-label="O que é este indicador? Explicação em linguagem simples">i</button></span><select id="c-ind"></select></div>
         <label class="ctl">Ano <select id="c-ano"></select></label>
       </div>
       <div class="grade2">
         <article class="card">
-          <div class="titulo-info"><h2 id="c-titulo">Distribuição por coorte</h2><button class="info-btn" id="c-info-btn" type="button" aria-expanded="false" aria-controls="c-info" aria-label="O que é este indicador? Explicação em linguagem simples" title="O que é este indicador?">i</button></div>
-          <section class="explica" id="c-info" hidden aria-label="Explicação do indicador"></section>
+          <div class="titulo-info"><h2 id="c-titulo">Distribuição por coorte</h2><button class="info-btn" type="button" data-info-sel="c-ind" aria-label="O que é este indicador? Explicação em linguagem simples">i</button></div>
           <p class="nota">Caixa: 1º ao 3º quartil. Traço: mediana. Losango: média. Hastes: mínimo e máximo. Ponto verde: Brasil.</p>
           <div class="grafico" id="c-box"></div>
         </article>
@@ -218,6 +216,7 @@
   </footer>
 
   <div class="tip" id="tip" hidden role="status"></div>
+  <div class="info-tip" id="info-tip" role="tooltip" hidden></div>
 
   <script src="assets/js/d3.v7.9.0.min.js"></script>
   <script src="assets/js/app.js"></script>
