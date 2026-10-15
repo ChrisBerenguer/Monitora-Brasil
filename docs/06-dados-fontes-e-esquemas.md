@@ -76,6 +76,9 @@ Todos são arrays JSON de objetos (uma linha por objeto), em UTF-8. O pipeline g
 | `mean`, `median`, `p25`, `p75`, `sd`, `min`, `max` | número | Estatísticas da coorte |
 | `brasil` | número ou nulo | Valor do Brasil no ano |
 | `z_brasil` | número ou nulo | Escore z do Brasil frente à coorte |
+| `n_comp` | inteiro ou nulo | Países da coorte com dado, sem contar o Brasil |
+| `n_supera` | número ou nulo | Quantos desses o Brasil supera, levando em conta o sentido do indicador (empates contam meio; nos indicadores de contexto, quantos estão abaixo do Brasil) |
+| `pct_supera` | número ou nulo | `n_supera / n_comp × 100`. Alimenta a régua "Posição do Brasil em cada grupo" da aba Coortes |
 
 ### `periodos.json` (≈6,7 mil linhas): estatísticas por mandato
 
@@ -103,6 +106,23 @@ Todos são arrays JSON de objetos (uma linha por objeto), em UTF-8. O pipeline g
 | `chave` | texto | `tema\|coorte\|ano` |
 | `coorte`, `tema`, `ano` | | Dimensões |
 | `n`, `media`, `mediana`, `p25`, `p75`, `desvio`, `min`, `max` | número | Estatísticas dos escores dos países da coorte |
+| `n_comp` | inteiro ou nulo | Países da coorte com dado, sem contar o Brasil |
+| `n_supera` | número ou nulo | Quantos desses o Brasil supera, no escore (empates contam meio) |
+| `pct_supera` | número ou nulo | `n_supera / n_comp × 100`. Alimenta a régua "Posição do Brasil em cada grupo" da aba Coortes |
+
+### `histogramas.json` (2.638 linhas): distribuição em faixas, para os histogramas
+
+Gerado para as coortes grandes (`mundo` e `umic`), para cada indicador e ano com dado do Brasil, e para os escores de cada tema.
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `chave` | texto | `ind\|coorte\|ano`, ou `escore:<tema>\|coorte\|ano` para os escores |
+| `ind`, `coorte`, `ano` | | Dimensões |
+| `bins` | lista | Faixas `{de, ate, n}`: limites da faixa e número de países nela |
+| `abre_esq`, `abre_dir` | lógico | Se a primeira (ou a última) faixa também inclui os valores extremos abaixo (ou acima) dela |
+| `bin_brasil` | inteiro ou nulo | Índice da faixa onde o Brasil cai |
+
+**Como as faixas são feitas.** Os indicadores usam 14 faixas de mesma largura entre o percentil 2 e o percentil 98 da coorte naquele ano; os poucos países fora desse intervalo entram na primeira ou na última faixa (por isso `abre_esq`/`abre_dir`). Isso impede que um único caso extremo, como uma hiperinflação, espremesse todos os outros países numa só barra. Os escores usam 10 faixas fixas de 0 a 100.
 
 ### `percentis_brasil.json` (≈970 linhas)
 

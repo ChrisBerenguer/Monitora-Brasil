@@ -16,6 +16,7 @@
     escores_coortes: 'escores_coortes.json',
     percentis_br: 'percentis_brasil.json',
     ranking_br: 'ranking_brasil.json',
+    histogramas: 'histogramas.json',
   };
 
   const TEMAS = [
@@ -141,6 +142,7 @@
     ix.escC = d3.group(raw.escores_coortes, (r) => r.coorte, (r) => r.tema);
     ix.pct = d3.group(raw.percentis_br, (r) => r.ind);
     ix.rank = new Map(raw.ranking_br.map((r) => [+r.ano, r]));
+    ix.hist = new Map(raw.histogramas.map((r) => [r.chave, r]));
     // cálculos derivados (mesmas fórmulas documentadas em docs/03)
     ix.vEsc = calcVariacaoMandatos(raw.escores, ix.escLast);
     ix.ranking = calcRankingUltimo(raw.escores, ix.escLast);
@@ -638,18 +640,143 @@
     const maxn = d3.max(rows, (r) => r.n) || 0;
     return d3.max(rows.filter((r) => r.n >= maxn * 0.6), (r) => +r.ano) || 2023;
   }
+  const PEQUENAS = COORTES.filter((c) => c.membros); // América Latina, BRICS, OCDE
+  const corPct = (p) => (p >= 60 ? css('--ok') : p < 40 ? css('--critical') : css('--chart-muted'));
+
+  /** Régua de posição: uma linha por grupo, com a parcela de países que o Brasil supera. */
+  function regua(box, linhas, contexto) {
+    box.replaceChildren();
+    if (!linhas.length) return vazio(box);
+    for (const l of linhas) {
+      const row = el('div', { class: 'regua-linha' });
+      row.append(el('span', { class: 'regua-nome' }, l.nome));
+      const trilho = el('div', { class: 'regua-trilho', role: 'img', 'aria-label': `${l.nome}: ${l.pct == null ? 'sem dado' : f0(l.pct) + '%'}` });
+      if (l.pct != null) {
+        const cheio = el('div', { class: 'regua-cheio' }); cheio.style.width = `${l.pct}%`; cheio.style.background = corPct(contexto ? 50 : l.pct); cheio.style.opacity = '.75';
+        const marca = el('div', { class: 'regua-marca' }); marca.style.left = `${l.pct}%`;
+        trilho.append(cheio, marca);
+      }
+      row.append(trilho);
+      const frase = el('span', { class: 'regua-frase' });
+      if (l.pct == null || !l.n) frase.textContent = 'Sem dado do Brasil neste ano';
+      else {
+        const verbo = contexto ? 'Acima de ' : 'Supera ';
+        frase.append(verbo, el('b', {}, `${f0(Math.round(l.sup))} de ${l.n}`), ` ${l.n === 1 ? 'país' : 'países'} (${f0(l.pct)}%)`);
+      }
+      row.append(frase);
+      box.append(row);
+    }
+  }
+
+  /** Pontos por país, um grupo por linha, na mesma escala; nomes acima dos pontos sem sobreposição. */
+  function pontosPorGrupo(box, grupos, fmt, sentido) {
+    box.replaceChildren(); box.classList.remove('carregando');
+    const todos = grupos.flatMap((g) => g.pts.map((p) => p.v)).concat(grupos.map((g) => g.br)).filter((v) => v != null);
+    if (!todos.length) return vazio(box);
+    const W = largura(box), ml = Math.min(120, W * 0.28), mr = 18;
+    const x = d3.scaleLinear(d3.extent(todos), [ml + 8, W - mr]).nice();
+    const svg = d3.select(box).append('svg').attr('width', '100%').attr('role', 'img');
+    const probe = svg.append('text').style('font-size', '11px');
+    const larg = (t) => { probe.text(t); return probe.node().getComputedTextLength(); };
+    let y = 8;
+    const linhas = [];
+    for (const g of grupos) {
+      const pts = [...g.pts, ...(g.br != null ? [{ pais: 'bra', nome: 'Brasil', v: g.br, br: true }] : [])].filter((p) => p.v != null).sort((a, b) => x(a.v) - x(b.v));
+      // camadas de rótulos: cada nome vai para a primeira camada onde não encosta no anterior
+      const fim = [];
+      for (const p of pts) {
+        const w = larg(p.nome), cx = Math.min(W - 2 - w / 2, Math.max(ml + 8 + w / 2 - 10, x(p.v))), x0 = cx - w / 2;
+        let k = 0; while (fim[k] != null && fim[k] > x0 - 6) k++;
+        fim[k] = cx + w / 2; p.camada = k; p.lx = cx;
+      }
+      const camadas = Math.max(1, fim.length);
+      const alturaRotulos = camadas * 13;
+      linhas.push({ g, pts, y0: y, yLinha: y + alturaRotulos + 10 });
+      y += alturaRotulos + 30;
+    }
+    probe.remove();
+    const H = y + 18;
+    svg.attr('viewBox', `0 0 ${W} ${H}`);
+    const ticks = x.ticks(Math.max(3, Math.floor((W - ml) / 90)));
+    const tf = tickFmt(ticks);
+    svg.append('g').selectAll('line').data(ticks).join('line').attr('x1', x).attr('x2', x).attr('y1', 0).attr('y2', H - 18).style('stroke', css('--grid'));
+    svg.append('g').selectAll('text').data(ticks).join('text').attr('x', x).attr('y', H - 4).attr('text-anchor', 'middle').text(tf);
+    for (const L of linhas) {
+      svg.append('text').attr('x', 0).attr('y', L.yLinha).attr('dy', '0.32em').style('font-weight', 600).style('fill', css('--fg')).text(L.g.nome);
+      svg.append('line').attr('x1', ml + 8).attr('x2', W - mr).attr('y1', L.yLinha).attr('y2', L.yLinha).style('stroke', css('--line'));
+      for (const p of L.pts) {
+        const cx = x(p.v), ly = L.yLinha - 12 - p.camada * 13;
+        if (p.camada > 0) svg.append('line').attr('x1', cx).attr('x2', cx).attr('y1', ly + 3).attr('y2', L.yLinha - 6).style('stroke', css('--line'));
+        svg.append('text').attr('x', p.lx).attr('y', ly).attr('text-anchor', 'middle').style('font-size', '11px')
+          .style('fill', p.br ? cor(0) : css('--muted')).style('font-weight', p.br ? 700 : 400).text(p.nome);
+        svg.append('circle').attr('cx', cx).attr('cy', L.yLinha).attr('r', p.br ? 7 : 5)
+          .style('fill', p.br ? cor(0) : css('--chart-muted')).style('stroke', css('--panel')).attr('stroke-width', 1.5)
+          .on('pointermove', (ev) => tip.show(ev, p.nome, [{ name: L.g.nome, value: fmt(p.v) }]))
+          .on('pointerleave', () => tip.hide());
+      }
+    }
+  }
+
+  /** Histograma de quantos países caem em cada faixa, com a faixa do Brasil em destaque. */
+  function histograma(box, h, brv, fmt) {
+    box.replaceChildren(); box.classList.remove('carregando');
+    if (!h) return vazio(box, 'Sem dados suficientes para este ano.');
+    const W = largura(box), H = 220, mt = 22, mb = 34, ml = 30, mr = 8;
+    const bins = h.bins, nb = bins.length;
+    const x = d3.scaleBand(d3.range(nb), [ml, W - mr]).padding(0.12);
+    const y = d3.scaleLinear([0, d3.max(bins, (b) => b.n) || 1], [H - mb, mt]).nice();
+    const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img');
+    const yt = y.ticks(4).filter(Number.isInteger);
+    svg.append('g').selectAll('line').data(yt).join('line').attr('x1', ml).attr('x2', W - mr).attr('y1', y).attr('y2', y).style('stroke', css('--grid'));
+    svg.append('g').selectAll('text').data(yt).join('text').attr('x', ml - 6).attr('y', y).attr('dy', '0.32em').attr('text-anchor', 'end').text((d) => d);
+    bins.forEach((b, i) => {
+      const ehBr = i === h.bin_brasil;
+      svg.append('rect').attr('x', x(i)).attr('y', y(b.n)).attr('width', x.bandwidth()).attr('height', Math.max(0, y(0) - y(b.n))).attr('rx', 3)
+        .style('fill', ehBr ? cor(0) : css('--chart-muted')).style('fill-opacity', ehBr ? 0.95 : 0.45);
+      const de = i === 0 && h.abre_esq ? `até ${fmt(b.ate)}` : i === nb - 1 && h.abre_dir ? `${fmt(b.de)} ou mais` : `${fmt(b.de)} a ${fmt(b.ate)}`;
+      svg.append('rect').attr('x', x(i)).attr('y', mt).attr('width', x.bandwidth()).attr('height', H - mb - mt).style('fill', 'transparent')
+        .on('pointermove', (ev) => tip.show(ev, de, [{ name: 'Países', value: String(b.n) }, ...(ehBr ? [{ color: cor(0), name: 'Brasil', value: fmt(brv) }] : [])]))
+        .on('pointerleave', () => tip.hide());
+    });
+    if (h.bin_brasil != null) {
+      const cx = x(h.bin_brasil) + x.bandwidth() / 2;
+      svg.append('text').attr('x', cx).attr('y', y(bins[h.bin_brasil].n) - 6).attr('text-anchor', 'middle').style('fill', cor(0)).style('font-weight', 700).text('Brasil');
+    }
+    const marcas = [0, Math.floor(nb / 2), nb - 1];
+    svg.append('g').selectAll('text').data(marcas).join('text').attr('x', (i) => (i === 0 ? x(i) : i === nb - 1 ? x(i) + x.bandwidth() : x(i) + x.bandwidth() / 2)).attr('y', H - mb + 16).attr('text-anchor', (i) => (i === 0 ? 'start' : i === nb - 1 ? 'end' : 'middle'))
+      .text((i) => (i === 0 && h.abre_esq ? '≤ ' + fmt(bins[i].ate) : i === nb - 1 && h.abre_dir ? '≥ ' + fmt(bins[i].de) : fmt((bins[i].de + bins[i].ate) / 2)));
+    svg.append('text').attr('x', ml).attr('y', 12).style('font-size', '10px').text('nº de países');
+  }
+
   function drawCoortes() {
     fillSelect($('#c-ind'), indOptions(), st.ind);
     fillSelect($('#cs-tema'), TEMAS.map((t) => ({ label: t.nome, value: t.id })), st.cstema);
     if (st.cano == null || st.canoInd !== st.ind) { st.cano = anoPadrao(st.ind); st.canoInd = st.ind; }
     fillSelect($('#c-ano'), ANOS.map((a) => ({ label: a, value: a })), st.cano);
-    const meta = D.ind.get(st.ind);
-    $('#c-titulo').textContent = `${meta.nome} em ${st.cano} (${meta.unidade})`;
+    const meta = D.ind.get(st.ind), ano = st.cano, contexto = !meta.entra_no_escore;
+    $('#c-titulo').textContent = `${meta.nome} em ${ano} (${meta.unidade})`;
+    $('#c-sentido').textContent = contexto
+      ? 'Este indicador é só de contexto: não há valor "melhor". A régua mostra de quantos países o Brasil está acima.'
+      : `Neste indicador, ${meta.direcao}.`;
+
+    const linhaCoorte = (c) => (D.coo.get(st.ind)?.get(c.id) || []).find((x) => +x.ano === ano);
+    regua($('#c-regua'), COORTES.map((c) => { const r = linhaCoorte(c); return { nome: c.nome, pct: r?.pct_supera ?? null, sup: r?.n_supera, n: r?.n_comp }; }), contexto);
+
+    const valor = (p) => (D.ser.get(st.ind)?.get(p) || []).find((r) => +r.ano === ano)?.valor ?? null;
+    const brv = valor('bra');
+    pontosPorGrupo($('#c-pontos'), PEQUENAS.map((c) => ({ nome: c.curto, br: brv, pts: c.membros.map((m) => ({ pais: m, nome: PAIS[m], v: valor(m) })) })), fmtv);
+
+    histograma($('#c-hist-mundo'), D.hist.get(`${st.ind}|mundo|${ano}`), brv, fmtv);
+    histograma($('#c-hist-umic'), D.hist.get(`${st.ind}|umic|${ano}`), brv, fmtv);
+
+    // tabela e box plot (opcional)
     const rows = COORTES.map((c) => {
-      const r = (D.coo.get(st.ind)?.get(c.id) || []).find((x) => +x.ano === st.cano);
+      const r = linhaCoorte(c);
       return r && { label: c.nome, curto: c.curto, n: r.n, min: r.min, p25: r.p25, median: r.median, p75: r.p75, max: r.max, mean: r.mean, br: r.brasil, raw: r, c };
     }).filter(Boolean);
-    boxPlot($('#c-box'), rows, fmtv);
+    const boxAberto = $('#c-box-btn').getAttribute('aria-expanded') === 'true';
+    $('#c-box-area').hidden = !boxAberto;
+    if (boxAberto) boxPlot($('#c-box'), rows, fmtv);
     const tb = $('#c-table tbody'); tb.replaceChildren();
     for (const d of rows) {
       const tr = el('tr');
@@ -660,15 +787,23 @@
       }
       tb.appendChild(tr);
     }
+
+    // escore por grupo
     const last = D.escLast;
-    $('#cs-titulo').textContent = `Escore por coorte em ${last}`;
-    const brs = (D.esc.get('bra')?.get(st.cstema) || []).find((r) => +r.ano === last);
-    const srows = COORTES.map((c) => {
+    $('#cs-titulo').textContent = `${TNOME[st.cstema]}: escore por grupo em ${last}`;
+    const esc = (p) => (D.esc.get(p)?.get(st.cstema) || []).find((r) => +r.ano === last)?.escore ?? null;
+    regua($('#cs-regua'), COORTES.map((c) => {
       const r = (D.escC.get(c.id)?.get(st.cstema) || []).find((x) => +x.ano === last);
-      return r && { label: c.nome, curto: c.curto, n: r.n, min: r.min, p25: r.p25, median: r.mediana, p75: r.p75, max: r.max, mean: r.media, br: brs ? brs.escore : null };
-    }).filter(Boolean);
-    boxPlot($('#cs-box'), srows, (v) => (v == null ? '—' : f1(v)));
+      return { nome: c.nome, pct: r?.pct_supera ?? null, sup: r?.n_supera, n: r?.n_comp };
+    }), false);
+    pontosPorGrupo($('#cs-pontos'), PEQUENAS.map((c) => ({ nome: c.curto, br: esc('bra'), pts: c.membros.map((m) => ({ pais: m, nome: PAIS[m], v: esc(m) })) })), (v) => (v == null ? '—' : f1(v)));
   }
+  $('#c-box-btn').addEventListener('click', (e) => {
+    const b = e.currentTarget, aberto = b.getAttribute('aria-expanded') !== 'true';
+    b.setAttribute('aria-expanded', String(aberto));
+    b.textContent = aberto ? 'Esconder box plot' : 'Ver box plot';
+    render();
+  });
 
   // ---------------------------------------------------------------- metodologia
   function drawMetodo() {

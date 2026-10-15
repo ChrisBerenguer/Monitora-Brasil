@@ -82,7 +82,7 @@ server {
   Troque o valor `'sha256-…'` em `vercel.json`, `site/_headers`, `site/.htaccess` e no exemplo de Nginx acima. Isso vale também para trocar o ID do Analytics, que fica dentro do trecho.
 - **Privacidade (LGPD):** o Google Analytics grava cookies e coleta dados de navegação. É recomendável informar isso aos visitantes (por exemplo, uma linha no rodapé com link para uma página de privacidade) e, se quiser seguir a prática mais conservadora, só ativar a medição depois do consentimento.
 - **Cache:** os arquivos em `assets/` são imutáveis (1 ano). Por isso o `index.html` chama `styles.css?v=…` e `app.js?v=…`: **ao alterar esses arquivos, aumente o número da versão** no `index.html` (ex.: `?v=1.3` → `?v=1.4`), senão quem já visitou o site continua com a versão antiga. Os dados em `data/` são sempre revalidados (`max-age=0, must-revalidate`, e o `app.js` busca com `cache: 'no-cache'`), então uma atualização de dados aparece na próxima visita.
-- **Tamanho:** cerca de 4,2 MB de dados sem compressão, menos de 1 MB com gzip/brotli. A primeira visita baixa tudo de uma vez, e a navegação seguinte não faz mais requisições.
+- **Tamanho:** cerca de 5,8 MB de dados sem compressão, menos de 1 MB com gzip/brotli. A primeira visita baixa tudo de uma vez, e a navegação seguinte não faz mais requisições.
 
 ## Checklist de publicação
 

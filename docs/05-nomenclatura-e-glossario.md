@@ -103,6 +103,10 @@ Os códigos WDI seguem o padrão `TÓPICO.ASSUNTO.MEDIDA.UNIDADE`:
 
 **Mandato.** Período de quatro anos de um governo presidencial brasileiro, usado como unidade de comparação temporal: na tabela de comparação entre mandatos (Séries temporais) e na variação dos escores (Visão geral).
 
+**Parcela superada (`pct_supera`).** Dentro de uma coorte, a porcentagem de países que o Brasil supera num indicador, levando em conta o sentido (em homicídios, superar é ter menos). Empates contam meio país. É a medida da régua "Posição do Brasil em cada grupo". Difere do percentil, que é calculado contra o mundo todo e entra no escore.
+
+**Histograma.** Gráfico que divide os valores em faixas e conta quantos países caem em cada uma. Mostra a forma da distribuição: onde a maioria se concentra e onde o Brasil cai.
+
 **Percentil (posto percentil).** Posição relativa de um país entre todos os países num indicador e ano, de 0 (pior) a 100 (melhor).
 
 **Sentido.** Regra que diz se um valor maior é melhor, pior ou se o ideal é ficar perto de um alvo.

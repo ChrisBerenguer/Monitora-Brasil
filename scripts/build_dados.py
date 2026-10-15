@@ -237,6 +237,21 @@ for code in out['series']:
             if v is not None: ser.append({'ind':code,'pais':g,'ano':t,'valor':v})
 dump('series.json', ser)
 
+META = {m[0]: m for m in IND}
+def supera(code, gk, t, bv):
+    """Parcela dos países da coorte (sem o Brasil) que o Brasil supera, respeitando o sentido do indicador.
+    Para indicadores de contexto, parcela com valor menor que o do Brasil. Empates contam meio."""
+    if bv is None: return {'n_comp': None, 'n_supera': None, 'pct_supera': None}
+    meta = META[code]
+    outros = [data[code][g][t] for g in GROUPS[gk] if g != 'bra' and t in data[code].get(g,{})]
+    if not outros: return {'n_comp': 0, 'n_supera': None, 'pct_supera': None}
+    tb = transform(meta, bv) if meta[4] != 0 else bv
+    sc = 0.0
+    for v in outros:
+        tv = transform(meta, v) if meta[4] != 0 else v
+        sc += 1 if tb > tv else 0.5 if tb == tv else 0
+    return {'n_comp': len(outros), 'n_supera': r2(sc,1), 'pct_supera': r2(100*sc/len(outros),1)}
+
 cs=[]
 for code,gs in out['groupStats'].items():
     for gk,lst in gs.items():
@@ -244,8 +259,44 @@ for code,gs in out['groupStats'].items():
             if s:
                 bv=data[code].get('bra',{}).get(t)
                 z = r2((bv-s['mean'])/s['sd']) if (bv is not None and s['sd']) else None
-                cs.append({'chave':f'{code}|{gk}|{t}','ind':code,'coorte':gk,'ano':t,**s,'brasil':r2(bv),'z_brasil':z})
+                sup = supera(code, gk, t, bv)
+                cs.append({'chave':f'{code}|{gk}|{t}','ind':code,'coorte':gk,'ano':t,**s,'brasil':r2(bv),'z_brasil':z, **sup})
 dump('coortes.json', cs)
+
+# ---------- histogramas (Mundo e Renda média-alta), para o site ----------
+def histograma(vals, brv, nb=14, fixo=None):
+    vals = sorted(vals)
+    if fixo:
+        lo, hi = fixo
+    else:
+        q = lambda p: vals[int(round(p*(len(vals)-1)))]
+        lo, hi = q(.02), q(.98)
+        if hi <= lo: lo, hi = vals[0], vals[-1]
+        if hi <= lo: hi = lo + 1
+    w = (hi-lo)/nb
+    bins = [{'de': r2(lo+i*w), 'ate': r2(lo+(i+1)*w), 'n': 0} for i in range(nb)]
+    idx = lambda v: max(0, min(nb-1, int((v-lo)//w)))
+    for v in vals: bins[idx(v)]['n'] += 1
+    out = {'bins': bins, 'abre_esq': (not fixo) and vals[0] < lo, 'abre_dir': (not fixo) and vals[-1] > hi}
+    if brv is not None: out['bin_brasil'] = idx(brv)
+    return out
+
+hist = []
+for code,*_ in IND:
+    for gk in ('umic','mundo'):
+        for t in YEARS:
+            vals = [data[code][g][t] for g in GROUPS[gk] if t in data[code].get(g,{})]
+            if len(vals) < 10: continue
+            h = histograma(vals, data[code].get('bra',{}).get(t))
+            hist.append({'chave':f'{code}|{gk}|{t}','ind':code,'coorte':gk,'ano':t,**h})
+for kk in [t[0] for t in THEMES]+['geral']:
+    for gk in ('umic','mundo'):
+        for t in SYEARS:
+            vals = [score[g][kk][t] for g in GROUPS[gk] if t in score[g][kk]]
+            if len(vals) < 10: continue
+            h = histograma(vals, score['bra'][kk].get(t), nb=10, fixo=(0,100))
+            hist.append({'chave':f'escore:{kk}|{gk}|{t}','ind':'escore:'+kk,'coorte':gk,'ano':t,**h})
+dump('histogramas.json', hist)
 
 PERIODS=[(f'{a}–{a+3}',a,a+3) for a in range(1995,2024,4)]
 pr=[]
@@ -274,7 +325,12 @@ scg=[]
 for gk,d in out['scoreGroups'].items():
     for k,lst in d.items():
         for t,s in zip(SYEARS,lst):
-            if s: scg.append({'chave':f'{k}|{gk}|{t}','coorte':gk,'tema':k,'ano':t,'n':s['n'],'media':r2(s['mean'],1),'mediana':r2(s['median'],1),'p25':r2(s['p25'],1),'p75':r2(s['p75'],1),'desvio':r2(s['sd'],1),'min':r2(s['min'],1),'max':r2(s['max'],1)})
+            if s:
+                bv = score['bra'][k].get(t)
+                outros = [score[g][k][t] for g in GROUPS[gk] if g != 'bra' and t in score[g][k]]
+                sc = sum(1 if bv > v else 0.5 if bv == v else 0 for v in outros) if (bv is not None and outros) else None
+                scg.append({'chave':f'{k}|{gk}|{t}','coorte':gk,'tema':k,'ano':t,'n':s['n'],'media':r2(s['mean'],1),'mediana':r2(s['median'],1),'p25':r2(s['p25'],1),'p75':r2(s['p75'],1),'desvio':r2(s['sd'],1),'min':r2(s['min'],1),'max':r2(s['max'],1),
+                    'n_comp': len(outros), 'n_supera': r2(sc,1) if sc is not None else None, 'pct_supera': r2(100*sc/len(outros),1) if (sc is not None and outros) else None})
 dump('escores_coortes.json', scg)
 bp=[]
 for c,vals in out['pctBR'].items():

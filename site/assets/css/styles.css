@@ -151,6 +151,19 @@ svg .info-svg:focus-visible .anel { stroke-width: 2.2; }
 .info-tip .dado { color: var(--muted); font-size: var(--t-xs); border-top: 1px dashed var(--line); padding-top: 8px; }
 .info-tip .dado strong { color: var(--fg); font-weight: 600; }
 
+/* coortes: régua de posição */
+.regua { display: grid; gap: 10px; }
+.regua-linha { display: grid; grid-template-columns: minmax(9rem, 14rem) minmax(0, 1fr) minmax(10rem, 15rem); gap: 12px; align-items: center; font-size: var(--t-sm); }
+.regua-nome { font-weight: 500; }
+.regua-trilho { position: relative; height: 10px; border-radius: 999px; background: var(--panel-2); border: 1px solid var(--line); }
+.regua-cheio { position: absolute; left: 0; top: 0; bottom: 0; border-radius: 999px; }
+.regua-marca { position: absolute; top: -4px; width: 3px; height: 16px; border-radius: 2px; background: var(--fg); transform: translateX(-1.5px); }
+.regua-frase { color: var(--muted); font-variant-numeric: tabular-nums; }
+.regua-frase b { color: var(--fg); font-weight: 600; }
+@media (max-width: 640px) {
+  .regua-linha { grid-template-columns: 1fr; gap: 4px; }
+}
+
 /* gráficos */
 .grafico { position: relative; min-height: 140px; }
 .grafico.alto { min-height: 340px; }

@@ -12,7 +12,7 @@ site/
 │   ├── js/app.js               aplicação: carga dos dados, cálculos, gráficos, interação
 │   ├── js/d3.v7.9.0.min.js     biblioteca d3 (cópia local, ISC License)
 │   └── favicon.svg
-├── data/                       os 8 JSON gerados por scripts/build_dados.py
+├── data/                       os 9 JSON gerados por scripts/build_dados.py
 ├── _headers                    cabeçalhos de cache e segurança (Netlify, Cloudflare Pages; na Vercel, ver vercel.json na raiz)
 ├── .htaccess                   o mesmo para Apache
 ├── .nojekyll                   impede o GitHub Pages de processar a pasta com Jekyll
@@ -24,7 +24,7 @@ Dependências externas em tempo de execução: as fontes do Google Fonts (IBM Pl
 ## Como roda
 
 1. O navegador carrega `index.html`, o CSS, a d3 e `app.js`.
-2. `app.js` busca os 8 arquivos de `data/` em paralelo (`fetch`). São cerca de 4,2 MB sem compressão e menos de 1 MB com gzip/brotli, que as hospedagens aplicam automaticamente.
+2. `app.js` busca os 9 arquivos de `data/` em paralelo (`fetch`). São cerca de 5,8 MB sem compressão e menos de 1 MB com gzip/brotli, que as hospedagens aplicam automaticamente.
 3. Monta índices em memória (`d3.group`) e faz três cálculos derivados (abaixo).
 4. Desenha a aba atual. Trocar de aba ou de controle só redesenha, sem novas requisições.
 
@@ -65,9 +65,12 @@ Todos os outros números exibidos vêm diretamente dos JSON. Nenhum número est�
 - **Comparar dois mandatos:** tabela com médias, variação absoluta e percentual (colorida pelo sentido do indicador), mediana e desvio do mandato B e tendências anuais.
 
 ### Coortes (`#coortes`)
-- Indicador e ano (o padrão é o ano mais recente com dado para pelo menos 60% dos países).
-- Box plots por coorte para o indicador e para o escore do tema escolhido, com o Brasil marcado. O rótulo "Indicador" e o título do gráfico também têm o botão "i".
-- Tabela de tendência central e dispersão: n, média, mediana, desvio, quartis, mínimo, máximo, valor do Brasil e Z do Brasil.
+- Indicador e ano (o padrão é o ano mais recente com dado para pelo menos 60% dos países). O rótulo "Indicador" e o título têm o botão "i", e uma linha abaixo do título diz o sentido do indicador ("maior é melhor", "menor é melhor"...).
+- **Posição do Brasil em cada grupo:** uma régua por coorte com a parcela de países que o Brasil supera e a frase "Supera X de N países (P%)". A barra fica verde a partir de 60%, vermelha abaixo de 40% e neutra no meio. Nos indicadores de contexto, a frase vira "Acima de X de N" e a barra fica neutra. Dados: `pct_supera`, `n_supera`, `n_comp` de `coortes.json`.
+- **Os países de cada grupo:** gráfico de pontos com América Latina, BRICS e OCDE, um país por ponto, todos na mesma escala, com nome em cima e o Brasil em verde repetido em cada linha. Quando os nomes se encostam, sobem para uma camada de cima, ligados ao ponto por um traço. Valores de `series.json`.
+- **Histogramas** do Mundo e da renda média-alta: quantos países caem em cada faixa de valor, com a faixa do Brasil em verde. Dados de `histogramas.json`.
+- **Escore por grupo** (tema escolhido, último ano): a mesma régua e o mesmo gráfico de pontos, com os escores.
+- **Estatísticas de cada grupo:** tabela com n, média, mediana, desvio, quartis, mínimo, máximo, valor do Brasil e Z do Brasil. O **box plot** fica atrás do botão "Ver box plot", para quem quiser ver os quartis desenhados.
 
 ### Metodologia (`#metodo`)
 Resumo do cálculo, composição das coortes, limitações e a tabela dos 40 indicadores.
@@ -103,7 +106,7 @@ Outras formas de abrir:
 | tooltip | Um único elemento `#tip`, de posição fixa, que nunca sai da tela |
 | CSV | `baixarCSV()`: separador `;` e vírgula decimal, com BOM UTF-8 para abrir certo no Excel |
 | carga e índices | `carregar()` e os três cálculos derivados |
-| componentes de gráfico | `lineChart`, `spark`, `boxPlot` |
+| componentes de gráfico | `lineChart`, `spark`, `boxPlot`, `regua`, `pontosPorGrupo`, `histograma` |
 | abas | `drawResumo`, `drawCartoes`, `drawEvolucao`, `drawDecomp`, `drawRanking`, `drawSeries`, `drawPeriodos`, `drawCoortes`, `drawMetodo` |
 | navegação | `show(page)` com o hash da URL, `render()` e o `ResizeObserver`, que redesenha ao mudar a largura |
 
@@ -112,7 +115,7 @@ Outras formas de abrir:
 - **Tokens** em `:root` (`--bg`, `--panel`, `--fg`, `--muted`, `--line`, `--accent` etc.), com versão escura em `@media (prefers-color-scheme: dark)` e em `[data-theme="dark"]`. Todos os gráficos leem as cores dos tokens na hora de desenhar, então a troca de tema redesenha certo.
 - **Paleta de séries** `--s0` a `--s7`. O Brasil é sempre `--s0` (verde), e os demais países seguem a ordem fixa da lista, então cada país mantém a mesma cor em todos os gráficos.
 - **Tipografia:** Source Serif 4 no título e nos números grandes, IBM Plex Sans no texto, IBM Plex Mono em rótulos técnicos.
-- **Responsivo:** grade de 6, 3 ou 2 cartões conforme a largura. Gráficos medem a largura do contêiner e redesenham. Colunas secundárias das tabelas (`.some-p`) somem abaixo de 640 px. Nos box plots, os nomes das coortes encurtam abaixo de 560 px.
+- **Responsivo:** grade de 6, 3 ou 2 cartões conforme a largura. Gráficos medem a largura do contêiner e redesenham. Colunas secundárias das tabelas (`.some-p`) somem abaixo de 640 px. Nos box plots, os nomes das coortes encurtam abaixo de 560 px. Na régua de posição, nome, barra e frase ficam empilhados abaixo de 640 px.
 - **Acessibilidade:** link "pular para o conteúdo", abas com `role="tab"`/`aria-selected`, foco visível, `aria-sort` nas tabelas e animação de carregamento desligada com `prefers-reduced-motion`.
 
 ## Como modificar

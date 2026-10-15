@@ -1,5 +1,20 @@
 # Histórico de versões
 
+## 1.6 — 15/10/2026
+
+### Alterado
+- **Aba Coortes redesenhada** para ser lida sem conhecer box plot:
+  - **Posição do Brasil em cada grupo:** régua por coorte com a frase "Supera X de N países (P%)", que leva em conta se é melhor ter valor alto ou baixo.
+  - **Os países de cada grupo:** gráfico de pontos com o nome de cada país da América Latina, dos BRICS e da OCDE, e o Brasil em verde.
+  - **Histogramas** do Mundo e dos países de renda média-alta, com a faixa do Brasil em destaque.
+  - O escore por tema ganhou a mesma régua e o mesmo gráfico de pontos.
+  - O box plot continua disponível no botão "Ver box plot", junto da tabela de estatísticas.
+
+### Adicionado
+- `coortes.json` e `escores_coortes.json` ganharam `n_comp`, `n_supera` e `pct_supera`.
+- Novo `histogramas.json` (faixas por coorte grande, indicador e ano, e por tema nos escores). Esquema e regra das faixas no doc 06.
+- Glossário (doc 05): parcela superada e histograma.
+
 ## 1.5 — 15/10/2026
 
 ### Adicionado

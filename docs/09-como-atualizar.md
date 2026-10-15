@@ -13,7 +13,7 @@ python scripts/gerar_dicionario.py   # atualiza docs/04 com a cobertura nova
 `build_dados.py` imprime no fim um resumo para conferência: o escore geral do Brasil por ano, os escores por tema e a posição no ranking. Compare com a versão anterior antes de publicar. Saltos grandes costumam vir de uma série revisada ou de um país novo no universo.
 
 ### Checklist de conferência
-- [ ] Os 8 arquivos de `dados/` e de `site/data/` foram regravados (confira a data de modificação).
+- [ ] Os 9 arquivos de `dados/` e de `site/data/` foram regravados (confira a data de modificação).
 - [ ] `indicadores.json` mostra `ultimo_ano` coerente (a maioria 2024 ou 2025).
 - [ ] O PIB per capita PPC do Brasil no último ano bate com o site do Banco Mundial (`NY.GDP.PCAP.PP.KD`).
 - [ ] O número de países no ranking (`ranking_brasil.json`) está perto de 175.

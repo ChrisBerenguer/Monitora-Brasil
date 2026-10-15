@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=1.5">
+  <link rel="stylesheet" href="assets/css/styles.css?v=1.6">
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -152,25 +152,59 @@
         <div class="ctl"><span class="ctl-rotulo"><label for="c-ind">Indicador</label><button class="info-btn" type="button" data-info-sel="c-ind" aria-label="O que é este indicador? Explicação em linguagem simples"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button></span><select id="c-ind"></select></div>
         <label class="ctl">Ano <select id="c-ano"></select></label>
       </div>
+
+      <article class="card">
+        <div class="titulo-info"><h2 id="c-titulo">—</h2><button class="info-btn" type="button" data-info-sel="c-ind" aria-label="O que é este indicador? Explicação em linguagem simples"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button></div>
+        <p class="nota" id="c-sentido"></p>
+        <h3>Posição do Brasil em cada grupo</h3>
+        <p class="nota">Quantos países de cada grupo o Brasil supera neste indicador, levando em conta se é melhor ter valor alto ou baixo.</p>
+        <div class="regua" id="c-regua"></div>
+      </article>
+
+      <article class="card">
+        <h2>Os países de cada grupo</h2>
+        <p class="nota">Cada ponto é um país, todos na mesma escala. O Brasil está em verde. Passe o mouse ou toque num ponto para ver o valor.</p>
+        <div class="grafico" id="c-pontos"></div>
+      </article>
+
       <div class="grade2">
         <article class="card">
-          <div class="titulo-info"><h2 id="c-titulo">Distribuição por coorte</h2><button class="info-btn" type="button" data-info-sel="c-ind" aria-label="O que é este indicador? Explicação em linguagem simples"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button></div>
-          <p class="nota">Caixa: 1º ao 3º quartil. Traço: mediana. Losango: média. Hastes: mínimo e máximo. Ponto verde: Brasil.</p>
-          <div class="grafico" id="c-box"></div>
+          <h2>Onde o Brasil cai no mundo</h2>
+          <p class="nota">Cada barra conta quantos países do mundo estão naquela faixa de valor. A barra verde é a faixa do Brasil.</p>
+          <div class="grafico" id="c-hist-mundo"></div>
         </article>
         <article class="card">
-          <h2 id="cs-titulo">Escore por coorte</h2>
-          <div class="controles"><label class="ctl">Tema <select id="cs-tema"></select></label></div>
-          <div class="grafico" id="cs-box"></div>
+          <h2>Entre os países de renda média-alta</h2>
+          <p class="nota">O mesmo, só com os países que o Banco Mundial classifica como renda média-alta, o grupo do Brasil.</p>
+          <div class="grafico" id="c-hist-umic"></div>
         </article>
       </div>
+
       <article class="card">
-        <h2>Medidas de tendência central e dispersão</h2>
-        <p class="nota">Para o indicador e o ano escolhidos. "Z do Brasil" é quantos desvios-padrão o Brasil está acima (+) ou abaixo (−) da média da coorte.</p>
+        <h2 id="cs-titulo">Escore por grupo</h2>
+        <div class="controles"><label class="ctl">Tema <select id="cs-tema"></select></label></div>
+        <h3>Posição do Brasil em cada grupo</h3>
+        <div class="regua" id="cs-regua"></div>
+        <h3>Os países de cada grupo</h3>
+        <div class="grafico" id="cs-pontos"></div>
+      </article>
+
+      <article class="card">
+        <div class="card-topo">
+          <div>
+            <h2>Estatísticas de cada grupo</h2>
+            <p class="nota">Medidas de tendência central e dispersão para o indicador e o ano escolhidos. "Z do Brasil" é quantos desvios-padrão o Brasil está acima (+) ou abaixo (−) da média do grupo.</p>
+          </div>
+          <button class="botao" type="button" id="c-box-btn" aria-expanded="false" aria-controls="c-box-area">Ver box plot</button>
+        </div>
+        <div id="c-box-area" hidden>
+          <p class="nota">Box plot: a caixa vai do 1º ao 3º quartil (a metade central do grupo), o traço é a mediana, o losango é a média, as hastes vão do mínimo ao máximo e o ponto verde é o Brasil.</p>
+          <div class="grafico" id="c-box"></div>
+        </div>
         <div class="tabela-box">
           <table id="c-table">
             <thead><tr>
-              <th scope="col">Coorte</th><th scope="col">Países</th><th scope="col">Média</th><th scope="col">Mediana</th><th scope="col">Desvio</th>
+              <th scope="col">Grupo</th><th scope="col">Países</th><th scope="col">Média</th><th scope="col">Mediana</th><th scope="col">Desvio</th>
               <th scope="col" class="some-p">1º quartil</th><th scope="col" class="some-p">3º quartil</th>
               <th scope="col" class="some-p">Mínimo</th><th scope="col" class="some-p">Máximo</th>
               <th scope="col">Brasil</th><th scope="col">Z do Brasil</th>
@@ -273,6 +307,6 @@
   <div class="info-tip" id="info-tip" role="tooltip" hidden></div>
 
   <script src="assets/js/d3.v7.9.0.min.js"></script>
-  <script src="assets/js/app.js?v=1.5"></script>
+  <script src="assets/js/app.js?v=1.6"></script>
 </body>
 </html>
