@@ -1,6 +1,7 @@
 import csv, json, math, os, sys, statistics as st
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from explicacoes import EXPLICACOES  # textos para leigos (botão "i" do site)
+from fontes import CODIGO_OFICIAL, links  # códigos e links oficiais de cada indicador
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # raiz do repositório
 from collections import defaultdict
 
@@ -226,6 +227,7 @@ def dump(name, rows):
 dump('indicadores.json', [{'id':i['id'],'nome':i['name'],'unidade':i['unit'],'tema':i['theme'],
    'direcao': {1:'maior é melhor',-1:'menor é melhor',0:'contexto (sem escore)','tgt':'mais perto de %g é melhor'%(i['target'] or 0)}[i['dir']],
    'fonte':i['source'],'ultimo_ano':i['lastYear'],'entra_no_escore':i['scored'],
+   'codigo_oficial':CODIGO_OFICIAL.get(i['id']), 'url_fonte':links(i['id'])[0], 'url_api':links(i['id'])[1],
    'explicacao':EXPLICACOES.get(i['id'])} for i in out['indicators']])
 
 ser=[]

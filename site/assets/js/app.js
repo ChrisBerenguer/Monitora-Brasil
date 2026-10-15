@@ -667,7 +667,11 @@
       ligarInfo(bi, () => r.id);
       wrap.append(bi); nome.append(wrap);
       tr.append(nome, el('td', {}, TNOME[r.tema]), el('td', {}, r.unidade), el('td', {}, r.direcao),
-        el('td', { class: 'some-p' }, r.fonte), el('td', {}, String(r.ultimo_ano)));
+        el('td', { class: 'some-p' }, r.fonte), el('td', { class: 'some-p mono' }, r.codigo_oficial || '—'), el('td', {}, String(r.ultimo_ano)));
+      const lk = el('td', { class: 'links' });
+      if (r.url_fonte) lk.append(el('a', { href: r.url_fonte, target: '_blank', rel: 'noopener' }, 'Página'));
+      if (r.url_api) { lk.append(' · '); lk.append(el('a', { href: r.url_api, target: '_blank', rel: 'noopener' }, 'API')); }
+      tr.append(lk);
       tb.appendChild(tr);
     }
   }

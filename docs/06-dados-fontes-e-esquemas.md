@@ -4,11 +4,20 @@
 
 | Fonte | Instituição | O que fornece | Licença |
 |---|---|---|---|
-| World Development Indicators (WDI) | Banco Mundial | 38 dos 40 indicadores, mais população e classificação de renda | CC BY 4.0 |
+| World Development Indicators (WDI) | Banco Mundial | 33 dos 40 indicadores (um deles, patentes por milhão, calculado com a população), mais população e classificação de renda | CC BY 4.0 |
 | Worldwide Governance Indicators (WGI) | Banco Mundial | 6 indicadores de governança (distribuídos junto com o WDI) | CC BY 4.0 |
 | Human Development Report | PNUD | IDH | CC BY 3.0 IGO |
 
 Por trás do WDI estão produtores especializados: FMI (inflação, juros, balanço de pagamentos, finanças públicas), OIT (trabalho), UNESCO (P&D, educação), OMS/UNICEF (água, saneamento, saúde), UNODC (homicídios), União Interparlamentar (parlamento), OMPI (patentes), FAO (florestas), EDGAR/JRC (emissões) e a Poverty and Inequality Platform do próprio Banco Mundial (pobreza e Gini). A coluna "Fonte" em `dados/indicadores.json` registra o produtor original.
+
+## Links oficiais de cada indicador
+
+`scripts/fontes.py` guarda o código oficial de cada indicador e gera dois links, gravados em `indicadores.json` (`codigo_oficial`, `url_fonte`, `url_api`) e mostrados na aba Metodologia do site e no doc 04:
+
+- **Página:** `https://data.worldbank.org/indicator/{CÓDIGO}` (para o WGI, a página do projeto; para o IDH, a central de dados do PNUD).
+- **API:** `https://api.worldbank.org/v2/country/BRA/indicator/{CÓDIGO}?format=json&per_page=100`, já filtrada para o Brasil. Para os indicadores de governança, acrescente `&source=3`. Para outro país, troque `BRA` pelo código ISO3. Para todos os países, use `all`.
+
+A aba Metodologia também lista as bases e APIs oficiais (Banco Mundial, WGI, PNUD, Poverty and Inequality Platform), os repositórios do espelho e os produtores originais de cada dado (FMI, OIT, UNESCO, OMPI, UIP, UNODC, OMS/UNICEF, ONU, EDGAR, FAO).
 
 ## Espelho usado
 

@@ -1,5 +1,15 @@
 # Histórico de versões
 
+## 1.3 — 15/10/2026
+
+### Adicionado
+- **Fontes e APIs na aba Metodologia:** APIs e bases oficiais (Banco Mundial, WGI, PNUD, Poverty and Inequality Platform), os repositórios de onde o painel baixa os dados, os produtores originais de cada dado (FMI, OIT, UNESCO, OMPI, UIP, UNODC, OMS/UNICEF, ONU, EDGAR, FAO, ICP) e o código do projeto. Todos os links foram conferidos em 15/10/2026.
+- A tabela de indicadores ganhou o código oficial e os links **Página** e **API** de cada indicador. A API já abre filtrada para o Brasil.
+- `scripts/fontes.py` com os códigos e os links. `indicadores.json` ganhou os campos `codigo_oficial`, `url_fonte` e `url_api`. O dicionário (docs/04) também mostra os links.
+
+### Corrigido
+- O doc 06 dizia que 38 dos 40 indicadores vêm do WDI. São 33: os outros são os 6 de governança (WGI) e o IDH (PNUD).
+
 ## 1.2.1 — 15/10/2026
 
 ### Corrigido
