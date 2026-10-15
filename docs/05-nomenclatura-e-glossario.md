@@ -103,6 +103,10 @@ Os códigos WDI seguem o padrão `TÓPICO.ASSUNTO.MEDIDA.UNIDADE`:
 
 **Mandato.** Período de quatro anos de um governo presidencial brasileiro, usado como unidade de comparação temporal: na tabela de comparação entre mandatos (Séries temporais) e na variação dos escores (Visão geral).
 
+**Variação e Variação %.** Na tabela de mandatos, Variação é Média B − Média A, na unidade do indicador. Variação % é essa diferença dividida pela Média A. Quando o indicador já é uma porcentagem, a Variação está em **pontos percentuais (p.p.)**: o desemprego indo de 12% para 7% é −5 p.p. de variação e −42% de variação %.
+
+**Tendência.** Inclinação da reta de regressão linear dos valores anuais dentro de um mandato, em unidades do indicador por ano. Exige pelo menos 3 anos com dado.
+
 **Parcela superada (`pct_supera`).** Dentro de uma coorte, a porcentagem de países que o Brasil supera num indicador, levando em conta o sentido (em homicídios, superar é ter menos). Empates contam meio país. É a medida da régua "Posição do Brasil em cada grupo". Difere do percentil, que é calculado contra o mundo todo e entra no escore.
 
 **Histograma.** Gráfico que divide os valores em faixas e conta quantos países caem em cada uma. Mostra a forma da distribuição: onde a maioria se concentra e onde o Brasil cai.

@@ -123,6 +123,7 @@ select { font: inherit; font-size: var(--t-md); color: var(--fg); background: va
 .texto ol, .texto ul { margin: 0; padding-left: 1.25em; display: grid; gap: 6px; }
 
 /* ícone de informação e explicação ao passar o mouse */
+.th-info { display: inline-flex; align-items: center; gap: 4px; }
 .titulo-info { display: flex; align-items: center; gap: 6px; }
 .titulo-info.sub { margin-top: 8px; }
 .titulo-info h3 { margin-top: 0; }

@@ -62,7 +62,7 @@ Todos os outros números exibidos vêm diretamente dos JSON. Nenhum número est�
 - Indicador, faixa da coorte, ano inicial e final, e botões de países (vários ao mesmo tempo).
 - Gráfico de linhas com rótulo no fim de cada série e tooltip por ano. Botão **Baixar CSV** com as séries exibidas.
 - **Botão "i"** à direita do rótulo "Indicador" e do título do gráfico (ver "Explicações para leigos" abaixo).
-- **Comparar dois mandatos:** tabela com médias, variação absoluta e percentual (colorida pelo sentido do indicador), mediana e desvio do mandato B e tendências anuais.
+- **Comparar dois mandatos:** tabela com médias, variação absoluta e percentual (colorida pelo sentido do indicador), mediana e desvio do mandato B e tendências anuais. Cada coluna tem um "i" que explica o que ela mede e como ler, com um exemplo calculado na hora com os números do Brasil para o indicador e os mandatos escolhidos. Quando o indicador já é uma porcentagem, a coluna se chama **Variação (p.p.)**, de pontos percentuais.
 
 ### Coortes (`#coortes`)
 - Indicador e ano (o padrão é o ano mais recente com dado para pelo menos 60% dos países). O rótulo "Indicador" e o título têm o botão "i", e uma linha abaixo do título diz o sentido do indicador ("maior é melhor", "menor é melhor"...).
@@ -85,10 +85,11 @@ Todo lugar em que aparece o nome de um indicador tem um "i" à direita:
 | Visão geral → "O que puxa o escore" | Cada indicador da lista de barras |
 | Séries temporais → rótulo "Indicador" e título do gráfico | O indicador selecionado |
 | Coortes → rótulo "Indicador" e título do gráfico | O indicador selecionado |
+| Séries temporais → cabeçalho de cada coluna da tabela "Comparar dois mandatos" | O que a coluna mede, como ler, cuidados e um exemplo com os números do Brasil |
 | Coortes → título de cada cartão (posição do Brasil, posição ao longo do tempo, países de cada grupo, os dois histogramas, escore por grupo e estatísticas) | O que o gráfico mostra, como ler, por que importa e um cuidado de interpretação |
 | Metodologia → tabela de indicadores | Cada indicador da tabela |
 
-A explicação aparece **ao passar o mouse** e some ao tirar o mouse. Ela tem quatro partes em linguagem simples (o que é, como ler, por que importa e atenção) e o último dado do Brasil, com o valor do primeiro ano da série para comparação. Os textos dos indicadores vêm de `scripts/explicacoes.py` (campo `explicacao` de `indicadores.json`). Os textos dos cartões da aba Coortes ficam em `CARD_INFO`, no `app.js`, e são ligados aos botões com o atributo `data-info-card` do `index.html`.
+A explicação aparece **ao passar o mouse** e some ao tirar o mouse. Ela tem quatro partes em linguagem simples (o que é, como ler, por que importa e atenção) e o último dado do Brasil, com o valor do primeiro ano da série para comparação. Os textos dos indicadores vêm de `scripts/explicacoes.py` (campo `explicacao` de `indicadores.json`). Os textos dos cartões da aba Coortes e das colunas da tabela de mandatos ficam em `CARD_INFO`, no `app.js`, e são ligados aos botões com o atributo `data-info-card` do `index.html`.
 
 Outras formas de abrir:
 - **Clique:** fixa a explicação aberta. Clicar de novo no "i", clicar fora ou apertar Esc fecha.

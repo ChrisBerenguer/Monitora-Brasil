@@ -498,7 +498,59 @@
     return u.startsWith('%') ? `${fmtv(v)}${u}` : `${fmtv(v)} ${u}`;
   }
   /** Explicações dos cartões da aba Coortes (o que o gráfico mostra e como ler). */
+  /** Contexto da tabela de mandatos para os exemplos das explicações: indicador, mandatos e linha do Brasil. */
+  function ctxPeriodos() {
+    let a = st.pa, b = st.pb; if (a > b) [a, b] = [b, a];
+    const meta = D.ind.get(st.ind), r = D.vPer.get(`${st.ind}|bra|${a}|${b}`);
+    const pct = meta.unidade.trim().startsWith('%');
+    return { a, b, meta, r, pct, u: (v) => textoUnidade(v, meta.unidade).replace(/\.$/, '') };
+  }
+  const exemploBr = (f) => {
+    const c = ctxPeriodos();
+    if (!c.r || c.a === c.b) return [];
+    return [['No Brasil, agora', f(c).replace(/\.\.$/, '.')]];
+  };
   const CARD_INFO = {
+    'p-pais': { titulo: 'País', blocos: [
+      ['O que é', 'Os países comparados. O Brasil fica sempre na primeira linha, em destaque. Os outros são os países marcados nos botões acima do gráfico: marque ou desmarque para mudar a tabela.'],
+      ['Atenção', 'Para todos os países, os períodos seguem o calendário dos mandatos brasileiros, para comparar as mesmas janelas de tempo. Para os outros países, esses anos não coincidem com os governos deles.'],
+    ] },
+    'p-media': { titulo: 'Média A e Média B', blocos: () => [
+      ['O que é', 'A média dos valores anuais do indicador dentro de cada mandato: soma os valores dos anos do mandato e divide pelo número de anos. A é o mandato mais antigo; B, o mais recente.'],
+      ['Por que média', 'Um mandato tem quatro anos, e o valor de um ano só pode ser um ponto fora da curva (uma crise, uma pandemia). A média resume o período inteiro.'],
+      ['Atenção', 'Só entram os anos com dado. O mandato atual (2023–2026) usa os anos disponíveis até 2025, e alguns indicadores não são publicados todo ano. A média não mostra se o indicador subiu ou caiu dentro do mandato: para isso, veja a Tendência.'],
+      ...exemploBr((c) => `média de ${c.u(c.r.media_a)} em ${c.a} (A) e de ${c.u(c.r.media_b)} em ${c.b} (B).`),
+    ] },
+    'p-var': { titulo: 'Variação', blocos: () => {
+      const c = ctxPeriodos();
+      return [
+        ['O que é', 'A diferença entre as duas médias: Média B menos Média A. Fica na mesma unidade do indicador.'],
+        ...(c.pct ? [['Pontos percentuais', 'Como este indicador já é uma porcentagem, a variação é em pontos percentuais (p.p.). Se o desemprego vai de 12% para 7%, a variação é −5 p.p.: caiu 5 pontos. Não confunda com a Variação %, que neste exemplo seria −42%.']] : []),
+        ['Como ler', 'Positivo: a média subiu de A para B. Negativo: caiu. A cor diz se a mudança é boa ou ruim no sentido do indicador: verde é melhora, vermelho é piora. Nos indicadores em que o melhor é ficar perto de um alvo (inflação) ou que são só de contexto, não há cor.'],
+        ...exemploBr((x) => `${x.u(x.r.media_b)} − ${x.u(x.r.media_a)} = ${sgn(x.r.delta, fmtv)}${x.pct ? ' p.p.' : ''}.`),
+      ];
+    } },
+    'p-varpct': { titulo: 'Variação %', blocos: () => [
+      ['O que é', 'A variação dividida pela Média A, em porcentagem. Diz quanto o indicador mudou em relação ao ponto de partida.'],
+      ['Quando usar', 'Para comparar mudanças entre países ou indicadores de tamanhos muito diferentes. Um aumento de US$ 1.500 na renda é muito para um país pobre e pouco para um rico, e a Variação % mostra essa diferença.'],
+      ['Atenção', 'Quando a Média A é pequena, a Variação % fica enorme e engana: se a inflação vai de 1% para 3%, ela "subiu 200%", mas foram só 2 pontos. Se a Média A é zero, a conta não existe e aparece "—".'],
+      ...exemploBr((c) => c.r.delta_pct == null ? 'não dá para calcular, porque a Média A é zero.' : `${sgn(c.r.delta, fmtv)} ÷ ${fmtv(Math.abs(c.r.media_a))} = ${sgn(c.r.delta_pct, f1)}%.`),
+    ] },
+    'p-mediana': { titulo: 'Mediana B', blocos: [
+      ['O que é', 'O valor do meio quando os anos do mandato B são postos em ordem. Com quatro anos, é a média dos dois do meio.'],
+      ['Por que importa', 'Ao contrário da média, a mediana não é puxada por um ano atípico. Se a média e a mediana são bem diferentes, houve um ano fora do padrão no mandato (por exemplo, 2020, ano da pandemia).'],
+    ] },
+    'p-desvio': { titulo: 'Desvio B', blocos: [
+      ['O que é', 'O desvio-padrão dos valores anuais no mandato B: quanto eles oscilaram em torno da média do mandato.'],
+      ['Como ler', 'Desvio pequeno: o indicador ficou estável nos quatro anos. Desvio grande: houve altos e baixos. Fica na mesma unidade do indicador.'],
+    ] },
+    'p-tend': { titulo: 'Tendência A e Tendência B', blocos: () => [
+      ['O que é', 'Quanto o indicador mudou por ano, em média, dentro de cada mandato. É a inclinação da reta que melhor se ajusta aos valores anuais do mandato (regressão linear).'],
+      ['Como ler', 'Positivo: o indicador estava subindo ao longo do mandato. Negativo: estava caindo. Perto de zero: ficou estável. A unidade é a do indicador por ano.'],
+      ['Diferença para a Variação', 'A Variação compara um mandato com o outro. A Tendência mostra a direção dentro de cada mandato. Um mandato pode ter média maior que o anterior e mesmo assim tendência negativa: começou alto e foi caindo.'],
+      ['Atenção', 'Só é calculada com pelo menos 3 anos de dado no mandato; com menos, aparece "—". Com tão poucos pontos, um único ano atípico muda bastante a reta.'],
+      ...exemploBr((c) => c.r.tendencia_b == null ? `sem anos suficientes para calcular a tendência em ${c.b}.` : `${sgn(c.r.tendencia_b, fmtv)} por ano em ${c.b}${c.r.tendencia_a == null ? '' : `, contra ${sgn(c.r.tendencia_a, fmtv)} por ano em ${c.a}`}.`),
+    ] },
     tempo: { titulo: 'Posição do Brasil ao longo do tempo', blocos: [
       ['O que mostra', 'Para cada grupo de países, a porcentagem que o Brasil supera neste indicador em cada ano, do ano "De" ao ano "Até". É a mesma conta da régua acima, repetida ano a ano.'],
       ['Como ler', 'O Brasil não aparece como uma linha própria: cada linha já é o Brasil, comparado com um grupo. "vs. Am. Latina 20%" quer dizer que o Brasil estava à frente de 20% dos países da América Latina naquele ano. Passe o mouse para ver também o valor do Brasil no ano. Linha subindo: o Brasil está ganhando posições dentro daquele grupo. Linha descendo: está perdendo. A linha tracejada é 50%: acima dela, o Brasil está à frente da maioria do grupo. As faixas cinzas e brancas marcam os mandatos presidenciais. Passe o mouse para ver os valores de um ano.'],
@@ -554,7 +606,8 @@
   function preencherInfoCard(k) {
     const c = CARD_INFO[k];
     const partes = [el('h4', {}, c.titulo)];
-    for (const [t, txt] of c.blocos) {
+    const blocos = typeof c.blocos === 'function' ? c.blocos() : c.blocos;
+    for (const [t, txt] of blocos) {
       const d = el('div', { class: 'bloco' + (t === 'Atenção' ? ' atencao' : '') });
       d.append(el('b', {}, t), el('span', {}, txt));
       partes.push(d);
@@ -708,6 +761,7 @@
     const tb = $('#per-table tbody'); tb.replaceChildren();
     if (a === b) return;
     const dir = D.ind.get(st.ind).direcao;
+    $('#p-h-var').textContent = D.ind.get(st.ind).unidade.trim().startsWith('%') ? 'Variação (p.p.)' : 'Variação';
     const up = dir === 'maior é melhor', down = dir === 'menor é melhor';
     for (const p of ['bra', ...st.paises.filter((q) => q !== 'bra')]) {
       const r = D.vPer.get(`${st.ind}|${p}|${a}|${b}`);

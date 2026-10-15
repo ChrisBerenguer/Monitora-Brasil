@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 1.9 — 15/10/2026
+
+### Adicionado
+- **Séries temporais: "i" em cada coluna da tabela "Comparar dois mandatos"** (País, Média A/B, Variação, Variação %, Mediana B, Desvio B, Tendência A/B). Cada explicação diz o que a coluna mede, como ler e os cuidados, e traz um exemplo calculado com os números do Brasil para o indicador e os mandatos escolhidos (ex.: "−5,10 ÷ 12,01 = −42,5%").
+- Glossário (doc 05): Variação, Variação %, pontos percentuais e Tendência.
+
+### Alterado
+- Quando o indicador já é uma porcentagem, a coluna "Variação" passa a se chamar "Variação (p.p.)", de pontos percentuais, para não ser confundida com a Variação %.
+
 ## 1.8.1 — 15/10/2026
 
 ### Alterado
