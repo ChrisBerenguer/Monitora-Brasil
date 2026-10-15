@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.2 — 15/10/2026
+
+### Adicionado
+- **Botão "i" nos gráficos de indicador** (abas Séries temporais e Coortes): abre uma explicação em linguagem simples, com o que o indicador mede, como ler, por que importa e um cuidado de interpretação, além do último dado do Brasil.
+- `scripts/explicacoes.py` com os textos dos 40 indicadores. Eles entram em `indicadores.json` (campo `explicacao`) e no dicionário (docs/04, seção "Em linguagem simples").
+
 ## 1.1.1 — 15/10/2026
 
 ### Corrigido

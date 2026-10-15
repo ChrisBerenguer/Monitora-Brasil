@@ -1,4 +1,6 @@
-import csv, json, math, os, statistics as st
+import csv, json, math, os, sys, statistics as st
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from explicacoes import EXPLICACOES  # textos para leigos (botão "i" do site)
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))  # raiz do repositório
 from collections import defaultdict
 
@@ -211,7 +213,6 @@ print(rk[2024], rk[2025], rk[2010])
 for g in ['chl','mex','chn','usa','arg']: print(g, out['scores'][g]['geral'][-3:])
 
 # ---------- export para o dashboard ----------
-import os
 OUT = os.path.join(BASE, 'dados')
 os.makedirs(OUT, exist_ok=True)
 SITE_DATA = os.path.join(BASE, 'site', 'data')  # cópia usada pelo site estático
@@ -224,7 +225,8 @@ def dump(name, rows):
 
 dump('indicadores.json', [{'id':i['id'],'nome':i['name'],'unidade':i['unit'],'tema':i['theme'],
    'direcao': {1:'maior é melhor',-1:'menor é melhor',0:'contexto (sem escore)','tgt':'mais perto de %g é melhor'%(i['target'] or 0)}[i['dir']],
-   'fonte':i['source'],'ultimo_ano':i['lastYear'],'entra_no_escore':i['scored']} for i in out['indicators']])
+   'fonte':i['source'],'ultimo_ano':i['lastYear'],'entra_no_escore':i['scored'],
+   'explicacao':EXPLICACOES.get(i['id'])} for i in out['indicators']])
 
 ser=[]
 for code in out['series']:

@@ -107,11 +107,12 @@
       <article class="card">
         <div class="card-topo">
           <div>
-            <h2 id="s-titulo">—</h2>
+            <div class="titulo-info"><h2 id="s-titulo">—</h2><button class="info-btn" id="s-info-btn" type="button" aria-expanded="false" aria-controls="s-info" aria-label="O que é este indicador? Explicação em linguagem simples" title="O que é este indicador?">i</button></div>
             <p class="nota" id="s-nota"></p>
           </div>
           <button class="botao" type="button" id="csv-serie">Baixar CSV</button>
         </div>
+        <section class="explica" id="s-info" hidden aria-label="Explicação do indicador"></section>
         <div class="grafico alto" id="s-chart"></div>
       </article>
       <article class="card">
@@ -144,7 +145,8 @@
       </div>
       <div class="grade2">
         <article class="card">
-          <h2 id="c-titulo">Distribuição por coorte</h2>
+          <div class="titulo-info"><h2 id="c-titulo">Distribuição por coorte</h2><button class="info-btn" id="c-info-btn" type="button" aria-expanded="false" aria-controls="c-info" aria-label="O que é este indicador? Explicação em linguagem simples" title="O que é este indicador?">i</button></div>
+          <section class="explica" id="c-info" hidden aria-label="Explicação do indicador"></section>
           <p class="nota">Caixa: 1º ao 3º quartil. Traço: mediana. Losango: média. Hastes: mínimo e máximo. Ponto verde: Brasil.</p>
           <div class="grafico" id="c-box"></div>
         </article>

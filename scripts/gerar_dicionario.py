@@ -102,5 +102,13 @@ for tid, tnome in TEMAS.items():
               f"- **Fonte:** {i['fonte']}",
               f"- **Último ano na base (qualquer país):** {i['ultimo_ano']}",
               f"- **Brasil:** {cob}. Primeiro valor: {prim}. Último valor: {ult}.", '']
+        ex = i.get('explicacao')
+        if ex:
+            L += ['**Em linguagem simples**', '',
+                  f"- *O que é:* {ex['o_que_e']}",
+                  f"- *Como ler:* {ex['como_ler']}",
+                  f"- *Por que importa:* {ex['por_que_importa']}"]
+            if ex.get('atencao'): L.append(f"- *Atenção:* {ex['atencao']}")
+            L.append('')
 open(D('docs', '04-dicionario-de-indicadores.md'), 'w', encoding='utf-8').write('\n'.join(L))
 print('ok', len(ind))

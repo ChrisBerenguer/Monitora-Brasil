@@ -48,6 +48,7 @@ Monitora-Brasil/
 ├── scripts/
 │   ├── baixar_brutos.py       baixa as séries brutas para brutos/ (fora do git)
 │   ├── build_dados.py         calcula percentis, escores e estatísticas → dados/
+│   ├── explicacoes.py         textos para leigos de cada indicador (botão "i" do site)
 │   └── gerar_dicionario.py    gera docs/04 a partir dos dados
 ├── dados/                     8 conjuntos de dados em JSON (cópia em site/data/)
 ├── site/                      o painel web: HTML, CSS, JavaScript, d3 local e dados

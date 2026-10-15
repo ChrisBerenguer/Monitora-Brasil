@@ -46,6 +46,7 @@ Todos são arrays JSON de objetos (uma linha por objeto), em UTF-8. O pipeline g
 | `fonte` | texto | Produtor original |
 | `ultimo_ano` | inteiro | Último ano com dado para qualquer país |
 | `entra_no_escore` | booleano | Falso para indicadores de contexto |
+| `explicacao` | objeto | Texto para leigos usado no botão "i" do site: `o_que_e`, `como_ler`, `por_que_importa`, `atencao` (vem de `scripts/explicacoes.py`) |
 
 ### `series.json` (≈24 mil linhas): valores observados
 

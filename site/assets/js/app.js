@@ -47,6 +47,7 @@
     page: 'visao', coorte: 'latam', base: 2015, tema: 'geral', ind: 'ny_gdp_pcap_pp_kd', banda: 'latam',
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
     cano: null, canoInd: null, cstema: 'geral', sort: { key: 'geral', dir: -1 },
+    info: { 's-info': false, 'c-info': false }, // painéis explicativos abertos
   };
   let D = null; // dados carregados e indexados
 
@@ -439,6 +440,55 @@
     { titulo: 'pais', valor: (r) => PAIS[r.pais] }, ...COLS_RANK.map((t) => ({ titulo: t, valor: (r) => r[t] })),
   ]));
 
+  // ---------------------------------------------------------------- explicação para leigos (botão "i")
+  /** Preenche o painel explicativo do indicador atual e sincroniza o botão. */
+  function drawExplica(id) {
+    const painel = $('#' + id), btn = $('#' + id + '-btn');
+    const aberto = st.info[id];
+    painel.hidden = !aberto;
+    btn.setAttribute('aria-expanded', String(aberto));
+    if (!aberto || !D) return;
+    const meta = D.ind.get(st.ind), ex = meta.explicacao || {};
+    if (painel.dataset.ind === st.ind) return; // já preenchido
+    painel.dataset.ind = st.ind;
+    const topo = el('div', { class: 'explica-topo' });
+    topo.append(el('h3', {}, `Entenda: ${meta.nome}`));
+    const fechar = el('button', { class: 'explica-fechar', type: 'button' }, 'Fechar');
+    fechar.addEventListener('click', () => { st.info[id] = false; drawExplica(id); btn.focus(); });
+    topo.append(fechar);
+    const grade = el('div', { class: 'explica-grade' });
+    const item = (titulo, texto, cls = '') => {
+      if (!texto) return;
+      const d = el('div', { class: 'explica-item ' + cls });
+      d.append(el('h4', {}, titulo), el('p', {}, texto));
+      grade.append(d);
+    };
+    item('O que é', ex.o_que_e);
+    item('Como ler', ex.como_ler);
+    item('Por que importa', ex.por_que_importa);
+    item('Atenção', ex.atencao, 'atencao');
+    // último dado observado do Brasil, direto da série
+    const br = (D.ser.get(st.ind)?.get('bra') || []).slice().sort((a, b) => a.ano - b.ano);
+    const ult = br.at(-1), pri = br[0];
+    const dado = el('p', { class: 'explica-dado' });
+    if (ult) {
+      const u = meta.unidade, escala = /–| a /.test(u) && !/^%/.test(u);
+      const comUnidade = escala ? `${fmtv(ult.valor)} (escala ${u})` : u.startsWith('%') ? `${fmtv(ult.valor)}${u}` : `${fmtv(ult.valor)} ${u}`;
+      dado.append('Último dado do Brasil: ', el('b', {}, comUnidade), ` em ${ult.ano}`);
+      if (pri && pri.ano !== ult.ano) dado.append(' (era ', el('b', {}, fmtv(pri.valor)), ` em ${pri.ano}). `);
+      else dado.append('. ');
+    }
+    dado.append(`Sentido no escore: ${meta.direcao}. Fonte: ${meta.fonte}.`);
+    painel.replaceChildren(topo, grade, dado);
+  }
+  for (const id of ['s-info', 'c-info']) {
+    $('#' + id + '-btn').addEventListener('click', () => { st.info[id] = !st.info[id]; drawExplica(id); });
+  }
+  addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    for (const id of Object.keys(st.info)) if (st.info[id]) { st.info[id] = false; drawExplica(id); $('#' + id + '-btn').focus(); }
+  });
+
   // ---------------------------------------------------------------- séries
   function drawSeries() {
     fillSelect($('#s-ind'), indOptions(), st.ind);
@@ -459,6 +509,7 @@
     const meta = D.ind.get(st.ind);
     $('#s-titulo').textContent = `${meta.nome} (${meta.unidade})`;
     $('#s-nota').textContent = `Sentido: ${meta.direcao}. Fonte: ${meta.fonte}. Último ano disponível: ${meta.ultimo_ano}.`;
+    drawExplica('s-info');
     const y0 = Math.min(st.y0, st.y1), y1 = Math.max(st.y0, st.y1), yrs = d3.range(y0, y1 + 1);
     const g = D.ser.get(st.ind);
     const series = [...st.paises].sort((a, b) => (a === 'bra') - (b === 'bra')).map((p) => {
@@ -526,6 +577,7 @@
     fillSelect($('#c-ano'), ANOS.map((a) => ({ label: a, value: a })), st.cano);
     const meta = D.ind.get(st.ind);
     $('#c-titulo').textContent = `${meta.nome} em ${st.cano} (${meta.unidade})`;
+    drawExplica('c-info');
     const rows = COORTES.map((c) => {
       const r = (D.coo.get(st.ind)?.get(c.id) || []).find((x) => +x.ano === st.cano);
       return r && { label: c.nome, curto: c.curto, n: r.n, min: r.min, p25: r.p25, median: r.median, p75: r.p75, max: r.max, mean: r.mean, br: r.brasil, raw: r, c };

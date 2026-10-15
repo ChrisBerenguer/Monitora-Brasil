@@ -61,11 +61,12 @@ Todos os outros números exibidos vêm diretamente dos JSON. Nenhum número est�
 ### Séries temporais (`#series`)
 - Indicador, faixa da coorte, ano inicial e final, e botões de países (vários ao mesmo tempo).
 - Gráfico de linhas com rótulo no fim de cada série e tooltip por ano. Botão **Baixar CSV** com as séries exibidas.
+- **Botão "i"** ao lado do título: abre um painel que explica o indicador em linguagem simples (o que é, como ler, por que importa e um cuidado de interpretação), com o último dado do Brasil. O painel acompanha a troca de indicador e fecha com o botão Fechar ou a tecla Esc.
 - **Comparar dois mandatos:** tabela com médias, variação absoluta e percentual (colorida pelo sentido do indicador), mediana e desvio do mandato B e tendências anuais.
 
 ### Coortes (`#coortes`)
 - Indicador e ano (o padrão é o ano mais recente com dado para pelo menos 60% dos países).
-- Box plots por coorte para o indicador e para o escore do tema escolhido, com o Brasil marcado.
+- Box plots por coorte para o indicador e para o escore do tema escolhido, com o Brasil marcado. O título do gráfico do indicador também tem o botão "i".
 - Tabela de tendência central e dispersão: n, média, mediana, desvio, quartis, mínimo, máximo, valor do Brasil e Z do Brasil.
 
 ### Metodologia (`#metodo`)
@@ -102,6 +103,7 @@ Resumo do cálculo, composição das coortes, limitações e a tabela dos 40 ind
 |---|---|
 | Mudar cores ou fontes | Tokens no topo de `styles.css` (e o link do Google Fonts em `index.html`) |
 | Mudar textos fixos | `index.html` |
+| Mudar a explicação de um indicador (botão "i") | `scripts/explicacoes.py`, depois rode `build_dados.py` (o texto vai para `indicadores.json`) e `gerar_dicionario.py` |
 | Adicionar um indicador | `IND` em `scripts/build_dados.py` + `CODES` em `scripts/baixar_brutos.py`. Regere os dados. Os seletores do site se atualizam sozinhos a partir de `indicadores.json` |
 | Adicionar uma coorte | `COHORTS` em `build_dados.py` + `COORTES` em `app.js` |
 | Adicionar um país às séries | `COHORTS` (ou uma coorte nova) em `build_dados.py` + `PAIS` em `app.js` |
