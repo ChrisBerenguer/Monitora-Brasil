@@ -2,6 +2,9 @@
 
 ## 1.1 — 15/10/2026
 
+### Posicionamento
+- O projeto passa a ser apresentado como **trabalho voluntário, aberto e para o público geral**, e não como produto interno. README, doc 01 e rodapé do site atualizados. O README ganhou a seção "Como contribuir".
+
 ### Adicionado
 - **Site próprio** na pasta `site/`: o painel completo em HTML, CSS e JavaScript puros, com a d3 7.9.0 servida localmente. Pode ser hospedado em qualquer domínio, sem depender do Claude.
 - Tema claro e escuro com botão no cabeçalho. A escolha fica lembrada no navegador.

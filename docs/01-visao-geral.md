@@ -8,10 +8,25 @@ O Monitora Brasil responde a uma pergunta simples de fazer e difícil de respond
 - **Com quem se compara:** cinco coortes de países, mais um ranking contra o mundo todo.
 - **Em que período:** séries anuais de 1995 a 2025 e comparação entre mandatos presidenciais de quatro anos.
 
-## Público
+## Para quem é
 
-- **Uso interno da WizzyBots:** produto de demonstração de análise de dados com IA e base para conteúdo editorial (carrosséis, artigos de opinião sobre economia e sociedade).
-- **Uso potencial como produto:** relatório-país para consultorias, escritórios, imprensa e educação.
+O Monitora Brasil é um **trabalho voluntário, aberto e sem fins comerciais**, feito para o público geral. A ideia é que qualquer pessoa consiga entender como o Brasil está se saindo sem depender de interpretações prontas: os dados são oficiais, o método é público e cada número pode ser conferido.
+
+Pensamos especialmente em:
+
+- **Cidadãos curiosos** que querem ir além das manchetes e ver os números por conta própria.
+- **Estudantes e professores** de economia, ciências sociais, geografia e estatística, que podem usar o painel e a documentação como material didático.
+- **Jornalistas e comunicadores** que precisam de dados comparáveis e de explicações claras sobre o que cada indicador mede.
+- **Pesquisadores e analistas** que queiram reproduzir, criticar ou estender a metodologia.
+
+Todo o conteúdo (código, dados derivados e documentação) fica em um repositório público, e contribuições são bem-vindas (ver "Como contribuir" no README).
+
+### Compromissos
+
+- **Neutralidade.** O painel descreve, não opina. Ele mostra períodos e mandatos, mas não atribui resultados a governos nem faz recomendações políticas.
+- **Transparência.** Toda escolha de método está documentada, junto com as alternativas e o efeito que teriam.
+- **Fontes oficiais e abertas.** Só bases de organismos multilaterais, com metodologia pública e licença aberta.
+- **Honestidade sobre os limites.** O que falta e o que pode enganar está listado no doc 08.
 
 ## Escopo da versão 1 (15/10/2026)
 

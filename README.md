@@ -2,10 +2,12 @@
 
 Painel que acompanha o desenvolvimento do Brasil em comparação com outros países. Ele cruza 40 indicadores econômicos, sociais, institucionais e ambientais, de 1995 a 2025, e os resume em **escores de 0 a 100** para cinco macrotemas.
 
+É um **trabalho voluntário e aberto ao público**. O objetivo é ajudar qualquer pessoa a entender, com dados oficiais e método transparente, como o Brasil está se saindo: em que avança, em que fica para trás e como se compara a outros países. Código, dados e cálculos estão todos neste repositório, para que qualquer um possa conferir, reproduzir e melhorar.
+
 - **Site:** pasta `site/`, um site estático pronto para hospedar em domínio próprio (ver [docs/10](docs/10-publicacao.md))
 - **Base conceitual:** Dossiê de Indicadores de Desenvolvimento (21 categorias, 5 macrotemas): https://claude.ai/artifact/1nwmHfoeYXmQ5RZhytXXVM
 - **Repositório:** https://github.com/ChrisBerenguer/Monitora-Brasil
-- **Projeto da:** WizzyBots, Agência de Automação e IA para PMEs (produto interno)
+- **Natureza:** projeto voluntário, aberto e sem fins comerciais, mantido por Chris Berenguer
 - **Histórico de versões:** [CHANGELOG.md](CHANGELOG.md)
 
 ## O que o painel responde
@@ -87,6 +89,14 @@ Para publicar num domínio próprio, veja [docs/10-publicacao.md](docs/10-public
 | Saber o que falta e o que vem depois | [08 · Limitações e roadmap](docs/08-limitacoes-e-roadmap.md) |
 | Atualizar os dados | [09 · Como atualizar](docs/09-como-atualizar.md) |
 | Publicar em domínio próprio | [10 · Publicação](docs/10-publicacao.md) |
+
+## Como contribuir
+
+O projeto é aberto a contribuições de qualquer pessoa: correções, sugestões de indicadores, melhorias na metodologia, no site ou na documentação.
+
+- **Achou um erro ou tem uma sugestão?** Abra uma *issue* em https://github.com/ChrisBerenguer/Monitora-Brasil/issues explicando o que viu e, se possível, a fonte.
+- **Quer mudar código ou dados?** Faça um *fork*, crie um branch, rode o pipeline (`scripts/build_dados.py`) e abra um *pull request*. Mudanças de método devem vir acompanhadas da atualização de [docs/03-metodologia.md](docs/03-metodologia.md).
+- **Discordou de uma escolha metodológica?** Ótimo, é para isso que ela está documentada. As decisões que mais mudam o resultado estão na seção "Robustez" do doc 03 e em [docs/08](docs/08-limitacoes-e-roadmap.md).
 
 ## Fontes e licença dos dados
 

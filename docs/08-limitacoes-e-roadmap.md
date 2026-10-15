@@ -46,7 +46,7 @@
 - [ ] Intervalos de incerteza nos escores (bootstrap sobre indicadores).
 - [ ] Linha do tempo de eventos (crises, mudanças de regime fiscal e monetário) sobre as séries.
 
-### Longo prazo (produto)
+### Longo prazo
 - [ ] Versão multipaís: o mesmo painel para qualquer país-foco.
 - [ ] Relatório automático em PDF/slides por mandato ou por tema, com texto gerado e revisado.
 - [ ] Assistente de perguntas sobre os dados (RAG sobre os conjuntos e a documentação).

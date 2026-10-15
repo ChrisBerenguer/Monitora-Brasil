@@ -122,4 +122,4 @@ Três conjuntos são derivados em `site/assets/js/app.js`:
 
 ## Atribuição exigida
 
-Ao publicar números deste projeto, cite: *"Fonte: Banco Mundial (World Development Indicators e Worldwide Governance Indicators) e PNUD (IDH), via Gapminder/open-numbers. Cálculos: Monitora Brasil/WizzyBots."*
+Ao publicar números deste projeto, cite: *"Fonte: Banco Mundial (World Development Indicators e Worldwide Governance Indicators) e PNUD (IDH), via Gapminder/open-numbers. Cálculos: Monitora Brasil (github.com/ChrisBerenguer/Monitora-Brasil)."*
