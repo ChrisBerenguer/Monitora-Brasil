@@ -59,7 +59,7 @@ server {
     gzip_types text/css application/javascript application/json image/svg+xml;
 
     location /assets/ { add_header Cache-Control "public, max-age=31536000, immutable"; }
-    location /data/   { add_header Cache-Control "public, max-age=86400"; }
+    location /data/   { add_header Cache-Control "public, max-age=0, must-revalidate"; }
 
     add_header X-Content-Type-Options nosniff;
     add_header Referrer-Policy strict-origin-when-cross-origin;
@@ -73,7 +73,7 @@ server {
 ## Segurança e desempenho
 
 - **CSP:** a política só permite scripts do próprio site (d3 está em `assets/js/`) e fontes do Google. `'unsafe-inline'` em `style-src` é necessário porque os gráficos aplicam estilos por atributo. Se trocar as fontes por arquivos locais, remova `fonts.googleapis.com` e `fonts.gstatic.com` da política.
-- **Cache:** os arquivos em `assets/` são imutáveis (1 ano). Ao alterar `app.js` ou `styles.css`, mude o nome do arquivo (ex.: `app.v2.js`) ou acrescente `?v=2` no `index.html` para os visitantes receberem a versão nova. Os dados têm cache de 1 dia.
+- **Cache:** os arquivos em `assets/` são imutáveis (1 ano). Por isso o `index.html` chama `styles.css?v=…` e `app.js?v=…`: **ao alterar esses arquivos, aumente o número da versão** no `index.html` (ex.: `?v=1.3` → `?v=1.4`), senão quem já visitou o site continua com a versão antiga. Os dados em `data/` são sempre revalidados (`max-age=0, must-revalidate`, e o `app.js` busca com `cache: 'no-cache'`), então uma atualização de dados aparece na próxima visita.
 - **Tamanho:** cerca de 4,2 MB de dados sem compressão, menos de 1 MB com gzip/brotli. A primeira visita baixa tudo de uma vez, e a navegação seguinte não faz mais requisições.
 
 ## Checklist de publicação

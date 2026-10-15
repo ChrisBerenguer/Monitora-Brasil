@@ -121,7 +121,7 @@
   // ---------------------------------------------------------------- carga e índices
   async function carregar() {
     const entradas = await Promise.all(Object.entries(ARQUIVOS).map(async ([id, arq]) => {
-      const r = await fetch(DATA_DIR + arq);
+      const r = await fetch(DATA_DIR + arq, { cache: 'no-cache' }); // sempre confere se há versão nova
       if (!r.ok) throw new Error(`Não foi possível carregar ${arq} (HTTP ${r.status}).`);
       return [id, await r.json()];
     }));
@@ -397,8 +397,10 @@
       svg.append('text').attr('x', ml - 28).attr('y', cy).attr('dy', '0.32em').attr('text-anchor', 'end').text(d.r.nome);
       const gi = svg.append('g').attr('class', 'info-svg').attr('transform', `translate(${ml - 16},${cy})`)
         .attr('tabindex', 0).attr('role', 'button').attr('aria-label', `O que é ${d.r.nome}? Explicação em linguagem simples`);
-      gi.append('circle').attr('r', 7.5);
-      gi.append('text').attr('text-anchor', 'middle').attr('dy', '0.35em').text('i');
+      gi.append('circle').attr('class', 'hit').attr('r', 10);
+      gi.append('circle').attr('class', 'anel').attr('r', 6.6);
+      gi.append('path').attr('class', 'haste').attr('d', 'M0 -0.7v3.9');
+      gi.append('circle').attr('class', 'ponto').attr('cy', -3.05).attr('r', 0.95);
       ligarInfo(gi.node(), () => d.r.id);
       svg.append('rect').attr('x', x(0)).attr('y', cy - 7).attr('width', Math.max(2, x(v) - x(0))).attr('height', 14).attr('rx', 4).style('fill', c).style('fill-opacity', 0.85);
       if (d.base) svg.append('line').attr('x1', x(+d.base.percentil)).attr('x2', x(+d.base.percentil)).attr('y1', cy - 9).attr('y2', cy + 9).style('stroke', css('--fg')).attr('stroke-width', 2);
@@ -461,6 +463,7 @@
       d.append(el('b', {}, titulo), el('span', {}, texto));
       partes.push(d);
     };
+    if (!ex.o_que_e) partes.push(el('p', {}, 'A explicação deste indicador não carregou. Recarregue a página para buscar a versão mais recente dos dados.'));
     bloco('O que é', ex.o_que_e);
     bloco('Como ler', ex.como_ler);
     bloco('Por que importa', ex.por_que_importa);
@@ -501,6 +504,13 @@
     infoEl.hidden = true; infoFixo = false;
     if (infoAncora) { infoAncora.setAttribute('aria-expanded', 'false'); infoAncora.removeAttribute('aria-describedby'); }
     infoAncora = null;
+  }
+  const ICONE_INFO = '<svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg>';
+  /** Botão com o ícone de informação (marcação fixa, sem dados do usuário). */
+  function botaoInfo(rotulo) {
+    const b = el('button', { class: 'info-btn', type: 'button', 'aria-label': rotulo });
+    b.innerHTML = ICONE_INFO;
+    return b;
   }
   /** Liga um elemento "i" à explicação do indicador devolvido por getId(). */
   function ligarInfo(alvo, getId) {
@@ -653,7 +663,7 @@
       const tr = el('tr');
       const nome = el('td', { class: 'quebra' });
       const wrap = el('span', { class: 'nome-info' }, r.nome);
-      const bi = el('button', { class: 'info-btn', type: 'button', 'aria-label': `O que é ${r.nome}? Explicação em linguagem simples` }, 'i');
+      const bi = botaoInfo(`O que é ${r.nome}? Explicação em linguagem simples`);
       ligarInfo(bi, () => r.id);
       wrap.append(bi); nome.append(wrap);
       tr.append(nome, el('td', {}, TNOME[r.tema]), el('td', {}, r.unidade), el('td', {}, r.direcao),

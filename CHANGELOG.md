@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 1.2.1 — 15/10/2026
+
+### Corrigido
+- As explicações dos indicadores podiam aparecer vazias para quem já tinha visitado o site: a lista de indicadores ficava guardada no navegador por até um dia, numa versão sem os textos. Agora os dados são sempre revalidados (`cache: 'no-cache'` no `app.js` e `max-age=0, must-revalidate` em `vercel.json`, `_headers` e `.htaccess`), e `styles.css` e `app.js` levam número de versão (`?v=1.3`) no `index.html`.
+
+### Alterado
+- Ícone de informação redesenhado: círculo de traço fino em tom neutro, que ganha a cor de destaque só ao passar o mouse, com área de toque maior que o desenho. A caixa de explicação ficou mais limpa, com títulos discretos.
+
 ## 1.2 — 15/10/2026
 
 ### Adicionado
