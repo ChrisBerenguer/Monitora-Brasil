@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 1.10 — 16/10/2026
+
+### Adicionado
+- **Ícone de link com a fonte original em cada cartão com gráfico ou tabela de dados** (Visão geral, Séries temporais e Coortes). Nos cartões de um indicador, a caixa traz a página do indicador, os dados do Brasil pela API e o código oficial. Nos de escore, a lista dos indicadores do tema com o link de cada um. No escore geral e no ranking, as três bases oficiais.
+- A caixa de explicação continua aberta enquanto o mouse vai do ícone até ela, para que os links possam ser clicados. No celular, tocar num link não fecha a caixa antes de abrir a fonte.
+
+### Alterado
+- Os cartões de tema da Visão geral deixaram de ser botões HTML (para poder conter o ícone de link). Continuam clicáveis e acessíveis pelo teclado (Tab, Enter ou espaço).
+
 ## 1.9 — 15/10/2026
 
 ### Adicionado

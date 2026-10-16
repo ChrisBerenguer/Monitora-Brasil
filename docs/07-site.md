@@ -96,6 +96,18 @@ Outras formas de abrir:
 - **Celular:** um toque abre e outro toque (no "i", na explicação ou fora) fecha.
 - **Teclado:** o "i" recebe foco com Tab e a explicação aparece. Esc fecha.
 
+### Fonte original (ícone de link)
+
+Todo cartão com gráfico ou tabela de dados tem, ao lado do título, um ícone de link (o `link-45deg` do Bootstrap Icons). Ele abre uma caixa com a fonte original dos dados daquele cartão:
+
+| Cartão | A caixa mostra |
+|---|---|
+| Gráficos e tabelas de um indicador (Séries temporais e Coortes) | O nome e o produtor do dado, links para a página do indicador e para os dados do Brasil pela API, e o código oficial |
+| Escore de um tema (cartões da Visão geral, "Escore ao longo do tempo", "O que puxa o escore", "Escore por grupo") | A lista dos indicadores do tema, cada um com link para a sua página |
+| Escore geral e "Países comparados" | As três bases (WDI, WGI e Relatório de Desenvolvimento Humano), com link |
+
+A caixa abre ao passar o mouse e continua aberta enquanto o mouse vai até ela, para dar tempo de clicar nos links. Clique ou toque fixa a caixa; tocar num link abre a fonte numa nova aba. No fim da caixa, um link leva à aba Metodologia, com a lista completa. Os links vêm de `scripts/fontes.py` (campos `url_fonte` e `url_api` de `indicadores.json`) e da constante `BASES` do `app.js`.
+
 **Links diretos:** acrescente `#series`, `#coortes` ou `#metodo` ao endereço.
 
 ## Organização do `app.js`

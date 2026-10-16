@@ -372,8 +372,12 @@
     const box = $('#cartoes'), last = D.escLast;
     box.replaceChildren();
     for (const t of TEMAS) {
-      const card = el('button', { class: 'card tema', type: 'button', 'aria-pressed': String(st.tema === t.id) });
-      card.appendChild(el('h3', {}, t.nome));
+      const card = el('div', { class: 'card tema', role: 'button', tabindex: '0', 'aria-pressed': String(st.tema === t.id) });
+      const topo = el('div', { class: 'tema-topo' });
+      const bf = botaoFonte('tema:' + t.id);
+      ligarInfo(bf, () => 'fonte:tema:' + t.id);
+      topo.append(el('h3', {}, t.nome), bf);
+      card.appendChild(topo);
       const br = D.esc.get('bra')?.get(t.id) || [];
       const cur = br.find((r) => +r.ano === last);
       const linha = el('div', { class: 'linha' });
@@ -392,6 +396,7 @@
       box.appendChild(card);
       spark(sp, br.map((r) => ({ x: +r.ano, y: +r.escore })), cr.map((r) => ({ x: +r.ano, y: +r.mediana })), anosMandato(mandatoAtual(), last));
       card.addEventListener('click', () => { st.tema = t.id; render(); });
+      card.addEventListener('keydown', (e) => { if (e.target === card && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); st.tema = t.id; render(); } });
     }
   }
 
@@ -614,8 +619,44 @@
     }
     infoEl.replaceChildren(...partes);
   }
+  const BASES = [
+    ['World Development Indicators (Banco Mundial)', 'https://databank.worldbank.org/source/world-development-indicators', '33 indicadores'],
+    ['Worldwide Governance Indicators (Banco Mundial)', 'https://www.worldbank.org/en/publication/worldwide-governance-indicators', '6 indicadores de governança'],
+    ['Relatório de Desenvolvimento Humano (PNUD)', 'https://hdr.undp.org/data-center/documentation-and-downloads', 'IDH'],
+  ];
+  const linkExt = (txt, url) => el('a', { href: url, target: '_blank', rel: 'noopener' }, txt);
+  /** Conteúdo do botão de fonte: um indicador, os indicadores de um tema ou as bases de dados. */
+  function preencherFonte(spec) {
+    const alvo = spec === 'ind' ? st.ind : spec === 'tema' ? st.tema : spec === 'cstema' ? st.cstema : spec.startsWith('tema:') ? spec.slice(5) : spec;
+    const partes = [el('h4', {}, 'Fonte original dos dados')];
+    const meta = D.ind.get(alvo);
+    if (meta) {
+      const p = el('p', {}); p.append(el('b', {}, meta.nome), `: ${meta.fonte}.`); partes.push(p);
+      const ul = el('ul', { class: 'fontes-lista' });
+      if (meta.url_fonte) { const li = el('li'); li.append(linkExt('Página do indicador', meta.url_fonte)); ul.append(li); }
+      if (meta.url_api) { const li = el('li'); li.append(linkExt('Dados do Brasil pela API', meta.url_api)); ul.append(li); }
+      partes.push(ul);
+      if (meta.codigo_oficial) partes.push(el('p', { class: 'cod' }, `Código oficial: ${meta.codigo_oficial}`));
+    } else if (alvo && alvo !== 'geral' && alvo !== 'bases' && TNOME[alvo]) {
+      const inds = D.indicadores.filter((r) => r.tema === alvo && r.entra_no_escore);
+      partes.push(el('p', {}, `O escore de ${TNOME[alvo].toLowerCase()} junta ${inds.length} indicadores. Fonte original de cada um:`));
+      const ul = el('ul', { class: 'fontes-lista' });
+      for (const r of inds) { const li = el('li'); li.append(r.url_fonte ? linkExt(r.nome, r.url_fonte) : r.nome, el('span', { class: 'cod' }, ` · ${r.fonte}`)); ul.append(li); }
+      partes.push(ul);
+    } else {
+      partes.push(el('p', {}, `Os escores juntam ${D.indicadores.filter((r) => r.entra_no_escore).length} indicadores de três bases oficiais:`));
+      const ul = el('ul', { class: 'fontes-lista' });
+      for (const [n, u, q] of BASES) { const li = el('li'); li.append(linkExt(n, u), el('span', { class: 'cod' }, ` · ${q}`)); ul.append(li); }
+      partes.push(ul);
+    }
+    const nota = el('p', { class: 'dado' });
+    nota.append('Links de todos os indicadores e APIs na aba ', el('a', { href: '#metodo' }, 'Metodologia'), '.');
+    partes.push(nota);
+    infoEl.replaceChildren(...partes);
+  }
   function preencherInfo(id) {
     if (id.startsWith('card:')) return preencherInfoCard(id.slice(5));
+    if (id.startsWith('fonte:')) return preencherFonte(id.slice(6));
     const meta = D.ind.get(id), ex = meta.explicacao || {};
     const partes = [el('h4', {}, meta.nome)];
     const bloco = (titulo, texto, cls = '') => {
@@ -656,6 +697,7 @@
     if (infoAncora && infoAncora !== ancora) infoAncora.setAttribute('aria-expanded', 'false');
     infoAncora = ancora;
     preencherInfo(id);
+    infoEl.setAttribute('role', id.startsWith('fonte:') ? 'dialog' : 'tooltip');
     infoEl.hidden = false;
     ancora.setAttribute('aria-expanded', 'true');
     ancora.setAttribute('aria-describedby', 'info-tip');
@@ -667,6 +709,13 @@
     infoAncora = null;
   }
   const ICONE_INFO = '<svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg>';
+  const ICONE_LINK = '<svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg>';
+  /** Botão de fonte (ícone de link) para cartões montados no JavaScript. */
+  function botaoFonte(spec) {
+    const b = el('button', { class: 'info-btn fonte-btn', type: 'button', 'aria-label': 'Fonte original dos dados', 'data-fonte': spec });
+    b.innerHTML = ICONE_LINK;
+    return b;
+  }
   /** Botão com o ícone de informação (marcação fixa, sem dados do usuário). */
   function botaoInfo(rotulo) {
     const b = el('button', { class: 'info-btn', type: 'button', 'aria-label': rotulo });
@@ -674,9 +723,14 @@
     return b;
   }
   /** Liga um elemento "i" à explicação do indicador devolvido por getId(). */
+  // Ao sair do botão, espera um instante: dá tempo de levar o mouse até a caixa (para clicar nos links).
+  let timerFechar = null;
+  function agendarFechar() { clearTimeout(timerFechar); timerFechar = setTimeout(() => { if (!infoFixo) esconderInfo(); }, 220); }
+  infoEl.addEventListener('pointerenter', () => clearTimeout(timerFechar));
+  infoEl.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse' && !infoFixo) agendarFechar(); });
   function ligarInfo(alvo, getId) {
-    alvo.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') mostrarInfo(alvo, getId()); });
-    alvo.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse' && !infoFixo) esconderInfo(); });
+    alvo.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') { clearTimeout(timerFechar); mostrarInfo(alvo, getId()); } });
+    alvo.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse' && !infoFixo) agendarFechar(); });
     alvo.addEventListener('focus', () => mostrarInfo(alvo, getId()));
     alvo.addEventListener('blur', () => { if (!infoFixo) esconderInfo(); });
     const alternar = () => {
@@ -695,7 +749,9 @@
   }
   document.querySelectorAll('[data-info-sel]').forEach((b) => ligarInfo(b, () => st.ind));
   document.querySelectorAll('[data-info-card]').forEach((b) => ligarInfo(b, () => 'card:' + b.dataset.infoCard));
-  infoEl.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse') { ultimoToque = performance.now(); esconderInfo(); } }); // tocar na explicação fecha
+  document.querySelectorAll('[data-fonte]').forEach((b) => ligarInfo(b, () => 'fonte:' + b.dataset.fonte));
+  addEventListener('hashchange', () => esconderInfo()); // o link "Metodologia" da caixa troca de aba
+  infoEl.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse' && !e.target.closest('a')) { ultimoToque = performance.now(); esconderInfo(); } }); // tocar na explicação fecha
   document.addEventListener('click', (e) => { if (performance.now() - ultimoToque < 700) return; if (!infoEl.hidden && !infoEl.contains(e.target)) esconderInfo(); });
   document.addEventListener('pointerup', (e) => {   // toque fora fecha
     if (e.pointerType !== 'mouse' && !infoEl.hidden && !infoEl.contains(e.target) && !(infoAncora && infoAncora.contains(e.target))) esconderInfo();
