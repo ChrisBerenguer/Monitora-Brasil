@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.11 — 16/10/2026
+
+### Adicionado
+- **Visão geral: botão "i" em cada cartão.** Nos seis cartões de tema, a explicação diz quais indicadores compõem o tema e como ler o número, a variação no mandato, a mediana do grupo e o minigráfico. "Escore ao longo do tempo", "O que puxa o escore" e "Países comparados" também ganharam o "i", ao lado do ícone de fonte.
+
 ## 1.10 — 16/10/2026
 
 ### Adicionado

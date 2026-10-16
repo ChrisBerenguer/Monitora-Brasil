@@ -376,7 +376,10 @@
       const topo = el('div', { class: 'tema-topo' });
       const bf = botaoFonte('tema:' + t.id);
       ligarInfo(bf, () => 'fonte:tema:' + t.id);
-      topo.append(el('h3', {}, t.nome), bf);
+      const bi = botaoInfo(`Como ler o cartão ${t.nome}`);
+      ligarInfo(bi, () => 'card:cartao:' + t.id);
+      const icones = el('span', { class: 'tema-icones' }); icones.append(bi, bf);
+      topo.append(el('h3', {}, t.nome), icones);
       card.appendChild(topo);
       const br = D.esc.get('bra')?.get(t.id) || [];
       const cur = br.find((r) => +r.ano === last);
@@ -516,6 +519,33 @@
     return [['No Brasil, agora', f(c).replace(/\.\.$/, '.')]];
   };
   const CARD_INFO = {
+    cartao: { titulo: (t) => `Cartão: ${TNOME[t]}`, blocos: (t) => {
+      const inds = D.indicadores.filter((r) => r.tema === t && r.entra_no_escore);
+      return [
+        ['O que mostra', t === 'geral'
+          ? `O escore geral do Brasil em ${D.escLast}, de 0 a 100: a média dos cinco temas.`
+          : `O escore do Brasil neste tema em ${D.escLast}, de 0 a 100. Ele junta ${inds.length} indicadores: ${inds.map((r) => r.nome).join(', ')}.`],
+        ['Como ler o número', '50 é o meio do mundo. Acima de 50, o Brasil está melhor que a maioria dos países no tema; abaixo, pior.'],
+        ['Variação no mandato', 'Quanto o escore mudou no mandato escolhido no seletor acima: do ano anterior à posse até o fim do mandato (ou o último ano com dado). Verde se subiu mais de 0,5 ponto, vermelho se caiu mais de 0,5. Passe o mouse sobre ela para ver os dois valores.'],
+        ['Mediana e minigráfico', 'A mediana é o escore do país do meio do grupo escolhido em "Comparar com". No minigráfico, a linha verde é o Brasil de 2000 até hoje, a tracejada é a mediana do grupo e a faixa sombreada é o mandato escolhido.'],
+        ['Atenção', 'O escore é relativo: mede a posição frente aos outros países, não o nível absoluto. Clique no cartão para ver o tema nos dois gráficos abaixo.'],
+      ];
+    } },
+    evolucao: { titulo: 'Escore ao longo do tempo', blocos: [
+      ['O que mostra', 'O escore do Brasil no tema escolhido, ano a ano, de 2000 até o último ano com dado (linha verde), comparado com o grupo escolhido em "Comparar com".'],
+      ['Como ler', 'A linha tracejada é a mediana do grupo: o país do meio. A faixa cinza vai do 1º ao 3º quartil, onde está a metade central dos países do grupo. Acima da faixa, o Brasil está melhor que três quartos do grupo; abaixo, pior. A faixa verde marca o mandato escolhido. Passe o mouse para ver os valores de cada ano.'],
+      ['Atenção', 'Uma queda na linha não quer dizer que o Brasil piorou no valor dos indicadores: pode ser que outros países tenham melhorado mais. O escore mede posição.'],
+    ] },
+    decomp: { titulo: 'O que puxa o escore', blocos: [
+      ['O que mostra', 'Cada indicador do tema escolhido, com o percentil do Brasil no fim do mandato escolhido. O percentil é a posição do Brasil entre todos os países com dado: 0 é o pior do mundo, 100 o melhor. O escore do tema é a média dessas barras.'],
+      ['Como ler', 'Barras longas puxam o escore para cima; curtas puxam para baixo. Verde a partir de 60, vermelho abaixo de 40. O traço vertical em cada barra é o percentil no ano anterior à posse: se a barra passa do traço, o Brasil subiu de posição naquele indicador durante o mandato.'],
+      ['Atenção', 'O percentil é posição, não valor. Cada indicador tem o próprio "i" com a explicação do que mede.'],
+    ] },
+    ranking: { titulo: 'Países comparados no último ano', blocos: [
+      ['O que mostra', `Os ${Object.keys(PAIS).length} países do painel com o escore geral e o de cada tema em ${'{ano}'}, de 0 a 100.`],
+      ['Como ler', 'Clique no nome de uma coluna para ordenar por ela, e de novo para inverter. Verde acima de 60, vermelho abaixo de 40. O botão "Baixar CSV" baixa a tabela para abrir no Excel.'],
+      ['Atenção', 'A tabela mostra só os países acompanhados de perto pelo painel, mas o escore de cada um é calculado contra todos os países do mundo. Por isso a posição nesta tabela não é a posição no ranking mundial, que aparece no topo da página.'],
+    ] },
     'p-pais': { titulo: 'País', blocos: [
       ['O que é', 'Os países comparados. O Brasil fica sempre na primeira linha, em destaque. Os outros são os países marcados nos botões acima do gráfico: marque ou desmarque para mudar a tabela.'],
       ['Atenção', 'Para todos os países, os períodos seguem o calendário dos mandatos brasileiros, para comparar as mesmas janelas de tempo. Para os outros países, esses anos não coincidem com os governos deles.'],
@@ -609,10 +639,12 @@
     ] },
   };
   function preencherInfoCard(k) {
-    const c = CARD_INFO[k];
-    const partes = [el('h4', {}, c.titulo)];
-    const blocos = typeof c.blocos === 'function' ? c.blocos() : c.blocos;
-    for (const [t, txt] of blocos) {
+    const [chave, arg] = k.split(':');
+    const c = CARD_INFO[chave];
+    const partes = [el('h4', {}, typeof c.titulo === 'function' ? c.titulo(arg) : c.titulo)];
+    const blocos = typeof c.blocos === 'function' ? c.blocos(arg) : c.blocos;
+    for (const [t, txt0] of blocos) {
+      const txt = txt0.replace('{ano}', String(D.escLast));
       const d = el('div', { class: 'bloco' + (t === 'Atenção' ? ' atencao' : '') });
       d.append(el('b', {}, t), el('span', {}, txt));
       partes.push(d);

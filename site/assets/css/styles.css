@@ -152,6 +152,7 @@ svg .info-svg:focus-visible .anel { stroke-width: 2.2; }
 .info-tip ul.fontes-lista { margin: 0; padding-left: 18px; display: grid; gap: 4px; }
 .info-tip a { color: var(--accent); text-underline-offset: 2px; }
 .info-tip .cod { font-family: var(--f-mono, monospace); font-size: var(--t-xs); color: var(--muted); }
+.tema-icones { display: inline-flex; gap: 6px; flex: none; }
 .tema-topo { display: flex; justify-content: space-between; align-items: start; gap: 6px; }
 .tema:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .info-tip h4 { margin: 0; font-family: var(--f-display); font-size: var(--t-md); font-weight: 600; }

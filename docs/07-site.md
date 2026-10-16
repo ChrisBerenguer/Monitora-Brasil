@@ -85,6 +85,7 @@ Todo lugar em que aparece o nome de um indicador tem um "i" à direita:
 | Visão geral → "O que puxa o escore" | Cada indicador da lista de barras |
 | Séries temporais → rótulo "Indicador" e título do gráfico | O indicador selecionado |
 | Coortes → rótulo "Indicador" e título do gráfico | O indicador selecionado |
+| Visão geral → cada cartão de tema, "Escore ao longo do tempo", "O que puxa o escore" e "Países comparados" | O que o cartão mostra e como ler. No cartão de tema, também quais indicadores compõem o tema, a variação no mandato, a mediana e o minigráfico |
 | Séries temporais → cabeçalho de cada coluna da tabela "Comparar dois mandatos" | O que a coluna mede, como ler, cuidados e um exemplo com os números do Brasil |
 | Coortes → título de cada cartão (posição do Brasil, posição ao longo do tempo, países de cada grupo, os dois histogramas, escore por grupo e estatísticas) | O que o gráfico mostra, como ler, por que importa e um cuidado de interpretação |
 | Metodologia → tabela de indicadores | Cada indicador da tabela |
