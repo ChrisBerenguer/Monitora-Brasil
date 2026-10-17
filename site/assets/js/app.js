@@ -52,7 +52,7 @@
   const st = {
     page: 'visao', coorte: 'latam', mandato: '2023–2026', tema: 'geral', ind: 'ny_gdp_pcap_pp_kd', banda: 'latam',
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
-    cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
+    ga: '2019–2022', gb: '2023–2026', cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
   };
   let D = null; // dados carregados e indexados
 
@@ -147,6 +147,7 @@
     ix.vEsc = calcVariacaoMandatos(raw.escores, ix.escLast);
     ix.ranking = calcRankingUltimo(raw.escores, ix.escLast);
     ix.vPer = calcVariacaoPeriodos(raw.periodos);
+    ix.perBr = new Map(raw.periodos.filter((r) => r.pais === 'bra').map((r) => [`${r.ind}|${r.periodo}`, r.media == null ? null : +r.media]));
     return ix;
   }
 
@@ -368,6 +369,74 @@
   }
 
   // ---------------------------------------------------------------- visão geral
+  // ---------------------------------------------------------------- placar entre mandatos
+  /** Diferenças menores que esta fração do desvio-padrão entre os países do mundo contam como empate. */
+  const EMPATE_SD = 0.03;
+  const COR_A = () => css('--s3'), COR_B = () => css('--s5'), COR_I = () => css('--chart-muted');
+  const nomeMandato = (p) => MANDATO[p].replace(' (até 2025)', '');
+  const anosTexto = (p) => { const i = +p.slice(0, 4), f = Math.min(i + 3, ANOS.at(-1)); return `${i} a ${f}`; };
+  /** Classifica cada indicador: 'A' ou 'B' (média melhor), 'I' (praticamente igual), 'S' (sem dado), 'C' (contexto). */
+  function calcPlacar(a, b) {
+    const ia = +a.slice(0, 4), fb = Math.min(+b.slice(0, 4) + 3, ANOS.at(-1));
+    return D.indicadores.map((m) => {
+      const va = D.perBr.get(`${m.id}|${a}`), vb = D.perBr.get(`${m.id}|${b}`);
+      if (!m.entra_no_escore) return { m, va, vb, k: 'C' };
+      if (va == null || vb == null || Number.isNaN(va) || Number.isNaN(vb)) return { m, va, vb, k: 'S' };
+      const alvo = /mais perto de ([\d.,]+)/.exec(m.direcao);
+      const bom = (v) => (alvo ? -Math.abs(v - +alvo[1].replace(',', '.')) : m.direcao.startsWith('maior') ? v : -v);
+      const dif = bom(vb) - bom(va);
+      const sds = (D.coo.get(m.id)?.get('mundo') || []).filter((r) => +r.ano >= ia && +r.ano <= fb && r.sd != null).map((r) => +r.sd);
+      const sd = sds.length ? d3.median(sds) : null;
+      const k = sd != null && Math.abs(dif) < EMPATE_SD * sd ? 'I' : dif > 0 ? 'B' : dif < 0 ? 'A' : 'I';
+      return { m, va, vb, k, estrito: dif > 0 ? 'B' : dif < 0 ? 'A' : 'I' };
+    });
+  }
+  function drawPlacar() {
+    const opts = PERIODOS.map((p) => ({ label: `${p} · ${MANDATO[p]}`, value: p }));
+    fillSelect($('#pl-a'), opts, st.ga); fillSelect($('#pl-b'), opts, st.gb);
+    let a = st.ga, b = st.gb; if (a > b) [a, b] = [b, a];
+    const msg = $('#pl-msg');
+    msg.textContent = a === b ? 'Escolha dois mandatos diferentes.' : st.ga > st.gb ? `Mostrando A = ${a} e B = ${b}, em ordem cronológica.` : '';
+    msg.hidden = !msg.textContent;
+    const num = $('#pl-num'), waf = $('#pl-waffle'), leg = $('#pl-leg'), rod = $('#pl-rodape');
+    if (a === b) { num.replaceChildren(); waf.replaceChildren(); leg.replaceChildren(); rod.textContent = ''; return; }
+    const rows = calcPlacar(a, b);
+    const n = (k) => rows.filter((r) => r.k === k).length;
+    $('#pl-titulo').textContent = `${nomeMandato(a)} e ${nomeMandato(b)}: placar dos ${rows.length} indicadores`;
+    $('#pl-sub').textContent = `Em quantos dos ${rows.length} indicadores cada mandato teve média melhor, levando em conta se é melhor ter valor alto ou baixo.`;
+    const cartao = (p, k, cor) => {
+      const d = el('div'); d.style.background = cor;
+      d.append(el('small', {}, nomeMandato(p)), el('strong', {}, String(n(k))), el('span', {}, `${anosTexto(p)} · média melhor`));
+      return d;
+    };
+    num.replaceChildren(cartao(a, 'A', COR_A()), cartao(b, 'B', COR_B()));
+    const ordem = { A: 0, B: 1, I: 2, S: 3, C: 4 };
+    const rotulo = { A: `${nomeMandato(a)} melhor`, B: `${nomeMandato(b)} melhor`, I: 'Praticamente iguais', S: 'Sem dado em um dos mandatos', C: 'Só de contexto' };
+    const corK = { A: COR_A(), B: COR_B(), I: COR_I() };
+    waf.replaceChildren();
+    for (const r of [...rows].sort((x, y) => ordem[x.k] - ordem[y.k] || x.m.nome.localeCompare(y.m.nome, 'pt'))) {
+      const q = el('i', { role: 'listitem', 'aria-label': `${r.m.nome}: ${rotulo[r.k]}` });
+      if (corK[r.k]) { q.style.background = corK[r.k]; if (r.k === 'I') q.style.opacity = '.55'; } else q.className = r.k === 'S' ? 'sd' : 'ct';
+      q.addEventListener('pointermove', (ev) => tip.show(ev, r.m.nome, [
+        { color: COR_A(), name: `${nomeMandato(a)} (média)`, value: r.va == null || Number.isNaN(r.va) ? 'sem dado' : fmtv(r.va) },
+        { color: COR_B(), name: `${nomeMandato(b)} (média)`, value: r.vb == null || Number.isNaN(r.vb) ? 'sem dado' : fmtv(r.vb) },
+        { name: 'Resultado', value: r.k === 'C' ? 'só de contexto' : rotulo[r.k] },
+        { name: 'Sentido', value: r.m.direcao },
+      ]));
+      q.addEventListener('pointerleave', () => tip.hide());
+      waf.append(q);
+    }
+    leg.replaceChildren();
+    for (const k of ['A', 'B', 'I', 'S', 'C']) {
+      if (!n(k)) continue;
+      const s = el('span'), i = el('i');
+      if (corK[k]) { i.style.background = corK[k]; if (k === 'I') i.style.opacity = '.55'; } else i.className = k === 'S' ? 'sd' : 'ct';
+      s.append(i, `${rotulo[k]}: ${n(k)}`); leg.append(s);
+    }
+    const ea = rows.filter((r) => r.estrito === 'A').length, eb = rows.filter((r) => r.estrito === 'B').length;
+    rod.textContent = `Contando qualquer diferença, por menor que seja: ${nomeMandato(a)} ${ea}, ${nomeMandato(b)} ${eb}. Passe o mouse sobre um quadrado para ver o indicador e as duas médias.`;
+  }
+
   function drawCartoes() {
     const box = $('#cartoes'), last = D.escLast;
     box.replaceChildren();
@@ -519,6 +588,12 @@
     return [['No Brasil, agora', f(c).replace(/\.\.$/, '.')]];
   };
   const CARD_INFO = {
+    placar: { titulo: 'Placar entre mandatos', blocos: [
+      ['O que mostra', 'Para cada indicador, compara a média do Brasil nos dois mandatos escolhidos e conta em quantos cada um teve a média melhor. Cada quadrado é um indicador: passe o mouse para ver qual é e as duas médias.'],
+      ['Como se decide', '"Melhor" leva em conta o sentido de cada indicador: em desemprego e pobreza, menor é melhor; em PIB e expectativa de vida, maior é melhor; em inflação e juros reais, o melhor é ficar perto da meta (3% e 2%). Os indicadores só de contexto, como receita tributária, não entram na disputa.'],
+      ['Praticamente iguais', 'Quando a diferença entre as médias é menor que 3% da distância típica entre os países do mundo naquele indicador (o desvio-padrão), o indicador conta como empate. Assim, uma diferença de 99,75% para 99,80% em acesso à eletricidade não decide nada. O rodapé mostra o placar sem essa regra.'],
+      ['Atenção', 'Cada indicador vale um ponto, então o placar diz em quantos indicadores cada mandato foi melhor, e não quanto melhor. O mandato atual tem dados só até 2025, e vários indicadores saem com atraso. Crises de fora, como a pandemia de 2020 e 2021, e tendências herdadas do governo anterior pesam nas médias. Coincidir com um mandato não prova que o governo causou o resultado.'],
+    ] },
     cartao: { titulo: (t) => `Cartão: ${TNOME[t]}`, blocos: (t) => {
       const inds = D.indicadores.filter((r) => r.tema === t && r.entra_no_escore);
       return [
@@ -1109,6 +1184,8 @@
   on('#p-b', (v) => { st.pb = v; });
   on('#c-ano', (v) => { st.cano = +v; st.canoInd = st.ind; });
   on('#cs-tema', (v) => { st.cstema = v; });
+  on('#pl-a', (v) => { st.ga = v; });
+  on('#pl-b', (v) => { st.gb = v; });
   on('#ct-y0', (v) => { st.cy0 = +v; });
   on('#ct-y1', (v) => { st.cy1 = +v; });
 
@@ -1118,7 +1195,7 @@
     if (st.page === 'visao') {
       fillSelect($('#v-coorte'), cohortOpts, st.coorte);
       fillSelect($('#v-mandato'), [...MANDATOS_ESC].reverse().map((m) => ({ label: `${m.id} · ${m.nome}`, value: m.id })), st.mandato);
-      drawCartoes(); drawEvolucao(); drawDecomp(); drawRanking();
+      drawPlacar(); drawCartoes(); drawEvolucao(); drawDecomp(); drawRanking();
     } else if (st.page === 'series') { drawSeries(); drawPeriodos(); }
     else if (st.page === 'coortes') drawCoortes();
     else drawMetodo();

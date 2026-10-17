@@ -179,6 +179,24 @@ svg .info-svg:focus-visible .anel { stroke-width: 2.2; }
 .legenda-item { display: inline-flex; align-items: center; gap: 6px; }
 .legenda-item i { width: 14px; height: 3px; border-radius: 2px; display: inline-block; }
 
+/* placar entre mandatos */
+.placar-num { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 14px; }
+.placar-num > div { border-radius: 14px; padding: 16px 18px; color: #fff; }
+.placar-num small { display: block; font-family: var(--f-mono, monospace); font-size: var(--t-xs); letter-spacing: .06em; text-transform: uppercase; opacity: .92; }
+.placar-num strong { display: block; font-family: var(--f-display); font-size: clamp(44px, 7vw, 72px); line-height: 1; margin-top: 6px; font-variant-numeric: tabular-nums; }
+.placar-num span { display: block; font-size: var(--t-sm); margin-top: 4px; opacity: .95; }
+.waffle { display: grid; grid-template-columns: repeat(20, minmax(0, 1fr)); gap: 6px; margin-top: 16px; max-width: 760px; }
+@media (max-width: 640px) { .waffle { grid-template-columns: repeat(10, minmax(0, 1fr)); } }
+.waffle i { aspect-ratio: 1; border-radius: 5px; display: block; cursor: default; }
+.waffle i.sd { background: transparent; border: 2px dashed var(--axis); }
+.waffle i.ct { background: transparent; border: 2px solid var(--axis); }
+.waffle i:hover { outline: 2px solid var(--fg); outline-offset: 1px; }
+.waffle-leg { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 12px; font-size: var(--t-sm); color: var(--muted); }
+.waffle-leg span { display: inline-flex; align-items: center; gap: 7px; }
+.waffle-leg i { width: 14px; height: 14px; border-radius: 4px; display: inline-block; }
+.waffle-leg i.sd { border: 2px dashed var(--axis); }
+.waffle-leg i.ct { border: 2px solid var(--axis); }
+
 /* gráficos */
 .grafico { position: relative; min-height: 140px; }
 .grafico.alto { min-height: 340px; }

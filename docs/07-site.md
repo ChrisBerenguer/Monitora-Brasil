@@ -52,6 +52,7 @@ Todos os outros números exibidos vêm diretamente dos JSON. Nenhum número est�
 
 ### Visão geral (`#visao`)
 - **Resumo** no topo: escore geral, posição no ranking, temas mais forte e mais fraco do último ano.
+- **Placar entre mandatos** (antes dos cartões de tema): para dois mandatos escolhidos (padrão: 2019–2022 e 2023–2026), conta em quantos indicadores cada um teve a média do Brasil melhor, levando em conta o sentido de cada indicador. Mostra dois cartões com os totais, 40 quadrados (um por indicador, com o nome e as duas médias ao passar o mouse) e uma legenda com empates, indicadores sem dado e indicadores só de contexto. Diferenças menores que 3% do desvio-padrão entre os países do mundo (mediana dos anos dos dois mandatos, de `coortes.json`) contam como empate (`EMPATE_SD` em `app.js`). O rodapé traz o placar sem essa regra. Médias de `periodos.json`; função `calcPlacar`.
 - **Controles:** coorte de comparação e **mandato presidencial** (intervalos de 4 anos, de FHC 2, 1999–2002, até Lula 3, 2023–2026).
 - **6 cartões de tema:** escore no último ano, **variação no mandato escolhido** (escore no fim do mandato menos o do ano anterior à posse; verde se subiu mais de 0,5, vermelho se caiu mais de 0,5; passar o mouse mostra os dois valores), mediana da coorte e minigráfico de 2000 a 2025 com o mandato sombreado. **Clicar num cartão** muda o tema dos dois gráficos abaixo.
 - **Escore ao longo do tempo:** Brasil contra a mediana da coorte, com a faixa do 1º ao 3º quartil e o mandato escolhido destacado em verde.
@@ -85,6 +86,7 @@ Todo lugar em que aparece o nome de um indicador tem um "i" à direita:
 | Visão geral → "O que puxa o escore" | Cada indicador da lista de barras |
 | Séries temporais → rótulo "Indicador" e título do gráfico | O indicador selecionado |
 | Coortes → rótulo "Indicador" e título do gráfico | O indicador selecionado |
+| Visão geral → Placar entre mandatos | O que o placar conta, como se decide o melhor, a regra de empate e os cuidados de interpretação |
 | Visão geral → cada cartão de tema, "Escore ao longo do tempo", "O que puxa o escore" e "Países comparados" | O que o cartão mostra e como ler. No cartão de tema, também quais indicadores compõem o tema, a variação no mandato, a mediana e o minigráfico |
 | Séries temporais → cabeçalho de cada coluna da tabela "Comparar dois mandatos" | O que a coluna mede, como ler, cuidados e um exemplo com os números do Brasil |
 | Coortes → título de cada cartão (posição do Brasil, posição ao longo do tempo, países de cada grupo, os dois histogramas, escore por grupo e estatísticas) | O que o gráfico mostra, como ler, por que importa e um cuidado de interpretação |

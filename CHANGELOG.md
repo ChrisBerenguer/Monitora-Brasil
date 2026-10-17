@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.12 — 17/10/2026
+
+### Adicionado
+- **Visão geral: Placar entre mandatos**, antes dos cartões de tema. Para dois mandatos escolhidos, mostra em quantos indicadores cada um teve a média do Brasil melhor, com dois cartões de totais, um quadrado por indicador (com o nome e as duas médias ao passar o mouse), legenda e o placar sem a regra de empate. Tem "i" com a explicação e o ícone de fonte.
+- Regra de empate explícita: diferença menor que 3% do desvio-padrão entre os países do mundo no indicador. Para 2019–2022 contra 2023–2026, o resultado é 7 a 21, com 9 empates, 1 sem dado e 2 só de contexto.
+
 ## 1.11 — 16/10/2026
 
 ### Adicionado
