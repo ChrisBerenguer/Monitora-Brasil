@@ -11,6 +11,7 @@ site/
 │   ├── css/styles.css          tokens de design (claro/escuro), layout e componentes
 │   ├── js/app.js               aplicação: carga dos dados, cálculos, gráficos, interação
 │   ├── js/d3.v7.9.0.min.js     biblioteca d3 (cópia local, ISC License)
+│   ├── js/html-to-image.v1.11.11.min.js  gera a imagem de compartilhamento (cópia local, MIT License)
 │   └── favicon.svg
 ├── data/                       os 9 JSON gerados por scripts/build_dados.py
 ├── _headers                    cabeçalhos de cache e segurança (Netlify, Cloudflare Pages; na Vercel, ver vercel.json na raiz)
@@ -110,6 +111,19 @@ Todo cartão com gráfico ou tabela de dados tem, ao lado do título, um ícone 
 | Escore geral e "Países comparados" | As três bases (WDI, WGI e Relatório de Desenvolvimento Humano), com link |
 
 A caixa abre ao passar o mouse e continua aberta enquanto o mouse vai até ela, para dar tempo de clicar nos links. Clique ou toque fixa a caixa; tocar num link abre a fonte numa nova aba. No fim da caixa, um link leva à aba Metodologia, com a lista completa. Os links vêm de `scripts/fontes.py` (campos `url_fonte` e `url_api` de `indicadores.json`) e da constante `BASES` do `app.js`.
+
+### Compartilhar (imagem do gráfico)
+
+Todo cartão com gráfico ou tabela (Visão geral, Séries temporais e Coortes) tem um botão de compartilhar ao lado do título. Ele gera, no próprio navegador e sem servidor, uma imagem PNG com:
+
+- a marca Monitora Brasil e a data;
+- o título do cartão e uma linha com as escolhas da tela (indicador, anos, mandatos, grupo);
+- o gráfico ou a tabela como estão na tela, sem botões nem menus;
+- a fonte dos dados e o endereço do site no rodapé (o domínio em que o site estiver publicado, lido do próprio navegador).
+
+A caixa que se abre mostra a prévia e oferece **Compartilhar…** (no celular, abre o menu do aparelho com WhatsApp, Instagram, LinkedIn etc.), **Baixar imagem**, **Copiar imagem** e **Copiar link**, conforme o navegador permita. A imagem sai em resolução dupla e no tema que estiver ativo (claro ou escuro).
+
+Como funciona: `gerarImagem` monta fora da tela um quadro com uma cópia do cartão, e a biblioteca html-to-image (servida pelo próprio site) converte esse quadro em PNG. Para que as fontes do Google entrem na imagem, a política de segurança (CSP) libera `fonts.googleapis.com` e `fonts.gstatic.com` em `connect-src`; se forem bloqueadas, a imagem usa as fontes do sistema. Textos que só fazem sentido na tela ("passe o mouse...") ficam em elementos com a classe `so-tela` e não entram na imagem. O atributo `data-ctx` do cartão controla a linha de escolhas (`proprio`: só os controles do cartão; `nenhum`: sem a linha).
 
 **Links diretos:** acrescente `#series`, `#coortes` ou `#metodo` ao endereço.
 

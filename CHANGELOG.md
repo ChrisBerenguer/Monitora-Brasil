@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 1.13 — 18/10/2026
+
+### Adicionado
+- **Botão de compartilhar em cada cartão com gráfico ou tabela.** Gera no navegador, sem servidor, uma imagem PNG com a marca, a data, o título, as escolhas da tela, o gráfico como está na tela, a fonte dos dados e o endereço do site. A caixa mostra a prévia e oferece Compartilhar… (menu do celular), Baixar imagem, Copiar imagem e Copiar link.
+- Biblioteca html-to-image 1.11.11 (MIT), servida pelo próprio site em `assets/js/`.
+
+### Alterado
+- CSP: `connect-src` libera `fonts.googleapis.com` e `fonts.gstatic.com`, para embutir as fontes na imagem (em `vercel.json`, `site/_headers`, `site/.htaccess` e no exemplo de Nginx).
+
 ## 1.12 — 17/10/2026
 
 ### Adicionado

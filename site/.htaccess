@@ -9,7 +9,7 @@ DirectoryIndex index.html
 <IfModule mod_headers.c>
   Header set X-Content-Type-Options "nosniff"
   Header set Referrer-Policy "strict-origin-when-cross-origin"
-  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-QAdpsusHQkApaCn0JipoVw3UHaUNmse8nFKWDdJ8L4s=' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-ancestors 'self'; base-uri 'self'"
+  Header set Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-QAdpsusHQkApaCn0JipoVw3UHaUNmse8nFKWDdJ8L4s=' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://fonts.googleapis.com https://fonts.gstatic.com; frame-ancestors 'self'; base-uri 'self'"
   <FilesMatch "\.(js|css|svg)$">
     Header set Cache-Control "public, max-age=31536000, immutable"
   </FilesMatch>

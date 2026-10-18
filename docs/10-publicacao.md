@@ -63,7 +63,7 @@ server {
 
     add_header X-Content-Type-Options nosniff;
     add_header Referrer-Policy strict-origin-when-cross-origin;
-    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-QAdpsusHQkApaCn0JipoVw3UHaUNmse8nFKWDdJ8L4s=' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com; frame-ancestors 'self'; base-uri 'self'";
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-QAdpsusHQkApaCn0JipoVw3UHaUNmse8nFKWDdJ8L4s=' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://fonts.googleapis.com https://fonts.gstatic.com; frame-ancestors 'self'; base-uri 'self'";
 
     ssl_certificate     /etc/letsencrypt/live/monitorabrasil.com.br/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/monitorabrasil.com.br/privkey.pem;
@@ -73,7 +73,7 @@ server {
 ## Segurança e desempenho
 
 - **CSP:** a política só permite scripts do próprio site (d3 está em `assets/js/`), o Google Analytics e as fontes do Google. `'unsafe-inline'` em `style-src` é necessário porque os gráficos aplicam estilos por atributo. Se trocar as fontes por arquivos locais, remova `fonts.googleapis.com` e `fonts.gstatic.com` da política.
-- **Google Analytics (G-8GFHJSPY8T):** a tag fica no início do `<head>` do `site/index.html`. O trecho de configuração escrito dentro do HTML é liberado na CSP pela impressão digital (hash `sha256-…`) do seu conteúdo, em vez de `'unsafe-inline'`, que liberaria qualquer script. Também estão liberados `*.googletagmanager.com` (script e imagens), `*.google-analytics.com` e `*.analytics.google.com` (envio dos dados). **Se mudar uma vírgula ou um espaço desse trecho, o hash muda e o navegador passa a bloqueá-lo.** Para recalcular e atualizar a política:
+- **Google Analytics (G-8GFHJSPY8T):** a tag fica no início do `<head>` do `site/index.html`. O trecho de configuração escrito dentro do HTML é liberado na CSP pela impressão digital (hash `sha256-…`) do seu conteúdo, em vez de `'unsafe-inline'`, que liberaria qualquer script. Também estão liberados `*.googletagmanager.com` (script e imagens), `*.google-analytics.com` e `*.analytics.google.com` (envio dos dados). Em `connect-src` também estão `fonts.googleapis.com` e `fonts.gstatic.com`, para o botão de compartilhar embutir as fontes na imagem gerada. **Se mudar uma vírgula ou um espaço desse trecho, o hash muda e o navegador passa a bloqueá-lo.** Para recalcular e atualizar a política:
 
   ```bash
   python3 -c "import re,hashlib,base64;s=open('site/index.html').read();t=re.search(r'<script>(.*?)</script>',s,re.S).group(1);print(\"'sha256-\"+base64.b64encode(hashlib.sha256(t.encode()).digest()).decode()+\"'\")"

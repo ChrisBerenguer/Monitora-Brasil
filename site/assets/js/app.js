@@ -434,7 +434,7 @@
       s.append(i, `${rotulo[k]}: ${n(k)}`); leg.append(s);
     }
     const ea = rows.filter((r) => r.estrito === 'A').length, eb = rows.filter((r) => r.estrito === 'B').length;
-    rod.textContent = `Contando qualquer diferença, por menor que seja: ${nomeMandato(a)} ${ea}, ${nomeMandato(b)} ${eb}. Passe o mouse sobre um quadrado para ver o indicador e as duas médias.`;
+    rod.replaceChildren(`Contando qualquer diferença, por menor que seja: ${nomeMandato(a)} ${ea}, ${nomeMandato(b)} ${eb}.`, el('span', { class: 'so-tela' }, ' Passe o mouse sobre um quadrado para ver o indicador e as duas médias.'));
   }
 
   function drawCartoes() {
@@ -858,6 +858,114 @@
   document.querySelectorAll('[data-info-card]').forEach((b) => ligarInfo(b, () => 'card:' + b.dataset.infoCard));
   document.querySelectorAll('[data-fonte]').forEach((b) => ligarInfo(b, () => 'fonte:' + b.dataset.fonte));
   addEventListener('hashchange', () => esconderInfo()); // o link "Metodologia" da caixa troca de aba
+
+  // ---------------------------------------------------------------- compartilhar (imagem gerada no navegador, sem servidor)
+  const ICONE_SHARE = '<svg class="ico-share" xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M13.5 1a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3M11 2.5a2.5 2.5 0 1 1 .603 1.628l-6.718 3.12a2.5 2.5 0 0 1 0 1.504l6.718 3.12a2.5 2.5 0 1 1-.488.876l-6.718-3.12a2.5 2.5 0 1 1 0-3.256l6.718-3.12A2.5 2.5 0 0 1 11 2.5m-8.5 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3m11 5.5a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3"/></svg>';
+  const LOGO = '<svg viewBox="0 0 32 32" width="22" height="22" aria-hidden="true"><rect x="2" y="18" width="6" height="12" rx="1.5"/><rect x="13" y="10" width="6" height="20" rx="1.5"/><rect x="24" y="3" width="6" height="27" rx="1.5"/></svg>';
+  const enderecoSite = () => (location.host ? location.host + location.pathname.replace(/index\.html$/, '') : 'github.com/ChrisBerenguer/Monitora-Brasil').replace(/\/$/, '');
+  /** Texto da fonte de um cartão, a partir do botão de fonte dele. */
+  function fonteDoCartao(card) {
+    const spec = card.querySelector('[data-fonte]')?.dataset.fonte || 'bases';
+    const alvo = spec === 'ind' ? st.ind : spec === 'tema' ? st.tema : spec === 'cstema' ? st.cstema : spec.startsWith('tema:') ? spec.slice(5) : spec;
+    const meta = D.ind.get(alvo);
+    if (meta) return meta.fonte;
+    if (alvo && TNOME[alvo] && alvo !== 'geral') {
+      const fs = new Set(D.indicadores.filter((r) => r.tema === alvo && r.entra_no_escore).map((r) => (r.fonte.startsWith('PNUD') ? 'PNUD' : 'Banco Mundial')));
+      return [...fs].join(' e ');
+    }
+    return 'Banco Mundial (WDI e WGI) e PNUD';
+  }
+  /** Linha com as escolhas que definem o gráfico (indicador, anos, mandatos, grupo...). */
+  function contextoDoCartao(card) {
+    const pag = card.closest('.pagina');
+    const modo = card.dataset.ctx; // 'proprio': só os controles do cartão; 'nenhum': sem linha de escolhas
+    if (modo === 'nenhum') return '';
+    const sels = [...(modo === 'proprio' ? [] : pag?.querySelectorAll(':scope > .controles select') || []), ...card.querySelectorAll('select')];
+    return sels.filter((s) => s.selectedIndex >= 0).map((s) => {
+      const rot = (s.closest('label')?.firstChild?.textContent || s.closest('.ctl')?.querySelector('label')?.textContent || '').trim();
+      return `${rot ? rot + ': ' : ''}${s.options[s.selectedIndex].text}`;
+    }).join(' · ');
+  }
+  /** Monta fora da tela um quadro com marca, título, escolhas, o cartão e o rodapé, e gera o PNG. */
+  async function gerarImagem(card) {
+    const titulo = card.querySelector('h2')?.textContent.trim() || 'Monitora Brasil';
+    const largura = Math.max(360, Math.min(1200, card.clientWidth));
+    const frame = el('div', { class: 'share-frame' });
+    frame.style.width = `${largura + 56}px`;
+    const topo = el('div', { class: 'sf-topo' }), marca = el('span', { class: 'sf-marca' });
+    marca.innerHTML = LOGO; marca.append('Monitora Brasil');
+    topo.append(marca, el('span', {}, new Date().toLocaleDateString('pt-BR')));
+    const ctx = contextoDoCartao(card);
+    const corpo = card.cloneNode(true);
+    corpo.removeAttribute('id'); corpo.querySelectorAll('[id]').forEach((n) => n.removeAttribute('id'));
+    corpo.querySelector('.titulo-info, h2')?.remove();
+    corpo.querySelectorAll('.info-btn, .botao, .controles, select, [hidden]').forEach((n) => n.remove());
+    corpo.className = 'sf-card';
+    corpo.style.width = `${largura}px`;
+    const rod = el('div', { class: 'sf-rodape' });
+    const f = el('span'); f.append('Fonte: ', el('b', {}, fonteDoCartao(card)), '. Cálculos: Monitora Brasil.');
+    const u = el('span'); u.append('Confira os dados em ', el('b', {}, enderecoSite()));
+    rod.append(f, u);
+    frame.append(topo, el('h2', { class: 'sf-titulo' }, titulo), ...(ctx ? [el('div', { class: 'sf-ctx' }, ctx)] : []), corpo, rod);
+    document.body.append(frame);
+    try {
+      const opts = { pixelRatio: 2, backgroundColor: css('--bg'), cacheBust: false, style: { position: 'static', left: '0', top: '0', margin: '0' } };
+      try { return { blob: await htmlToImage.toBlob(frame, opts), titulo }; }
+      catch { return { blob: await htmlToImage.toBlob(frame, { ...opts, skipFonts: true }), titulo }; } // fontes externas bloqueadas: usa as do sistema
+    } finally { frame.remove(); }
+  }
+  const nomeArquivo = (t) => `monitora-brasil-${t.toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 60)}.png`;
+  async function abrirCompartilhar(btn, card) {
+    tip.hide();
+    if (infoAncora && infoAncora !== btn) infoAncora.setAttribute('aria-expanded', 'false');
+    infoAncora = btn; infoFixo = true;
+    infoEl.setAttribute('role', 'dialog');
+    infoEl.replaceChildren(el('h4', {}, 'Compartilhar'), el('p', { class: 'dado' }, 'Gerando a imagem…'));
+    infoEl.hidden = false; btn.setAttribute('aria-expanded', 'true'); posicionarInfo(btn);
+    let res;
+    try { res = await gerarImagem(card); } catch (e) {
+      infoEl.replaceChildren(el('h4', {}, 'Compartilhar'), el('p', {}, 'Não foi possível gerar a imagem neste navegador.'));
+      return;
+    }
+    if (infoAncora !== btn) return; // a pessoa fechou ou abriu outra caixa
+    const { blob, titulo } = res, nome = nomeArquivo(titulo), url = URL.createObjectURL(blob);
+    const link = location.href, arquivo = new File([blob], nome, { type: 'image/png' });
+    const status = el('p', { class: 'dado' }, 'A imagem leva o título, as escolhas da tela, a fonte e o endereço do painel.');
+    const acoes = el('div', { class: 'share-acoes' });
+    const botao = (txt, fn, principal) => { const b = el('button', { class: 'botao' + (principal ? ' principal' : ''), type: 'button' }, txt); b.addEventListener('click', (e) => { e.stopPropagation(); fn(); }); return b; };
+    if (navigator.canShare && navigator.canShare({ files: [arquivo] })) {
+      acoes.append(botao('Compartilhar…', async () => {
+        try { await navigator.share({ files: [arquivo], title: titulo, text: `${titulo} · Monitora Brasil · ${link}` }); } catch { /* cancelado */ }
+      }, true));
+    }
+    acoes.append(botao('Baixar imagem', () => { const a = el('a', { href: url, download: nome }); document.body.append(a); a.click(); a.remove(); status.textContent = 'Imagem baixada. Agora é só postar.'; }, !acoes.childElementCount));
+    if (navigator.clipboard && window.ClipboardItem) {
+      acoes.append(botao('Copiar imagem', async () => {
+        try { await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]); status.textContent = 'Imagem copiada. Cole no post ou na conversa.'; }
+        catch { status.textContent = 'O navegador não deixou copiar a imagem. Use "Baixar imagem".'; }
+      }));
+    }
+    if (navigator.clipboard) {
+      acoes.append(botao('Copiar link', async () => {
+        try { await navigator.clipboard.writeText(link); status.textContent = 'Link copiado.'; } catch { status.textContent = link; }
+      }));
+    }
+    infoEl.replaceChildren(el('h4', {}, 'Compartilhar'), el('img', { class: 'share-prev', src: url, alt: `Prévia da imagem: ${titulo}` }), acoes, status);
+    posicionarInfo(btn);
+  }
+  /** Coloca o botão de compartilhar ao lado do título de cada cartão com gráfico ou tabela. */
+  document.querySelectorAll('#visao article.card, #series article.card, #coortes article.card').forEach((card) => {
+    const alvo = card.querySelector('.titulo-info');
+    if (!alvo) return;
+    const b = el('button', { class: 'info-btn share-btn', type: 'button', 'aria-label': 'Compartilhar este gráfico como imagem', 'aria-haspopup': 'dialog' });
+    b.innerHTML = ICONE_SHARE;
+    b.addEventListener('click', (e) => {
+      e.preventDefault(); e.stopPropagation();
+      if (infoAncora === b && infoFixo) return esconderInfo();
+      abrirCompartilhar(b, card);
+    });
+    alvo.append(b);
+  });
   infoEl.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse' && !e.target.closest('a')) { ultimoToque = performance.now(); esconderInfo(); } }); // tocar na explicação fecha
   document.addEventListener('click', (e) => { if (performance.now() - ultimoToque < 700) return; if (!infoEl.hidden && !infoEl.contains(e.target)) esconderInfo(); });
   document.addEventListener('pointerup', (e) => {   // toque fora fecha
