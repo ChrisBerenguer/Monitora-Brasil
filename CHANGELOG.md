@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.14 — 19/10/2026
+
+### Adicionado
+- **Aba "Onde votar"** (`#votar`): botão para o Autoatendimento Eleitoral do TSE (abre numa nova aba), passo a passo até Consultas → Onde votar, alternativas (app e-Título e atendimento presencial) e aviso do 2º turno de 25/10/2026, que some depois da data. O site não coleta nenhum dado do eleitor.
+
 ## 1.13.1 — 18/10/2026
 
 ### Corrigido
