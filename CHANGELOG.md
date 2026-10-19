@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 1.13.1 — 18/10/2026
+
+### Corrigido
+- **Compartilhar no celular:** tocar em "Baixar imagem", "Copiar imagem" ou "Copiar link" fechava a caixa antes de a ação acontecer. Agora toques em botões dentro da caixa não a fecham.
+- **Prévia em branco:** a prévia da imagem não aparecia porque a política de segurança não libera endereços `blob:`. A prévia e o download agora usam `data:`.
+- A caixa de compartilhar se reposiciona quando a prévia carrega e ganha rolagem se não couber na tela; antes os botões podiam ficar fora da tela no celular.
+- CSP: `font-src` aceita `data:`, para as fontes embutidas na imagem gerada.
+
 ## 1.13 — 18/10/2026
 
 ### Adicionado

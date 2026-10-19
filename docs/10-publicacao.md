@@ -63,7 +63,7 @@ server {
 
     add_header X-Content-Type-Options nosniff;
     add_header Referrer-Policy strict-origin-when-cross-origin;
-    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-QAdpsusHQkApaCn0JipoVw3UHaUNmse8nFKWDdJ8L4s=' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://fonts.googleapis.com https://fonts.gstatic.com; frame-ancestors 'self'; base-uri 'self'";
+    add_header Content-Security-Policy "default-src 'self'; script-src 'self' 'sha256-QAdpsusHQkApaCn0JipoVw3UHaUNmse8nFKWDdJ8L4s=' https://*.googletagmanager.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: https://*.google-analytics.com https://*.googletagmanager.com; connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://fonts.googleapis.com https://fonts.gstatic.com; frame-ancestors 'self'; base-uri 'self'";
 
     ssl_certificate     /etc/letsencrypt/live/monitorabrasil.com.br/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/monitorabrasil.com.br/privkey.pem;

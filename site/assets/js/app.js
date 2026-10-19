@@ -928,7 +928,10 @@
       return;
     }
     if (infoAncora !== btn) return; // a pessoa fechou ou abriu outra caixa
-    const { blob, titulo } = res, nome = nomeArquivo(titulo), url = URL.createObjectURL(blob);
+    const { blob, titulo } = res, nome = nomeArquivo(titulo);
+    // data: em vez de blob:, porque a política de segurança só libera imagens 'self' e data:
+    const url = await new Promise((ok, erro) => { const r = new FileReader(); r.onload = () => ok(r.result); r.onerror = erro; r.readAsDataURL(blob); });
+    if (infoAncora !== btn) return;
     const link = location.href, arquivo = new File([blob], nome, { type: 'image/png' });
     const status = el('p', { class: 'dado' }, 'A imagem leva o título, as escolhas da tela, a fonte e o endereço do painel.');
     const acoes = el('div', { class: 'share-acoes' });
@@ -950,7 +953,10 @@
         try { await navigator.clipboard.writeText(link); status.textContent = 'Link copiado.'; } catch { status.textContent = link; }
       }));
     }
-    infoEl.replaceChildren(el('h4', {}, 'Compartilhar'), el('img', { class: 'share-prev', src: url, alt: `Prévia da imagem: ${titulo}` }), acoes, status);
+    const prev = el('img', { class: 'share-prev', alt: `Prévia da imagem: ${titulo}` });
+    prev.addEventListener('load', () => { if (infoAncora === btn) posicionarInfo(btn); }); // a caixa cresce quando a prévia carrega
+    prev.src = url;
+    infoEl.replaceChildren(el('h4', {}, 'Compartilhar'), prev, acoes, status);
     posicionarInfo(btn);
   }
   /** Coloca o botão de compartilhar ao lado do título de cada cartão com gráfico ou tabela. */
@@ -966,7 +972,7 @@
     });
     alvo.append(b);
   });
-  infoEl.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse' && !e.target.closest('a')) { ultimoToque = performance.now(); esconderInfo(); } }); // tocar na explicação fecha
+  infoEl.addEventListener('pointerup', (e) => { if (e.pointerType !== 'mouse' && !e.target.closest('a, button')) { ultimoToque = performance.now(); esconderInfo(); } }); // tocar na explicação fecha
   document.addEventListener('click', (e) => { if (performance.now() - ultimoToque < 700) return; if (!infoEl.hidden && !infoEl.contains(e.target)) esconderInfo(); });
   document.addEventListener('pointerup', (e) => {   // toque fora fecha
     if (e.pointerType !== 'mouse' && !infoEl.hidden && !infoEl.contains(e.target) && !(infoAncora && infoAncora.contains(e.target))) esconderInfo();
