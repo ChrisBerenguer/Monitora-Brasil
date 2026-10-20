@@ -1,0 +1,29 @@
+name: Atualizar dados de obras e investimento
+# Baixa o investimento federal (Tesouro Nacional) e as obras do Obrasgov.br e grava
+# site/data/investimento.json e site/data/obras.json. Roda todo mês e pode ser disparado à mão
+# em Actions → "Atualizar dados de obras e investimento" → Run workflow.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 6 5 * *'   # dia 5 de cada mês, 03h17 em Brasília
+permissions:
+  contents: write
+concurrency: dados-obras
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -q openpyxl
+      - run: python scripts/coletar_obras.py
+      - name: Gravar no repositório se algo mudou
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dados/investimento.json dados/obras.json site/data/investimento.json site/data/obras.json
+          git diff --cached --quiet && echo "Sem mudanças." && exit 0
+          git commit -m "Dados: obras (Obrasgov.br) e investimento (Tesouro), coleta automática"
+          git push

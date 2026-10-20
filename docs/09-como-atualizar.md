@@ -19,6 +19,10 @@ python scripts/gerar_dicionario.py   # atualiza docs/04 com a cobertura nova
 - [ ] O número de países no ranking (`ranking_brasil.json`) está perto de 175.
 - [ ] Nenhum tema do Brasil ficou sem escore no último ano.
 
+### Dados da aba Obras entregues
+
+Não precisam do pipeline acima. O workflow **Atualizar dados de obras e investimento** (`.github/workflows/dados-obras.yml`) roda todo dia 5 e grava `investimento.json` e `obras.json` no repositório. Para rodar na hora: GitHub → **Actions** → esse workflow → **Run workflow**. Leva de 20 a 40 minutos, porque baixa todas as obras concluídas e os registros de execução física, 200 por página. Para rodar no próprio computador: `pip install openpyxl` e `python scripts/coletar_obras.py`.
+
 ## 2. Publicar
 
 `build_dados.py` grava os JSON em `dados/` e uma cópia em `site/data/`. Para publicar:

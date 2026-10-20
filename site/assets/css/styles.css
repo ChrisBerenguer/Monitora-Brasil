@@ -197,6 +197,10 @@ svg .info-svg:focus-visible .anel { stroke-width: 2.2; }
 .waffle-leg i.sd { border: 2px dashed var(--axis); }
 .waffle-leg i.ct { border: 2px solid var(--axis); }
 
+/* obras entregues */
+.ctl-check { display: inline-flex; align-items: center; gap: 8px; font-size: var(--t-sm); color: var(--muted); cursor: pointer; }
+.ctl-check input { accent-color: var(--accent); }
+
 /* onde votar */
 .aba-votar { color: var(--accent); }
 .votar { max-width: 760px; display: grid; gap: 12px; }

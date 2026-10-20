@@ -140,6 +140,40 @@ Gerado para as coortes grandes (`mundo` e `umic`), para cada indicador e ano com
 | `posicao` | inteiro | Posição do Brasil no escore geral (1 = melhor) |
 | `paises` | inteiro | Total de países com escore geral no ano |
 
+## Dados da aba Obras entregues
+
+Vêm de duas fontes fora do Banco Mundial e são coletados por `scripts/coletar_obras.py`, que roda no GitHub Actions (workflow `dados-obras.yml`, todo dia 5 e quando disparado à mão), porque precisa acessar os sites do governo.
+
+### `investimento.json`: investimento do governo central
+
+Fonte: Tesouro Nacional, **Resultado do Tesouro Nacional, série histórica**, tabela **2.3-A** ("Investimento do Governo Central, anual, % do PIB"). A planilha é encontrada pela API do portal Tesouro Transparente (pacote `resultado-do-tesouro-nacional`). A tabela começa em 2008.
+
+| Campo | Descrição |
+|---|---|
+| `serie[].ano` | Ano |
+| `serie[].gnd4_pct_pib` | Linha "1.1 Investimentos (GND 4)", em % do PIB: obras e equipamentos pagos no ano |
+| `serie[].total_pct_pib` | Linha "1. Investimento total": GND 4 mais inversões financeiras e ajustes, em % do PIB |
+| `url`, `arquivo`, `coletado_em` | Planilha usada e data da coleta |
+
+O valor é pago (inclui restos a pagar), do Executivo, Legislativo e Judiciário. Não inclui estatais, estados e municípios.
+
+### `obras.json`: obras federais do Obrasgov.br
+
+Fonte: **API de dados abertos do Obrasgov.br** (`https://api-publica.obrasgov.gestao.gov.br/obras`, sem cadastro). Rotas usadas: `data-atualizacao`, `projeto-investimento` (filtrado por `situacao`) e `execucao-fisica`.
+
+| Campo | Descrição |
+|---|---|
+| `retrato_situacao` | Número de obras em cada situação na data da coleta |
+| `concluidas_total` | Obras com situação "Concluída" |
+| `concluidas_sem_data` | Concluídas sem nenhuma data de conclusão aproveitável (ficam fora da contagem por ano) |
+| `origem_da_data` | De onde veio a data de conclusão: "data final efetiva" do projeto ou "execução física" |
+| `concluidas_por_ano[]` | Por ano de conclusão: `n` (obras), `valor_previsto` (soma dos investimentos previstos informados), `n_com_valor`, `por_orgao` (6 órgãos com mais obras) e `por_sistema` (sistema de origem do cadastro) |
+| `concluidas_por_ano_cadastro` | Obras concluídas pelo ano em que foram cadastradas no Obrasgov.br |
+
+**Como se define o ano de conclusão.** O campo `dt_final_efetiva` do projeto vem vazio em quase todas as obras concluídas. Por isso, quando ele falta, usa-se a maior `dt_final_execucao` entre os registros de execução física da obra com 100% de execução. Obras sem nenhuma das duas datas ficam de fora da contagem por ano.
+
+**Cobertura.** O cadastro no Obrasgov.br passou a ser obrigatório para obras com recursos federais em 2021. Obras anteriores entram aos poucos, por cargas de sistemas como o SIMEC (FNDE), o SISMOB (Fundo Nacional de Saúde) e o Transferegov.br. Por isso a aba mostra, por padrão, só os anos a partir de 2021.
+
 ## Cálculos feitos no navegador
 
 Três conjuntos são derivados em `site/assets/js/app.js`:

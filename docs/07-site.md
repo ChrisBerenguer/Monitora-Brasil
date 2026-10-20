@@ -6,7 +6,7 @@ O painel é um **site estático**: HTML, CSS e JavaScript puros, sem etapa de bu
 
 ```
 site/
-├── index.html                  marcação das 5 abas, cabeçalho e rodapé
+├── index.html                  marcação das 6 abas, cabeçalho e rodapé
 ├── assets/
 │   ├── css/styles.css          tokens de design (claro/escuro), layout e componentes
 │   ├── js/app.js               aplicação: carga dos dados, cálculos, gráficos, interação
@@ -75,6 +75,12 @@ Todos os outros números exibidos vêm diretamente dos JSON. Nenhum número est�
 - **Escore por grupo** (tema escolhido, último ano): a mesma régua e o mesmo gráfico de pontos, com os escores.
 - **Estatísticas de cada grupo:** tabela com n, média, mediana, desvio, quartis, mínimo, máximo, valor do Brasil e Z do Brasil. O **box plot** fica atrás do botão "Ver box plot", para quem quiser ver os quartis desenhados.
 
+### Obras entregues (`#obras`)
+- **Investimento federal em % do PIB:** linhas de 2008 em diante, com o investimento em obras e equipamentos (GND 4) e o total com inversões financeiras, faixas de mandato e barras com a média anual do GND 4 em cada mandato (mandatos incompletos na série aparecem com os anos no rótulo).
+- **Obras federais concluídas por ano:** barras pelo ano de conclusão, de 2021 em diante; a caixa "Mostrar anos antes de 2021" exibe os anteriores em cinza. O ano corrente aparece claro (incompleto). Embaixo, a média de obras concluídas por ano em cada mandato, só com anos completos a partir de 2021.
+- **Situação atual:** barras com o número de obras em cada situação no Obrasgov.br.
+- Cada cartão tem "i", fonte e compartilhar. Dados em `investimento.json` e `obras.json` (doc 06); a coleta é automática (doc 09).
+
 ### Onde votar (`#votar`)
 Serviço ao eleitor: botão que abre o Autoatendimento Eleitoral do TSE numa nova aba, com o passo a passo para chegar a **Consultas → Onde votar**, as alternativas (aplicativo e-Título e atendimento presencial) e um aviso de data que só aparece até o 2º turno de 2026 (25/10). O site não recebe nenhum dado do eleitor: a consulta é feita no site oficial. O endereço do TSE fica no `index.html`.
 
@@ -130,7 +136,7 @@ A caixa que se abre mostra a prévia e oferece **Compartilhar…** (no celular, 
 
 Como funciona: `gerarImagem` monta fora da tela um quadro com uma cópia do cartão, e a biblioteca html-to-image (servida pelo próprio site) converte esse quadro em PNG. Para que as fontes do Google entrem na imagem, a política de segurança (CSP) libera `fonts.googleapis.com` e `fonts.gstatic.com` em `connect-src`; se forem bloqueadas, a imagem usa as fontes do sistema. Textos que só fazem sentido na tela ("passe o mouse...") ficam em elementos com a classe `so-tela` e não entram na imagem. O atributo `data-ctx` do cartão controla a linha de escolhas (`proprio`: só os controles do cartão; `nenhum`: sem a linha).
 
-**Links diretos:** acrescente `#series`, `#coortes`, `#metodo` ou `#votar` ao endereço.
+**Links diretos:** acrescente `#series`, `#coortes`, `#metodo`, `#obras` ou `#votar` ao endereço.
 
 ## Organização do `app.js`
 

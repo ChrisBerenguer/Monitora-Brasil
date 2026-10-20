@@ -17,6 +17,8 @@
     percentis_br: 'percentis_brasil.json',
     ranking_br: 'ranking_brasil.json',
     histogramas: 'histogramas.json',
+    investimento: 'investimento.json',
+    obras: 'obras.json',
   };
 
   const TEMAS = [
@@ -40,7 +42,7 @@
   const ORDEM_PAISES = Object.keys(PAIS);
   const PERIODOS = ['1995–1998', '1999–2002', '2003–2006', '2007–2010', '2011–2014', '2015–2018', '2019–2022', '2023–2026'];
   const MANDATO = { '1995–1998': 'FHC 1', '1999–2002': 'FHC 2', '2003–2006': 'Lula 1', '2007–2010': 'Lula 2', '2011–2014': 'Dilma 1', '2015–2018': 'Dilma 2 / Temer', '2019–2022': 'Bolsonaro', '2023–2026': 'Lula 3 (até 2025)' };
-  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'votar'];
+  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'obras', 'votar'];
   // Mandatos usados na variação dos escores (Visão geral). Os escores começam em 2000,
   // então FHC 2 é medido de 2000 a 2002.
   const MANDATOS_ESC = PERIODOS.filter((p) => +p.slice(0, 4) + 3 >= 2000).map((p) => ({ id: p, ini: +p.slice(0, 4), fim: +p.slice(0, 4) + 3, nome: MANDATO[p] }));
@@ -588,6 +590,22 @@
     return [['No Brasil, agora', f(c).replace(/\.\.$/, '.')]];
   };
   const CARD_INFO = {
+    investimento: { titulo: 'Investimento federal em % do PIB', blocos: [
+      ['O que mostra', 'Quanto o governo central (Executivo, Legislativo e Judiciário federais) pagou em investimentos a cada ano, dividido pelo PIB do ano. Usar % do PIB permite comparar anos diferentes, descontando a inflação e o crescimento da economia.'],
+      ['As duas linhas', 'A linha cheia é o investimento em obras e equipamentos (o grupo de despesa "Investimentos", GND 4): estradas, prédios, máquinas. A tracejada é o investimento total do Tesouro, que soma também inversões financeiras, como a compra de participações e empréstimos de programas do governo. Em 2020, por exemplo, o total sobe por causa dos programas de crédito da pandemia, sem que isso seja obra.'],
+      ['Média por mandato', 'As barras mostram a média anual da linha cheia em cada mandato. A série começa em 2008, então Lula 2 aparece só com 2008 a 2010, e o mandato atual vai até 2025.'],
+      ['Atenção', 'É dinheiro pago no ano, inclusive restos a pagar de anos anteriores. Mede o esforço de investimento, e não quantas obras ficaram prontas. Não inclui estatais (como a Petrobras), estados e municípios.'],
+    ] },
+    'obras-ano': { titulo: 'Obras federais concluídas por ano', blocos: [
+      ['O que mostra', 'Quantas obras cadastradas no Obrasgov.br estão hoje com a situação "Concluída", contadas pelo ano em que terminaram de fato (data de conclusão efetiva informada pelo órgão responsável). Cada obra conta uma vez, seja uma quadra de escola ou uma ferrovia.'],
+      ['Por que a partir de 2021', 'O cadastro no Obrasgov.br passou a ser obrigatório para obras com recursos federais em 2021. Obras terminadas antes disso só aparecem se alguém as cadastrou depois, por isso os anos anteriores ficam escondidos por padrão: a contagem deles é incompleta e não serve para comparar mandatos.'],
+      ['Média por mandato', 'Como o período coberto tem 2 anos do mandato Bolsonaro (2021 e 2022) e menos de 4 do mandato atual, a comparação usa a média de obras concluídas por ano, e não o total.'],
+      ['Atenção', 'Uma obra concluída num mandato pode ter sido contratada e feita quase toda no anterior. O ano corrente está incompleto. Os números mudam quando os órgãos atualizam o cadastro; a data da coleta aparece no texto acima do gráfico.'],
+    ] },
+    'obras-situacao': { titulo: 'Situação atual das obras', blocos: [
+      ['O que mostra', 'Quantas obras do Obrasgov.br estão hoje em cada situação: concluídas, em execução, paralisadas, inacabadas, só cadastradas (ainda sem início) e canceladas.'],
+      ['Atenção', 'É um retrato do cadastro na data da coleta, não uma série no tempo. Paralisada é obra parada que pode ser retomada; inacabada é obra que não vai ser concluída como planejado. Auditorias do TCU já apontaram que o cadastro de obras paralisadas é incompleto.'],
+    ] },
     placar: { titulo: 'Placar entre mandatos', blocos: [
       ['O que mostra', 'Para cada indicador, compara a média do Brasil nos dois mandatos escolhidos e conta em quantos cada um teve a média melhor. Cada quadrado é um indicador: passe o mouse para ver qual é e as duas médias.'],
       ['Como se decide', '"Melhor" leva em conta o sentido de cada indicador: em desemprego e pobreza, menor é melhor; em PIB e expectativa de vida, maior é melhor; em inflação e juros reais, o melhor é ficar perto da meta (3% e 2%). Os indicadores só de contexto, como receita tributária, não entram na disputa.'],
@@ -734,8 +752,20 @@
   const linkExt = (txt, url) => el('a', { href: url, target: '_blank', rel: 'noopener' }, txt);
   /** Conteúdo do botão de fonte: um indicador, os indicadores de um tema ou as bases de dados. */
   function preencherFonte(spec) {
-    const alvo = spec === 'ind' ? st.ind : spec === 'tema' ? st.tema : spec === 'cstema' ? st.cstema : spec.startsWith('tema:') ? spec.slice(5) : spec;
     const partes = [el('h4', {}, 'Fonte original dos dados')];
+    if (spec.startsWith('fonte:')) { // fontes fora do Banco Mundial (aba Obras entregues)
+      const F = {
+        tesouro: { t: 'Tesouro Nacional: Resultado do Tesouro Nacional, série histórica (tabela 2.3-A, Investimento do Governo Central em % do PIB).', l: [['Página da série histórica', 'https://www.tesourotransparente.gov.br/ckan/dataset/resultado-do-tesouro-nacional'], ['Planilha usada nesta coleta', D.raw.investimento?.url]] },
+        obrasgov: { t: 'Obrasgov.br: API de dados abertos das obras financiadas com recursos federais (Ministério da Gestão e da Inovação em Serviços Públicos).', l: [['Documentação da API', 'https://api-publica.obrasgov.gestao.gov.br/obras'], ['Painel do Obrasgov.br', 'https://www.gov.br/obrasgov/pt-br']] },
+      }[spec.slice(6)];
+      partes.push(el('p', {}, F.t));
+      const ul = el('ul', { class: 'fontes-lista' });
+      for (const [n, u] of F.l) if (u) { const li = el('li'); li.append(linkExt(n, u)); ul.append(li); }
+      partes.push(ul);
+      infoEl.replaceChildren(...partes);
+      return;
+    }
+    const alvo = spec === 'ind' ? st.ind : spec === 'tema' ? st.tema : spec === 'cstema' ? st.cstema : spec.startsWith('tema:') ? spec.slice(5) : spec;
     const meta = D.ind.get(alvo);
     if (meta) {
       const p = el('p', {}); p.append(el('b', {}, meta.nome), `: ${meta.fonte}.`); partes.push(p);
@@ -866,6 +896,8 @@
   /** Texto da fonte de um cartão, a partir do botão de fonte dele. */
   function fonteDoCartao(card) {
     const spec = card.querySelector('[data-fonte]')?.dataset.fonte || 'bases';
+    if (spec === 'fonte:tesouro') return 'Tesouro Nacional (Resultado do Tesouro Nacional)';
+    if (spec === 'fonte:obrasgov') return 'Obrasgov.br (Ministério da Gestão)';
     const alvo = spec === 'ind' ? st.ind : spec === 'tema' ? st.tema : spec === 'cstema' ? st.cstema : spec.startsWith('tema:') ? spec.slice(5) : spec;
     const meta = D.ind.get(alvo);
     if (meta) return meta.fonte;
@@ -1282,6 +1314,78 @@
     av.hidden = hoje > turno2;
     if (!av.hidden) av.textContent = 'Eleições 2026: o 2º turno é no domingo, 25 de outubro, nos lugares onde houver segundo turno.';
   }
+  // ---------------------------------------------------------------- obras entregues
+  /** Barras verticais simples, com rótulo do valor em cima e tooltip. */
+  function barras(box, rows, { fmt = f1, cor: corB = cor(0), height = 240, rotulo = (r) => r.label, tipLinhas = null } = {}) {
+    box.replaceChildren(); box.classList.remove('carregando');
+    if (!rows.length) return vazio(box);
+    const W = largura(box), H = height, mt = 22, mb = 40, ml = 8, mr = 8;
+    const x = d3.scaleBand(rows.map((r) => r.label), [ml, W - mr]).padding(0.22);
+    const y = d3.scaleLinear([0, d3.max(rows, (r) => r.v) || 1], [H - mb, mt]).nice();
+    const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img');
+    svg.append('line').attr('x1', ml).attr('x2', W - mr).attr('y1', y(0)).attr('y2', y(0)).style('stroke', css('--axis'));
+    rows.forEach((r) => {
+      const c = typeof corB === 'function' ? corB(r) : corB;
+      svg.append('rect').attr('x', x(r.label)).attr('y', y(r.v)).attr('width', x.bandwidth()).attr('height', Math.max(0, y(0) - y(r.v))).attr('rx', 3)
+        .style('fill', c).style('fill-opacity', r.fraco ? 0.35 : 0.9)
+        .on('pointermove', (ev) => tip.show(ev, r.titulo || r.label, tipLinhas ? tipLinhas(r) : [{ name: 'Valor', value: fmt(r.v) }]))
+        .on('pointerleave', () => tip.hide());
+      svg.append('text').attr('x', x(r.label) + x.bandwidth() / 2).attr('y', y(r.v) - 5).attr('text-anchor', 'middle').style('font-size', '11px').style('fill', css('--fg')).text(fmt(r.v));
+    });
+    const passo = Math.ceil(rows.length / Math.max(1, Math.floor((W - ml - mr) / 56)));
+    svg.append('g').selectAll('text').data(rows.filter((r, i) => i % passo === 0)).join('text')
+      .attr('x', (r) => x(r.label) + x.bandwidth() / 2).attr('y', H - mb + 16).attr('text-anchor', 'middle').style('font-size', '11px').text(rotulo);
+  }
+  /** Encurta nomes de órgãos para caber na caixa de valores. */
+  const nomeOrgao = (s) => s.toLowerCase().replace(/(^|[\s(])\S/g, (m) => m.toUpperCase()).replace(/\b(De|Da|Do|Das|Dos|E)\b/g, (m) => m.toLowerCase()).slice(0, 48);
+  const FAIXAS_MANDATO = () => PERIODOS.map((p) => ({ de: +p.slice(0, 4), ate: +p.slice(0, 4) + 3, rotulo: MANDATO[p].replace(' (até 2025)', '') }));
+  function drawObras() {
+    const inv = D.raw.investimento?.serie || [];
+    const anoMax = d3.max(inv, (r) => r.ano);
+    lineChart($('#ob-inv'), {
+      series: [
+        { name: 'Obras e equipamentos', color: cor(0), width: 2.6, pts: inv.map((r) => ({ x: r.ano, y: r.gnd4_pct_pib })) },
+        { name: 'Total com inversões', color: css('--chart-muted'), dash: '5 4', pts: inv.map((r) => ({ x: r.ano, y: r.total_pct_pib })) },
+      ],
+      yfmt: (v) => `${f2(v)}%`, xdomain: [d3.min(inv, (r) => r.ano), anoMax], faixas: FAIXAS_MANDATO(), ydomain: [0, Math.ceil(d3.max(inv, (r) => r.total_pct_pib) * 4) / 4],
+      endLabels: $('#ob-inv').clientWidth > 560, legenda: true, height: 300,
+    });
+    const mand = PERIODOS.map((p) => {
+      const i = +p.slice(0, 4), f = i + 3, rs = inv.filter((r) => r.ano >= i && r.ano <= f && r.gnd4_pct_pib != null);
+      const nome = MANDATO[p].replace(' (até 2025)', '');
+      return rs.length ? { label: rs.length < 4 ? `${nome} (${rs[0].ano}–${String(rs.at(-1).ano).slice(2)})` : nome, titulo: `${MANDATO[p]} · ${rs[0].ano} a ${rs.at(-1).ano}`, v: d3.mean(rs, (r) => r.gnd4_pct_pib), n: rs.length, parcial: rs.length < 4 } : null;
+    }).filter(Boolean);
+    barras($('#ob-inv-mand'), mand, { fmt: (v) => `${f2(v)}%`, height: 220,
+      tipLinhas: (r) => [{ name: 'Média anual', value: `${f2(r.v)}% do PIB` }, { name: 'Anos com dado', value: `${r.n}${r.parcial ? ' (mandato incompleto na série)' : ''}` }] });
+
+    const ob = D.raw.obras;
+    if (!ob) { vazio($('#ob-conc'), 'Dados de obras indisponíveis.'); return; }
+    const anoAtual = +String(ob.coletado_em).slice(0, 4);
+    $('#ob-conc-nota').textContent = `Obras com situação "Concluída" no Obrasgov.br, pelo ano da conclusão efetiva. Dados coletados em ${new Date(ob.coletado_em + 'T12:00').toLocaleDateString('pt-BR')}; ${anoAtual} está incompleto. ${f0(ob.concluidas_sem_data)} das ${f0(ob.concluidas_total)} obras concluídas não informam a data de conclusão e ficam de fora.`;
+    $('#ob-antes').checked = !!st.obAntes;
+    const anos = ob.concluidas_por_ano.filter((r) => r.ano <= anoAtual && (st.obAntes ? r.ano >= 2000 : r.ano >= 2021));
+    barras($('#ob-conc'), anos.map((r) => ({ label: String(r.ano), v: r.n, fraco: r.ano < 2021 || r.ano === anoAtual, r })), {
+      fmt: f0, height: 260, cor: (r) => (r.r.ano < 2021 ? css('--chart-muted') : cor(0)),
+      tipLinhas: (r) => [{ name: 'Obras concluídas', value: f0(r.v) }, ...Object.entries(r.r.por_orgao || {}).slice(0, 4).map(([k, v]) => ({ name: nomeOrgao(k), value: f0(v) })),
+        ...(r.r.ano < 2021 ? [{ name: 'Atenção', value: 'cadastro incompleto' }] : []), ...(r.r.ano === anoAtual ? [{ name: 'Atenção', value: 'ano incompleto' }] : [])],
+    });
+    const porMand = PERIODOS.map((p) => {
+      const i = Math.max(2021, +p.slice(0, 4)), f = Math.min(+p.slice(0, 4) + 3, anoAtual);
+      if (i > f) return null;
+      const rs = ob.concluidas_por_ano.filter((r) => r.ano >= i && r.ano <= f);
+      const anosCheios = rs.filter((r) => r.ano < anoAtual);
+      const base = anosCheios.length ? anosCheios : rs;
+      return base.length ? { label: `${MANDATO[p].replace(' (até 2025)', '')} (${base[0].ano}–${String(base.at(-1).ano).slice(2)})`, titulo: `${MANDATO[p]} · ${base[0].ano} a ${base.at(-1).ano}`, v: d3.mean(base, (r) => r.n), n: base.length } : null;
+    }).filter(Boolean);
+    barras($('#ob-conc-mand'), porMand, { fmt: f0, height: 200,
+      tipLinhas: (r) => [{ name: 'Média por ano', value: f0(r.v) }, { name: 'Anos considerados', value: `${r.n} (${r.titulo.split(' · ')[1]})` }] });
+
+    const sit = Object.entries(ob.retrato_situacao || {}).filter(([, v]) => v != null);
+    $('#ob-sit-nota').textContent = `Total de ${f0(d3.sum(sit, (d) => d[1]))} obras cadastradas, na data da coleta.`;
+    const corSit = { 'Concluída': cor(0), 'Em execução': css('--s1'), 'Paralisada': css('--critical'), 'Inacabada': css('--critical'), 'Cadastrada': css('--chart-muted'), 'Cancelada': css('--chart-muted') };
+    barras($('#ob-sit'), sit.map(([k, v]) => ({ label: k, v })), { fmt: f0, height: 220, cor: (r) => corSit[r.label] || cor(0),
+      tipLinhas: (r) => [{ name: 'Obras', value: f0(r.v) }] });
+  }
   function show(page, push = true) {
     if (!PAGINAS.includes(page)) page = 'visao';
     st.page = page;
@@ -1306,6 +1410,7 @@
   on('#c-ano', (v) => { st.cano = +v; st.canoInd = st.ind; });
   on('#cs-tema', (v) => { st.cstema = v; });
   on('#pl-a', (v) => { st.ga = v; });
+  $('#ob-antes').addEventListener('change', (e) => { st.obAntes = e.target.checked; render(); });
   on('#pl-b', (v) => { st.gb = v; });
   on('#ct-y0', (v) => { st.cy0 = +v; });
   on('#ct-y1', (v) => { st.cy1 = +v; });
@@ -1320,6 +1425,7 @@
     } else if (st.page === 'series') { drawSeries(); drawPeriodos(); }
     else if (st.page === 'coortes') drawCoortes();
     else if (st.page === 'votar') drawVotar();
+    else if (st.page === 'obras') drawObras();
     else drawMetodo();
   }
 
