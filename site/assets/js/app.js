@@ -603,7 +603,7 @@
     'cb-mandatos': { titulo: 'Médias por mandato presidencial', blocos: [
       ['O que mostra', 'O preço médio de cada item em todos os meses de dois mandatos, para comparar períodos em vez de um mês solto. É a mesma ideia da tabela "Comparar dois mandatos" da aba Séries temporais.'],
       ['Preços corrigidos', 'Todas as médias estão em preços de hoje, corrigidas pela inflação. Sem isso, qualquer mandato mais recente pareceria sempre o mais caro, só porque a moeda perde valor com o tempo.'],
-      ['Como ler as cores', 'Em preço, cair é melhor: verde quer dizer que o item ficou mais barato no mandato B que no A, descontada a inflação; vermelho, mais caro. As duas últimas colunas mostram quanto um salário mínimo comprava em média em cada mandato, que junta preço e renda.'],
+      ['Como ler as cores', 'As cores ficam nas duas últimas colunas, que mostram quanto um salário mínimo comprava em média em cada mandato. Verde marca o mandato em que o salário comprava mais daquele item, e vermelho o outro. Essa comparação junta preço e renda, então é a que mais se aproxima do que a pessoa sente no bolso: um item pode ficar mais caro e ainda assim caber melhor no orçamento, se o salário subiu mais que ele. Quando os dois mandatos aparecem com o mesmo número, nenhum fica colorido.'],
       ['Série parcial', 'A marca "série parcial" avisa que a fonte não cobre o mandato inteiro: a cesta básica começa em 2001 e os combustíveis em julho de 2001, então mandatos anteriores ficam de fora ou aparecem incompletos. O mandato atual também é parcial, porque ainda não acabou.'],
       ['Atenção', 'Preço de combustível depende muito do petróleo e do câmbio, e a cesta básica depende de safra e clima. Coincidir com um mandato não prova que o governo causou o resultado.'],
     ] },
@@ -1403,7 +1403,7 @@
     msg.hidden = !msg.textContent;
     const nomeA = MANDATO[a].replace(' (até 2025)', ''), nomeB = MANDATO[b].replace(' (até 2025)', '');
     const emCurso = +b.slice(0, 4) + 3 >= +C.base_ipca.slice(0, 4);
-    $('#cb-mand-nota').textContent = `Preço médio de cada item em todos os meses do mandato, corrigido para preços de ${mesTexto(C.base_ipca)}. Assim a comparação não é afetada pela inflação. Verde quer dizer que o item ficou mais barato.`
+    $('#cb-mand-nota').textContent = `Preço médio de cada item em todos os meses do mandato, corrigido para preços de ${mesTexto(C.base_ipca)}. Assim a comparação não é afetada pela inflação. O verde marca o mandato em que um salário mínimo comprava mais.`
       + (emCurso ? ` O mandato ${nomeB} ainda não acabou: a média vai até ${mesTexto(C.base_ipca)}.` : '');
     $('#cb-th-a').textContent = `Média ${nomeA}`; $('#cb-th-b').textContent = `Média ${nomeB}`;
     $('#cb-th-sa').textContent = `1 salário mínimo em ${nomeA}`; $('#cb-th-sb').textContent = `1 salário mínimo em ${nomeB}`;
@@ -1419,16 +1419,20 @@
       tr.append(nome);
       if (!ma || !mb) {
         tr.append(el('td', {}, ma ? brl(ma.preco) : '—'), el('td', {}, mb ? brl(mb.preco) : '—'),
-                  el('td', {}, '—'), el('td', {}, '—'), el('td', { class: 'some-p' }, '—'), el('td', { class: 'some-p' }, '—'));
+                  el('td', { class: 'some-p' }, '—'), el('td', {}, '—'), el('td', {}, '—'), el('td', {}, '—'));
         tb.append(tr); continue;
       }
       const d = mb.preco - ma.preco, dp = 100 * d / ma.preco;
-      const cls = d < 0 ? 'bom' : d > 0 ? 'ruim' : ''; // em preço, cair é melhor
+      // a cor fica no poder de compra: quem comprava mais com um salário mínimo aparece em verde.
+      // A comparação usa o número já arredondado, para a cor nunca contradizer o que está escrito.
+      const sa = f1(ma.sm), sb = f1(mb.sm), igual = sa === sb;
+      const clsA = igual ? '' : ma.sm > mb.sm ? 'bom' : 'ruim';
+      const clsB = igual ? '' : mb.sm > ma.sm ? 'bom' : 'ruim';
       tr.append(el('td', {}, brl(ma.preco)), el('td', {}, brl(mb.preco)),
-                el('td', { class: cls }, sgn(d, (v) => (v >= 100 ? f0(v) : f2(v)))),
-                el('td', { class: cls }, `${sgn(dp, f1)}%`),
-                el('td', { class: 'some-p' }, `${f1(ma.sm)} ${CB_UNIDADE[k]}`),
-                el('td', { class: 'some-p' }, `${f1(mb.sm)} ${CB_UNIDADE[k]}`));
+                el('td', { class: 'some-p' }, sgn(d, (v) => (v >= 100 ? f0(v) : f2(v)))),
+                el('td', {}, `${sgn(dp, f1)}%`),
+                el('td', { class: clsA }, `${sa} ${CB_UNIDADE[k]}`),
+                el('td', { class: clsB }, `${sb} ${CB_UNIDADE[k]}`));
       tb.append(tr);
     }
   }

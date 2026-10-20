@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.20 — 20/10/2026
+
+### Alterado
+- **Médias por mandato presidencial:** o verde e o vermelho saíram das colunas de variação e foram para as duas colunas de "1 salário mínimo", que mostram o poder de compra. Verde marca o mandato em que um salário mínimo comprava mais daquele item. A comparação usa o número já arredondado, então a cor nunca contradiz o que está escrito, e quando os dois mandatos mostram o mesmo número nenhum fica colorido.
+- Em telas estreitas, a tabela passa a esconder a coluna "Variação" em reais, no lugar das colunas de poder de compra, que agora carregam a cor.
+
 ## 1.19 — 20/10/2026
 
 ### Alterado
