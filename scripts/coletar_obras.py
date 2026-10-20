@@ -77,6 +77,20 @@ def ano(d):
         return None
 
 
+def todas(rota, **filtros):
+    """Baixa todas as páginas de uma rota (200 itens por página, o máximo da API)."""
+    pg, itens = 1, []
+    while True:
+        r = pagina(rota, pagina=pg, tamanho_da_pagina=200, **filtros)
+        itens += r.get('data') or []
+        if pg % 25 == 0 or pg == r.get('total_pages'):
+            print(f'  {rota}: página {pg}/{r.get("total_pages")} ({len(itens)} de {r.get("total_items")})')
+        if pg >= (r.get('total_pages') or 0) or not r.get('data'):
+            return itens
+        pg += 1
+        time.sleep(0.2)
+
+
 def obras():
     atual = pagina('data-atualizacao')
     print('Obrasgov atualizado em:', atual)
@@ -84,44 +98,50 @@ def obras():
     for s in SITUACOES:
         retrato[s] = pagina('projeto-investimento', situacao=s, pagina=1, tamanho_da_pagina=1).get('total_items')
         print(f'  {s}: {retrato[s]}')
-    # todas as obras concluídas
-    tam, pg, itens = 200, 1, []  # máximo aceito pela API
-    while True:
-        r = pagina('projeto-investimento', situacao='Concluída', pagina=pg, tamanho_da_pagina=tam)
-        itens += r.get('data') or []
-        print(f'  página {pg}/{r.get("total_pages")} ({len(itens)} de {r.get("total_items")})')
-        if pg >= (r.get('total_pages') or 0) or not r.get('data'):
-            break
-        pg += 1
-        time.sleep(0.3)
-    por_ano = defaultdict(lambda: {'n': 0, 'valor': 0.0, 'n_valor': 0})
-    por_eixo = defaultdict(Counter)
-    sem_data, cad = 0, Counter()
-    for o in itens:
-        a = ano(o.get('dt_final_efetiva'))
+    concl = todas('projeto-investimento', situacao='Concluída')
+    # Data de conclusão: a "data final efetiva" do projeto quase nunca vem preenchida, então usamos
+    # também a data final da execução física com 100% concluída (o maior valor entre os registros).
+    fim_exec = {}
+    for e in todas('execucao-fisica'):
+        if (e.get('percentual_execucao_fisica') or 0) >= 100 and e.get('dt_final_execucao'):
+            k = e['id_projeto_investimento']
+            fim_exec[k] = max(fim_exec.get(k, ''), e['dt_final_execucao'][:10])
+    hoje = date.today()
+    por_ano = defaultdict(lambda: {'n': 0, 'valor': 0.0, 'n_valor': 0, 'org': Counter(), 'origem': Counter()})
+    sem_data, cad, origem_data = 0, Counter(), Counter()
+    for o in concl:
         cad[ano(o.get('dt_cadastro')) or o.get('ano_cadastro')] += 1
-        if a is None:
+        d, origem = o.get('dt_final_efetiva'), 'data final efetiva'
+        if not d:
+            d, origem = fim_exec.get(o.get('id_projeto_investimento')), 'execução física'
+        a = ano(d)
+        if a is None or a < 1990 or a > hoje.year:
             sem_data += 1
             continue
+        origem_data[origem] += 1
         v = sum((x.get('vl_investimento_previsto') or 0) for x in (o.get('investimentos_previstos') or []))
-        por_ano[a]['n'] += 1
+        r = por_ano[a]
+        r['n'] += 1
         if v > 0:
-            por_ano[a]['valor'] += v
-            por_ano[a]['n_valor'] += 1
-        eixo = ((o.get('eixos_tipos') or [{}])[0] or {}).get('eixo') or 'Não informado'
-        por_eixo[a][eixo] += 1
-    anos = sorted(a for a in por_ano if 1990 <= a <= date.today().year)
+            r['valor'] += v
+            r['n_valor'] += 1
+        r['org'][(o.get('organizacao_resp') or 'Não informado').strip()] += 1
+        r['origem'][o.get('sistema_resp') or 'Não informado'] += 1
+    anos = sorted(por_ano)
     gravar('obras.json', {
         'fonte': 'Obrasgov.br, API de dados abertos (Ministério da Gestão e da Inovação em Serviços Públicos)',
-        'url': API, 'atualizado_fonte': atual, 'coletado_em': date.today().isoformat(),
+        'url': API, 'atualizado_fonte': atual, 'coletado_em': hoje.isoformat(),
         'retrato_situacao': retrato,
-        'concluidas_total': len(itens), 'concluidas_sem_data': sem_data,
+        'concluidas_total': len(concl), 'concluidas_sem_data': sem_data, 'origem_da_data': dict(origem_data),
         'concluidas_por_ano': [{'ano': a, 'n': por_ano[a]['n'], 'valor_previsto': round(por_ano[a]['valor'], 2), 'n_com_valor': por_ano[a]['n_valor'],
-                                 'por_eixo': dict(por_eixo[a].most_common())} for a in anos],
-        'concluidas_por_ano_cadastro': {str(k): v for k, v in sorted(cad.items(), key=lambda x: (x[0] is None, x[0]))},
+                                 'por_orgao': dict(por_ano[a]['org'].most_common(6)), 'por_sistema': dict(por_ano[a]['origem'].most_common())} for a in anos],
+        'concluidas_por_ano_cadastro': {str(k): v for k, v in sorted(cad.items(), key=lambda x: (x[0] is None, x[0] or 0))},
     })
     print('anos de conclusão:', {a: por_ano[a]['n'] for a in anos})
-    print('sem data de conclusão:', sem_data, '| por ano de cadastro:', dict(sorted(cad.items(), key=lambda x: (x[0] is None, x[0]))))
+    print('origem da data:', dict(origem_data), '| sem data:', sem_data)
+    print('por ano de cadastro:', dict(sorted(cad.items(), key=lambda x: (x[0] is None, x[0] or 0))))
+    for a in anos:
+        if a >= 2015: print(' ', a, por_ano[a]['n'], dict(por_ano[a]['origem'].most_common(4)), dict(por_ano[a]['org'].most_common(3)))
 
 
 if __name__ == '__main__':
