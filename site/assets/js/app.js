@@ -53,7 +53,7 @@
   const st = {
     page: 'visao', coorte: 'latam', mandato: '2023–2026', tema: 'geral', ind: 'ny_gdp_pcap_pp_kd', banda: 'latam',
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
-    ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
+    ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cbMa: '2019–2022', cbMb: '2023–2026', cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
   };
   let D = null; // dados carregados e indexados
 
@@ -593,6 +593,13 @@
     return [['No Brasil, agora', f(c).replace(/\.\.$/, '.')]];
   };
   const CARD_INFO = {
+    'cb-mandatos': { titulo: 'Médias por mandato presidencial', blocos: [
+      ['O que mostra', 'O preço médio de cada item em todos os meses de dois mandatos, para comparar períodos em vez de um mês solto. É a mesma ideia da tabela "Comparar dois mandatos" da aba Séries temporais.'],
+      ['Preços corrigidos', 'Todas as médias estão em preços de hoje, corrigidas pela inflação. Sem isso, qualquer mandato mais recente pareceria sempre o mais caro, só porque a moeda perde valor com o tempo.'],
+      ['Como ler as cores', 'Em preço, cair é melhor: verde quer dizer que o item ficou mais barato no mandato B que no A, descontada a inflação; vermelho, mais caro. As duas últimas colunas mostram quanto um salário mínimo comprava em média em cada mandato, que junta preço e renda.'],
+      ['Série parcial', 'A marca "série parcial" avisa que a fonte não cobre o mandato inteiro: a cesta básica começa em 2001 e os combustíveis em julho de 2001, então mandatos anteriores ficam de fora ou aparecem incompletos. O mandato atual também é parcial, porque ainda não acabou.'],
+      ['Atenção', 'Preço de combustível depende muito do petróleo e do câmbio, e a cesta básica depende de safra e clima. Coincidir com um mandato não prova que o governo causou o resultado.'],
+    ] },
     'cb-hoje': { titulo: 'Quanto custa hoje', blocos: [
       ['O que mostra', 'O preço médio mais recente de cada item no Brasil, a variação em 12 meses já descontada a inflação, e quanto um salário mínimo compra daquele item em um mês.'],
       ['Como ler a variação', 'Verde quer dizer que ficou mais barato em relação ao resto dos preços; vermelho, mais caro. Como o valor é corrigido pela inflação, um item que subiu menos que a inflação aparece em verde, mesmo tendo subido em reais.'],
@@ -1366,6 +1373,59 @@
   /** Converte 'AAAA-MM' no ano fracionário usado no eixo x dos gráficos de linha. */
   const mesX = (m) => +m.slice(0, 4) + (+m.slice(5, 7) - 0.5) / 12;
 
+  /** Média do preço corrigido e do poder de compra de um item dentro de um mandato. */
+  function mediaMandato(it, periodo) {
+    const i = +periodo.slice(0, 4), f = i + 3;
+    const ps = it.pontos.filter((p) => { const a = +p.mes.slice(0, 4); return a >= i && a <= f && p.real != null; });
+    if (!ps.length) return null;
+    const meses = 1 + (f - i) * 12 + 11; // meses do mandato inteiro, para avisar quando a série cobre só parte
+    return { preco: d3.mean(ps, (p) => p.real), sm: d3.mean(ps.filter((p) => p.sm != null), (p) => p.sm), n: ps.length, parcial: ps.length < meses * 0.9 };
+  }
+  function desenharMandatos(C) {
+    const itens = C.itens;
+    // só mandatos com pelo menos um item medido
+    const comDados = PERIODOS.filter((p) => CB_ORDEM.some((k) => itens[k] && mediaMandato(itens[k], p)));
+    const opts = comDados.map((p) => ({ label: `${p} · ${MANDATO[p]}`, value: p }));
+    if (!comDados.includes(st.cbMa)) st.cbMa = comDados.at(-2) || comDados[0];
+    if (!comDados.includes(st.cbMb)) st.cbMb = comDados.at(-1);
+    fillSelect($('#cb-ma'), opts, st.cbMa); fillSelect($('#cb-mb'), opts, st.cbMb);
+    let a = st.cbMa, b = st.cbMb, inv = false;
+    if (a > b) { [a, b] = [b, a]; inv = true; }
+    const msg = $('#cb-mand-msg');
+    msg.textContent = a === b ? 'Escolha dois mandatos diferentes.' : inv ? `Mostrando A = ${a} e B = ${b}, em ordem cronológica.` : '';
+    msg.hidden = !msg.textContent;
+    const nomeA = MANDATO[a].replace(' (até 2025)', ''), nomeB = MANDATO[b].replace(' (até 2025)', '');
+    const emCurso = +b.slice(0, 4) + 3 >= +C.base_ipca.slice(0, 4);
+    $('#cb-mand-nota').textContent = `Preço médio de cada item em todos os meses do mandato, corrigido para preços de ${mesTexto(C.base_ipca)}. Assim a comparação não é afetada pela inflação. Verde quer dizer que o item ficou mais barato.`
+      + (emCurso ? ` O mandato ${nomeB} ainda não acabou: a média vai até ${mesTexto(C.base_ipca)}.` : '');
+    $('#cb-th-a').textContent = `Média ${nomeA}`; $('#cb-th-b').textContent = `Média ${nomeB}`;
+    $('#cb-th-sa').textContent = `1 salário mínimo em ${nomeA}`; $('#cb-th-sb').textContent = `1 salário mínimo em ${nomeB}`;
+    const tb = $('#cb-mand-table tbody'); tb.replaceChildren();
+    if (a === b) return;
+    for (const k of CB_ORDEM) {
+      const it = itens[k]; if (!it) continue;
+      const ma = mediaMandato(it, a), mb = mediaMandato(it, b);
+      const tr = el('tr');
+      const nome = el('td');
+      nome.append(it.titulo);
+      if (ma?.parcial || mb?.parcial) nome.append(el('span', { class: 'cod' }, ' · série parcial'));
+      tr.append(nome);
+      if (!ma || !mb) {
+        tr.append(el('td', {}, ma ? brl(ma.preco) : '—'), el('td', {}, mb ? brl(mb.preco) : '—'),
+                  el('td', {}, '—'), el('td', {}, '—'), el('td', { class: 'some-p' }, '—'), el('td', { class: 'some-p' }, '—'));
+        tb.append(tr); continue;
+      }
+      const d = mb.preco - ma.preco, dp = 100 * d / ma.preco;
+      const cls = d < 0 ? 'bom' : d > 0 ? 'ruim' : ''; // em preço, cair é melhor
+      tr.append(el('td', {}, brl(ma.preco)), el('td', {}, brl(mb.preco)),
+                el('td', { class: cls }, sgn(d, (v) => (v >= 100 ? f0(v) : f2(v)))),
+                el('td', { class: cls }, `${sgn(dp, f1)}%`),
+                el('td', { class: 'some-p' }, `${f1(ma.sm)} ${CB_UNIDADE[k]}`),
+                el('td', { class: 'some-p' }, `${f1(mb.sm)} ${CB_UNIDADE[k]}`));
+      tb.append(tr);
+    }
+  }
+
   function drawConsumo() {
     const C = D.raw.consumo;
     if (!C) return vazio($('#cb-tiles'), 'Dados de consumo indisponíveis.');
@@ -1385,6 +1445,8 @@
       if (u.sm) t.append(el('span', { class: 'sm' }, `Um salário mínimo compra ${f1(u.sm)} ${CB_UNIDADE[k]}`));
       box.append(t);
     }
+    // --- médias por mandato, dentro do cartão 1
+    desenharMandatos(C);
     // --- cartão 2: preço ao longo do tempo
     fillSelect($('#cb-item'), CB_ORDEM.filter((k) => itens[k]).map((k) => ({ label: itens[k].titulo, value: k })), st.cbItem);
     const it = itens[st.cbItem] || itens.cesta;
@@ -1456,6 +1518,8 @@
   on('#cs-tema', (v) => { st.cstema = v; });
   on('#cb-item', (v) => { st.cbItem = v; });
   on('#cb-y0', (v) => { st.cbY0 = +v; });
+  on('#cb-ma', (v) => { st.cbMa = v; });
+  on('#cb-mb', (v) => { st.cbMb = v; });
   on('#pl-a', (v) => { st.ga = v; });
   on('#pl-b', (v) => { st.gb = v; });
   on('#ct-y0', (v) => { st.cy0 = +v; });

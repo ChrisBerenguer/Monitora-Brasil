@@ -78,6 +78,7 @@ Todos os outros números exibidos vêm diretamente dos JSON. Nenhum número est�
 ### Consumo básico (`#consumo`)
 Quanto custa viver, comparado com a renda. Quatro cartões:
 - **Quanto custa hoje:** um bloco por item (cesta básica, gasolina, etanol, diesel e gás de cozinha) com o preço mais recente, a variação em 12 meses já descontada a inflação (verde quando o item ficou mais barato que a inflação) e quantas unidades um salário mínimo compra.
+  - Dentro do mesmo cartão, **Médias por mandato presidencial**: seletores de mandato A e B (como na aba Séries temporais) e uma tabela com a média de cada item nos dois mandatos, a variação em reais e em %, e quanto um salário mínimo comprava em média em cada um. Todas as médias são corrigidas pela inflação. Mandatos cuja série não é coberta por inteiro aparecem marcados como "série parcial" (a cesta básica começa em 2001 e os combustíveis em julho de 2001). Funções `mediaMandato` e `desenharMandatos`.
 - **Preço ao longo do tempo:** gráfico mensal do item escolhido, com faixas de mandato, seletor de ano inicial e a opção **"Corrigir pela inflação, em preços de hoje"**, ligada por padrão.
 - **Quanto um salário mínimo compra:** a mesma série convertida em unidades por salário mínimo, que é a medida direta de poder de compra.
 - **Renda e salário mínimo:** barras com o rendimento domiciliar per capita (PNAD Contínua anual) e linha do salário mínimo mensal corrigido pela inflação.

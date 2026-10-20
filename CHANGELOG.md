@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.18 — 20/10/2026
+
+### Adicionado
+- **Consumo básico: médias por mandato presidencial** dentro do cartão "Quanto custa hoje", com seletores de mandato A e B, como na aba Séries temporais. A tabela mostra o preço médio de cada item nos dois mandatos (corrigido pela inflação), a variação em reais e em %, e quanto um salário mínimo comprava em média em cada mandato. Em preço, cair é melhor: a variação aparece em verde quando o item ficou mais barato. Mandatos sem a série inteira são marcados como "série parcial", e a nota avisa quando o mandato B ainda está em curso.
+
 ## 1.17 — 20/10/2026
 
 ### Adicionado
