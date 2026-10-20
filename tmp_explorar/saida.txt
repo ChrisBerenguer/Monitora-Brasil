@@ -1,8 +1,44 @@
-GET /data-atualizacao | Consulta Data Atualizacao | []
-GET /projeto-investimento | Consulta Projeto Investimento | [('id_projeto_investimento', False, None), ('projeto_estruturante', False, None), ('desc_nome', False, None), ('nr_cep', False, None), ('desc_endereco', False, None), ('desc_projeto', False, None), ('desc_funcao_social', False, None), ('desc_meta_global', False, None), ('dt_inicial_prevista', False, None), ('dt_final_prevista', False, None), ('dt_cadastro', False, None), ('ano_cadastro', False, None), ('natureza_intervencao', False, None), ('id_natureza_intervencao', False, None), ('especie_intervencao', False, None), ('id_especie_intervencao', False, None), ('situacao', False, None), ('uf_principal', False, None), ('organizacao_resp', False, None), ('cnpj_organizacao_resp', False, None), ('populacao_beneficiada', False, None), ('desc_populacao_beneficiada', False, None), ('qtd_empregos_gerados', False, None), ('ind_bim', False, None), ('dt_inicial_efetiva', False, None), ('dt_final_efetiva', False, None), ('obs_pertinentes_intervencao', False, None), ('sistema_resp', False, None), ('possui_estudo_viabilidade', False, None), ('pagina', False, 'integer'), ('tamanho_da_pagina', False, 'integer')]
-GET /empenho | Consulta Empenho | [('ug_emitente', False, None), ('id_projeto_investimento', False, None), ('programa_trabalho', False, None), ('plano_interno', False, None), ('fonte', False, None), ('natureza_despesa', False, None), ('valor_empenho', False, None), ('sistema_origem_empenho', False, None), ('bd_origem_empenho', False, None), ('id_minuta', False, None), ('organizacao_empenho', False, None), ('data_emissao', False, None), ('nome_situacao_minuta', False, None), ('unidade_orcamentaria', False, None), ('programa_trabalho_resumido', False, None), ('resultado_primario', False, None), ('acao_orcamentaria', False, None), ('codigo_autor_emenda', False, None), ('nr_empenho', False, None), ('credor', False, None), ('aliquidar', False, None), ('liquidado', False, None), ('pago', False, None), ('rpinscrito', False, None), ('rpaliquidar', False, None), ('rpaliquidado', False, None), ('rppago', False, None), ('descricao_empenho', False, None), ('pagina', False, 'integer'), ('tamanho_da_pagina', False, 'integer')]
-GET /execucao-fisica | Consulta Execucao Fisica | [('id_projeto_investimento', False, None), ('percentual_execucao_fisica', False, None), ('dt_inicial_execucao', False, None), ('dt_final_execucao', False, None), ('tipo_instrumento', False, None), ('tipo_forma_execucao', False, None), ('dt_criacao_instrumento', False, None), ('dt_cadastro_execucao', False, None), ('dt_atualizacao_execucao', False, None), ('pagina', False, 'integer'), ('tamanho_da_pagina', False, 'integer')]
-GET /contrato | Consulta Contrato | [('id_projeto_investimento', False, None), ('id_contrato', False, None), ('numero_contrato', False, None), ('vigencia_inicio_contrato', False, None), ('vigencia_fim_contrato', False, None), ('data_assinatura_contrato', False, None), ('data_publicacao_contrato', False, None), ('modalidade_contrato', False, None), ('objeto_contrato', False, None), ('processo', False, None), ('receita_despesa_contrato', False, None), ('orgao_contrato', False, None), ('cnpj_fornecedor_contrato', False, None), ('fornecedor_contrato', False, None), ('categoria_contrato', False, None), ('licitacao_numero', False, None), ('situacao_contrato', False, None), ('link_transparencia', False, None), ('valor_global_contrato', False, None), ('valor_acumulado_contrato', False, None), ('valor_utilizado_pi_contrato', False, None), ('valor_incluido_contrato', False, None), ('pagina', False, 'integer'), ('tamanho_da_pagina', False, 'integer')]
-GET /geometria | Consulta Geometria | [('id_projeto_investimento', False, None), ('id_geometria', False, None), ('sg_uf', False, None), ('no_municipio', False, None), ('cod_ibge', False, None), ('origem_geometria', False, None), ('pagina', False, 'integer'), ('tamanho_da_pagina', False, 'integer')]
-GET /historico-situacao-cancelada-paralisada | Consulta Historico Situacao Cancelada Paralisada | [('id_historico_situacao_investimento', False, None), ('descricao_historico_situacao_investimento', False, None), ('data_historico_situacao_investimento', False, None), ('justificativa_cancelada_paralisada', False, None), ('possui_tratativas_situacao_investimento', False, None), ('fase_tratativas_situacao_investimento', False, None), ('id_projeto_investimento', False, None), ('pagina', False, 'integer'), ('tamanho_da_pagina', False, 'integer')]
-GET /estudo-viabilidade | Consulta Estudo Viabilidade | [('id_projeto_investimento', False, None), ('tipo_estudo_viabilidade', False, None), ('especificacao_estudo_viabilidade', False, None), ('pagina', False, 'integer'), ('tamanho_da_pagina', False, 'integer')]
+RTN: Resultado do Tesouro Nacional - Série Histórica - Mensal https://www.tesourotransparente.gov.br/ckan/dataset/ab56485b-9c40-4efb-8563-9ce3e1973c4b/resource/527ccdb1-3059-42f3-bf23-b5e3ab4c6dc6/download/seriehistoricajul26.xlsx
+gravado investimento.json (1 KB)
+  {'ano': 2008, 'total_pct_pib': 0.904, 'gnd4_pct_pib': 0.84}
+  {'ano': 2009, 'total_pct_pib': 1.02, 'gnd4_pct_pib': 0.965}
+  {'ano': 2010, 'total_pct_pib': 1.151, 'gnd4_pct_pib': 1.15}
+  {'ano': 2011, 'total_pct_pib': 1.203, 'gnd4_pct_pib': 0.958}
+  {'ano': 2012, 'total_pct_pib': 1.235, 'gnd4_pct_pib': 0.974}
+  {'ano': 2013, 'total_pct_pib': 1.186, 'gnd4_pct_pib': 0.887}
+  {'ano': 2014, 'total_pct_pib': 1.342, 'gnd4_pct_pib': 0.99}
+  {'ano': 2015, 'total_pct_pib': 0.926, 'gnd4_pct_pib': 0.65}
+  {'ano': 2016, 'total_pct_pib': 1.034, 'gnd4_pct_pib': 0.766}
+  {'ano': 2017, 'total_pct_pib': 0.694, 'gnd4_pct_pib': 0.575}
+  {'ano': 2018, 'total_pct_pib': 0.759, 'gnd4_pct_pib': 0.59}
+  {'ano': 2019, 'total_pct_pib': 0.766, 'gnd4_pct_pib': 0.512}
+  {'ano': 2020, 'total_pct_pib': 1.379, 'gnd4_pct_pib': 0.552}
+  {'ano': 2021, 'total_pct_pib': 0.631, 'gnd4_pct_pib': 0.4}
+  {'ano': 2022, 'total_pct_pib': 0.447, 'gnd4_pct_pib': 0.403}
+  {'ano': 2023, 'total_pct_pib': 0.744, 'gnd4_pct_pib': 0.537}
+  {'ano': 2024, 'total_pct_pib': 0.731, 'gnd4_pct_pib': 0.51}
+  {'ano': 2025, 'total_pct_pib': 0.655, 'gnd4_pct_pib': 0.549}
+Obrasgov atualizado em: {'data_ultima_atualizacao': '2026-10-19T00:00:00'}
+  Concluída: 44586
+  Em execução: 21019
+  Paralisada: 825
+  Inacabada: 1029
+  Cadastrada: 83207
+  Cancelada: 3925
+  tentativa 1 falhou: HTTP Error 422: Unprocessable Entity
+  tentativa 2 falhou: HTTP Error 422: Unprocessable Entity
+  tentativa 3 falhou: HTTP Error 422: Unprocessable Entity
+  tentativa 4 falhou: HTTP Error 422: Unprocessable Entity
+  tentativa 5 falhou: HTTP Error 422: Unprocessable Entity
+Traceback (most recent call last):
+  File "/home/runner/work/Monitora-Brasil/Monitora-Brasil/scripts/coletar_obras.py", line 129, in <module>
+    obras()
+  File "/home/runner/work/Monitora-Brasil/Monitora-Brasil/scripts/coletar_obras.py", line 90, in obras
+    r = pagina('projeto-investimento', situacao='Concluída', pagina=pg, tamanho_da_pagina=tam)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/Monitora-Brasil/Monitora-Brasil/scripts/coletar_obras.py", line 70, in pagina
+    return json.loads(baixar(f'{API}/{rota}?{q}'))
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/Monitora-Brasil/Monitora-Brasil/scripts/coletar_obras.py", line 28, in baixar
+    raise RuntimeError(f'não consegui baixar {url}')
+RuntimeError: não consegui baixar https://api-publica.obrasgov.gestao.gov.br/obras/projeto-investimento?situacao=Conclu%C3%ADda&pagina=1&tamanho_da_pagina=500
