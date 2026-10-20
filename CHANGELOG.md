@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 1.19 — 20/10/2026
+
+### Alterado
+- A aba **Consumo básico** passou a se chamar **Vida do Cidadão**. O endereço antigo (`#consumo`) continua funcionando.
+
+### Adicionado
+- **Cartão "Salário mínimo acima da inflação":** por mandato, o aumento do salário mínimo, a inflação do mesmo período e o ganho real, em barras e em tabela. A tabela traz ainda o poder de compra acumulado do salário mínimo, com 100 no início da série. Cobre de FHC 1 a Lula 3.
+- `consumo.json` ganhou o número-índice do IPCA, e as séries do IPCA e do salário mínimo passaram a começar em dezembro de 1994, para alcançar os mandatos anteriores a 2001.
+
 ## 1.18 — 20/10/2026
 
 ### Adicionado

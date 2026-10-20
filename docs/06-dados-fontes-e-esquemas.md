@@ -140,7 +140,7 @@ Gerado para as coortes grandes (`mundo` e `umic`), para cada indicador e ano com
 | `posicao` | inteiro | Posição do Brasil no escore geral (1 = melhor) |
 | `paises` | inteiro | Total de países com escore geral no ano |
 
-## Dados da aba Consumo básico
+## Dados da aba Vida do Cidadão
 
 Vêm de fontes fora do Banco Mundial e são coletados por `scripts/coletar_consumo.py`, que roda no GitHub Actions (workflow `dados-consumo.yml`, todo dia 12 e quando disparado à mão), porque precisa acessar os sites do governo. Gera `consumo.json`.
 
@@ -161,8 +161,9 @@ Vêm de fontes fora do Banco Mundial e são coletados por `scripts/coletar_consu
 | `itens.<id>` | Um por item (`cesta`, `gasolina`, `etanol`, `diesel`, `gas`), com `titulo`, `unidade` e `pontos[]` |
 | `itens.<id>.pontos[]` | `mes` (`AAAA-MM`), `v` (preço em reais da época), `real` (corrigido para `base_ipca`) e `sm` (quantas unidades um salário mínimo compra naquele mês) |
 | `cesta_capitais` | Gasto da cesta por capital e mês, como vem do DIEESE |
-| `salario_minimo[]` | `mes`, `v` (nominal) e `real` (corrigido) |
+| `salario_minimo[]` | `mes`, `v` (nominal) e `real` (corrigido), desde dezembro de 1994 |
 | `renda_per_capita[]` | `ano` e `valor` (já em valores reais, como o IBGE publica) |
+| `ipca[]` | `mes` e `indice` (número-índice do IPCA), desde dezembro de 1994, usado para calcular a inflação de cada mandato |
 
 **Cesta básica do Brasil.** O DIEESE pesquisa capital por capital e não publica uma média nacional. O painel usa a **média simples das capitais pesquisadas no mês**, só para os meses com pelo menos 3 capitais, e guarda também a série de cada capital em `cesta_capitais`.
 

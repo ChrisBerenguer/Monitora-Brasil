@@ -41,7 +41,8 @@
   const ORDEM_PAISES = Object.keys(PAIS);
   const PERIODOS = ['1995–1998', '1999–2002', '2003–2006', '2007–2010', '2011–2014', '2015–2018', '2019–2022', '2023–2026'];
   const MANDATO = { '1995–1998': 'FHC 1', '1999–2002': 'FHC 2', '2003–2006': 'Lula 1', '2007–2010': 'Lula 2', '2011–2014': 'Dilma 1', '2015–2018': 'Dilma 2 / Temer', '2019–2022': 'Bolsonaro', '2023–2026': 'Lula 3 (até 2025)' };
-  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'consumo', 'votar'];
+  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'vida', 'votar'];
+  const APELIDOS = { consumo: 'vida' }; // endereços antigos continuam funcionando
   // Mandatos usados na variação dos escores (Visão geral). Os escores começam em 2000,
   // então FHC 2 é medido de 2000 a 2002.
   const MANDATOS_ESC = PERIODOS.filter((p) => +p.slice(0, 4) + 3 >= 2000).map((p) => ({ id: p, ini: +p.slice(0, 4), fim: +p.slice(0, 4) + 3, nome: MANDATO[p] }));
@@ -593,6 +594,12 @@
     return [['No Brasil, agora', f(c).replace(/\.\.$/, '.')]];
   };
   const CARD_INFO = {
+    'cb-ganho': { titulo: 'Salário mínimo acima da inflação', blocos: [
+      ['O que mostra', 'Em cada mandato, quanto o salário mínimo aumentou, quanto a inflação subiu no mesmo período e o que sobrou disso: o ganho real. É a medida mais direta do poder de compra de quem vive do piso salarial.'],
+      ['Como é calculado', 'Compara o salário mínimo de dezembro anterior à posse com o do fim do mandato, e a inflação (IPCA) entre os mesmos dois meses. Ganho real é o aumento do salário descontada a inflação: se o salário subiu 30% e a inflação foi 20%, o ganho real é de cerca de 8%, e não de 10 pontos, porque o cálculo é uma divisão e não uma subtração.'],
+      ['Como ler', 'Barra verde quer dizer que o salário mínimo subiu mais que a inflação naquele mandato, e o trabalhador passou a comprar mais com ele. Vermelha quer dizer que a inflação comeu o aumento. A última coluna da tabela é o poder de compra acumulado desde o início da série, com 100 no primeiro mandato mostrado.'],
+      ['Atenção', 'O salário mínimo é reajustado uma vez por ano, quase sempre em janeiro, então entre um reajuste e outro a inflação corrói o valor; o gráfico de linha acima mostra esse movimento de serra. O mandato em curso é comparado até o último mês com dado, e por isso ainda pode mudar.'],
+    ] },
     'cb-mandatos': { titulo: 'Médias por mandato presidencial', blocos: [
       ['O que mostra', 'O preço médio de cada item em todos os meses de dois mandatos, para comparar períodos em vez de um mês solto. É a mesma ideia da tabela "Comparar dois mandatos" da aba Séries temporais.'],
       ['Preços corrigidos', 'Todas as médias estão em preços de hoje, corrigidas pela inflação. Sem isso, qualquer mandato mais recente pareceria sempre o mais caro, só porque a moeda perde valor com o tempo.'],
@@ -1017,7 +1024,7 @@
     posicionarInfo(btn);
   }
   /** Coloca o botão de compartilhar ao lado do título de cada cartão com gráfico ou tabela. */
-  document.querySelectorAll('#visao article.card, #series article.card, #coortes article.card, #consumo article.card').forEach((card) => {
+  document.querySelectorAll('#visao article.card, #series article.card, #coortes article.card, #vida article.card').forEach((card) => {
     const alvo = card.querySelector('.titulo-info');
     if (!alvo) return;
     const b = el('button', { class: 'info-btn share-btn', type: 'button', 'aria-label': 'Compartilhar este gráfico como imagem', 'aria-haspopup': 'dialog' });
@@ -1426,7 +1433,55 @@
     }
   }
 
-  function drawConsumo() {
+  /** Salário mínimo no mês anterior à posse e no fim do mandato (ou no último mês com dado). */
+  function ganhoMandato(sm, ipca, periodo, ultimo) {
+    const ini = +periodo.slice(0, 4);
+    const mesIni = `${ini - 1}-12`, fimMandato = `${ini + 3}-12`;
+    const mesFim = fimMandato <= ultimo ? fimMandato : ultimo; // mandato em curso: vai até o último mês com dado
+    const a = sm.get(mesIni), b = sm.get(mesFim), ia = ipca.get(mesIni), ib = ipca.get(mesFim);
+    if (a == null || b == null || ia == null || ib == null) return null;
+    const nominal = 100 * (b / a - 1), inflacao = 100 * (ib / ia - 1);
+    return { mesIni, mesFim, a, b, nominal, inflacao, real: 100 * ((b / a) / (ib / ia) - 1), emCurso: mesFim !== fimMandato };
+  }
+  function desenharGanho(C) {
+    const sm = new Map((C.salario_minimo || []).map((p) => [p.mes, p.v]));
+    for (const p of C.salario_minimo || []) sm.set(p.mes, p.v);
+    const ipca = new Map((C.ipca || []).map((p) => [p.mes, p.indice]));
+    const ultimo = C.base_ipca;
+    if (!ipca.size) { vazio($('#cb-ganho'), 'Índice de inflação indisponível nesta versão dos dados.'); $('#cb-ganho-table tbody').replaceChildren(); return; }
+    const linhas = PERIODOS.map((p) => ({ p, g: ganhoMandato(sm, ipca, p, ultimo) })).filter((x) => x.g);
+    $('#cb-ganho-nota').textContent = `Quanto o salário mínimo subiu em cada mandato e quanto subiu a inflação no mesmo período. O ganho real é o que sobra: o quanto o salário passou a comprar a mais. Compara o salário de dezembro anterior à posse com o do fim do mandato${linhas.at(-1)?.g.emCurso ? `, e o mandato atual vai até ${mesTexto(ultimo)}` : ''}.`;
+    barras($('#cb-ganho'), linhas.map(({ p, g }) => ({
+      label: MANDATO[p].replace(' (até 2025)', ''), v: g.real, g,
+      titulo: `${MANDATO[p]} · ${mesTexto(g.mesIni)} a ${mesTexto(g.mesFim)}`,
+    })), {
+      fmt: (v) => `${sgn(v, f1)}%`, height: 240,
+      cor: (r) => (r.v > 0 ? css('--ok') : css('--critical')),
+      tipLinhas: (r) => [
+        { name: 'Aumento do salário', value: `${sgn(r.g.nominal, f1)}%` },
+        { name: 'Inflação no período', value: `${sgn(r.g.inflacao, f1)}%` },
+        { name: 'Ganho real', value: `${sgn(r.g.real, f1)}%` },
+        { name: 'Salário', value: `${brl(r.g.a)} → ${brl(r.g.b)}` },
+      ],
+    });
+    const tb = $('#cb-ganho-table tbody'); tb.replaceChildren();
+    const base = linhas[0];
+    for (const { p, g } of linhas) {
+      const tr = el('tr');
+      const nome = el('td');
+      nome.append(MANDATO[p].replace(' (até 2025)', ''));
+      if (g.emCurso) nome.append(el('span', { class: 'cod' }, ' · em curso'));
+      const cls = g.real > 0.5 ? 'bom' : g.real < -0.5 ? 'ruim' : '';
+      const poder = base ? 100 * (g.b / ipca.get(g.mesFim)) / (base.g.a / ipca.get(base.g.mesIni)) : null;
+      tr.append(nome, el('td', { class: 'some-p' }, brl(g.a)), el('td', { class: 'some-p' }, brl(g.b)),
+                el('td', {}, `${sgn(g.nominal, f1)}%`), el('td', {}, `${sgn(g.inflacao, f1)}%`),
+                el('td', { class: cls }, `${sgn(g.real, f1)}%`),
+                el('td', { class: 'some-p' }, poder == null ? '—' : f0(poder)));
+      tb.append(tr);
+    }
+  }
+
+  function drawVida() {
     const C = D.raw.consumo;
     if (!C) return vazio($('#cb-tiles'), 'Dados de consumo indisponíveis.');
     const itens = C.itens;
@@ -1484,6 +1539,7 @@
       fmt: (v) => brl(v), height: 240,
       tipLinhas: (x) => [{ name: 'Renda per capita', value: brl(x.v) }, { name: 'Por mês, por morador', value: 'média de todas as casas' }],
     });
+    desenharGanho(C);
     const sm = (C.salario_minimo || []).filter((p) => +p.mes.slice(0, 4) >= y0 && p.real != null);
     lineChart($('#cb-sm'), {
       series: [{ name: 'Salário mínimo', color: cor(2), width: 2.4, pts: sm.map((p) => ({ x: mesX(p.mes), y: p.real, mes: p.mes })) }],
@@ -1494,6 +1550,7 @@
   $('#cb-real').addEventListener('change', (e) => { st.cbReal = e.target.checked; render(); });
 
   function show(page, push = true) {
+    page = APELIDOS[page] || page;
     if (!PAGINAS.includes(page)) page = 'visao';
     st.page = page;
     document.querySelectorAll('.aba').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.page === page)));
@@ -1535,7 +1592,7 @@
     } else if (st.page === 'series') { drawSeries(); drawPeriodos(); }
     else if (st.page === 'coortes') drawCoortes();
     else if (st.page === 'votar') drawVotar();
-    else if (st.page === 'consumo') drawConsumo();
+    else if (st.page === 'vida') drawVida();
     else drawMetodo();
   }
 

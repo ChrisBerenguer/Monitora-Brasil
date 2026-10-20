@@ -75,15 +75,16 @@ Todos os outros números exibidos vêm diretamente dos JSON. Nenhum número est�
 - **Escore por grupo** (tema escolhido, último ano): a mesma régua e o mesmo gráfico de pontos, com os escores.
 - **Estatísticas de cada grupo:** tabela com n, média, mediana, desvio, quartis, mínimo, máximo, valor do Brasil e Z do Brasil. O **box plot** fica atrás do botão "Ver box plot", para quem quiser ver os quartis desenhados.
 
-### Consumo básico (`#consumo`)
-Quanto custa viver, comparado com a renda. Quatro cartões:
+### Vida do Cidadão (`#vida`)
+Quanto custa viver, comparado com a renda de quem vive aqui. Cinco cartões:
 - **Quanto custa hoje:** um bloco por item (cesta básica, gasolina, etanol, diesel e gás de cozinha) com o preço mais recente, a variação em 12 meses já descontada a inflação (verde quando o item ficou mais barato que a inflação) e quantas unidades um salário mínimo compra.
   - Dentro do mesmo cartão, **Médias por mandato presidencial**: seletores de mandato A e B (como na aba Séries temporais) e uma tabela com a média de cada item nos dois mandatos, a variação em reais e em %, e quanto um salário mínimo comprava em média em cada um. Todas as médias são corrigidas pela inflação. Mandatos cuja série não é coberta por inteiro aparecem marcados como "série parcial" (a cesta básica começa em 2001 e os combustíveis em julho de 2001). Funções `mediaMandato` e `desenharMandatos`.
 - **Preço ao longo do tempo:** gráfico mensal do item escolhido, com faixas de mandato, seletor de ano inicial e a opção **"Corrigir pela inflação, em preços de hoje"**, ligada por padrão.
 - **Quanto um salário mínimo compra:** a mesma série convertida em unidades por salário mínimo, que é a medida direta de poder de compra.
 - **Renda e salário mínimo:** barras com o rendimento domiciliar per capita (PNAD Contínua anual) e linha do salário mínimo mensal corrigido pela inflação.
+- **Salário mínimo acima da inflação:** por mandato, o aumento do salário mínimo, a inflação (IPCA) do mesmo período e o ganho real, em barras (verde quando o salário subiu mais que a inflação) e numa tabela que traz também o poder de compra acumulado, com 100 no início da série. Compara dezembro anterior à posse com o fim do mandato; o mandato em curso vai até o último mês com dado. Funções `ganhoMandato` e `desenharGanho`.
 
-Os gráficos mensais usam `lineChart` com a opção `mensal: true`, que faz a caixa de valores pegar o ponto mais próximo do cursor em vez de casar com o ano inteiro. Dados em `consumo.json` (doc 06); a coleta é automática (doc 09).
+Os gráficos mensais usam `lineChart` com a opção `mensal: true`, que faz a caixa de valores pegar o ponto mais próximo do cursor em vez de casar com o ano inteiro. Dados em `consumo.json` (doc 06); a coleta é automática (doc 09). O identificador da aba é `vida`, e `APELIDOS` no `app.js` mantém o endereço antigo `#consumo` funcionando.
 
 ### Onde votar (`#votar`)
 Serviço ao eleitor: botão que abre o Autoatendimento Eleitoral do TSE numa nova aba, com o passo a passo para chegar a **Consultas → Onde votar**, as alternativas (aplicativo e-Título e atendimento presencial) e um aviso de data que só aparece até o 2º turno de 2026 (25/10). O site não recebe nenhum dado do eleitor: a consulta é feita no site oficial. O endereço do TSE fica no `index.html`.
@@ -140,7 +141,7 @@ A caixa que se abre mostra a prévia e oferece **Compartilhar…** (no celular, 
 
 Como funciona: `gerarImagem` monta fora da tela um quadro com uma cópia do cartão, e a biblioteca html-to-image (servida pelo próprio site) converte esse quadro em PNG. Para que as fontes do Google entrem na imagem, a política de segurança (CSP) libera `fonts.googleapis.com` e `fonts.gstatic.com` em `connect-src`; se forem bloqueadas, a imagem usa as fontes do sistema. Textos que só fazem sentido na tela ("passe o mouse...") ficam em elementos com a classe `so-tela` e não entram na imagem. O atributo `data-ctx` do cartão controla a linha de escolhas (`proprio`: só os controles do cartão; `nenhum`: sem a linha).
 
-**Links diretos:** acrescente `#series`, `#coortes`, `#metodo`, `#consumo` ou `#votar` ao endereço.
+**Links diretos:** acrescente `#series`, `#coortes`, `#metodo`, `#vida` ou `#votar` ao endereço (o antigo `#consumo` continua funcionando).
 
 ## Organização do `app.js`
 
