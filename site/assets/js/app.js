@@ -17,6 +17,7 @@
     percentis_br: 'percentis_brasil.json',
     ranking_br: 'ranking_brasil.json',
     histogramas: 'histogramas.json',
+    consumo: 'consumo.json',
   };
 
   const TEMAS = [
@@ -40,7 +41,7 @@
   const ORDEM_PAISES = Object.keys(PAIS);
   const PERIODOS = ['1995–1998', '1999–2002', '2003–2006', '2007–2010', '2011–2014', '2015–2018', '2019–2022', '2023–2026'];
   const MANDATO = { '1995–1998': 'FHC 1', '1999–2002': 'FHC 2', '2003–2006': 'Lula 1', '2007–2010': 'Lula 2', '2011–2014': 'Dilma 1', '2015–2018': 'Dilma 2 / Temer', '2019–2022': 'Bolsonaro', '2023–2026': 'Lula 3 (até 2025)' };
-  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'votar'];
+  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'consumo', 'votar'];
   // Mandatos usados na variação dos escores (Visão geral). Os escores começam em 2000,
   // então FHC 2 é medido de 2000 a 2002.
   const MANDATOS_ESC = PERIODOS.filter((p) => +p.slice(0, 4) + 3 >= 2000).map((p) => ({ id: p, ini: +p.slice(0, 4), fim: +p.slice(0, 4) + 3, nome: MANDATO[p] }));
@@ -52,7 +53,7 @@
   const st = {
     page: 'visao', coorte: 'latam', mandato: '2023–2026', tema: 'geral', ind: 'ny_gdp_pcap_pp_kd', banda: 'latam',
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
-    ga: '2019–2022', gb: '2023–2026', cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
+    ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
   };
   let D = null; // dados carregados e indexados
 
@@ -191,7 +192,7 @@
   function vazio(box, msg = 'Sem dados para essa seleção.') { box.replaceChildren(el('p', { class: 'vazio' }, msg)); }
 
   /** Linhas com faixa opcional, rótulos finais e régua com tooltip. */
-  function lineChart(box, { series, band, yfmt, xdomain, height = 340, endLabels = true, destaque = null, ydomain = null, faixas = null, ref = null, legenda = false, tituloTip = null }) {
+  function lineChart(box, { series, band, yfmt, xdomain, height = 340, endLabels = true, destaque = null, ydomain = null, faixas = null, ref = null, legenda = false, tituloTip = null, mensal = false }) {
     box.replaceChildren();
     box.classList.remove('carregando');
     const W = largura(box), H = height;
@@ -258,14 +259,18 @@
     svg.append('rect').attr('x', ml).attr('y', 0).attr('width', W - ml - mr).attr('height', H).style('fill', 'transparent')
       .on('pointermove', (ev) => {
         const [mx] = d3.pointer(ev);
-        const xv = Math.max(xdomain[0], Math.min(xdomain[1], Math.round(x.invert(mx))));
-        const hits = series.map((s) => ({ s, p: s.pts.find((p) => p.x === xv) })).filter((d) => d.p && d.p.y != null);
-        rule.attr('x1', x(xv)).attr('x2', x(xv)).attr('visibility', 'visible');
-        dots.selectAll('circle').data(hits).join('circle').attr('cx', x(xv)).attr('cy', (d) => y(d.p.y)).attr('r', 3.8).style('fill', (d) => d.s.color);
+        const bruto = Math.max(xdomain[0], Math.min(xdomain[1], x.invert(mx)));
+        // séries anuais casam com o ano inteiro; mensais pegam o ponto mais próximo do cursor
+        const perto = (s) => s.pts.filter((p) => p.y != null).reduce((a, p) => (a == null || Math.abs(p.x - bruto) < Math.abs(a.x - bruto) ? p : a), null);
+        const xv = mensal ? bruto : Math.round(bruto);
+        const hits = series.map((s) => ({ s, p: mensal ? perto(s) : s.pts.find((p) => p.x === xv) })).filter((d) => d.p && d.p.y != null);
+        const xl = mensal && hits.length ? hits[0].p.x : xv;
+        rule.attr('x1', x(xl)).attr('x2', x(xl)).attr('visibility', 'visible');
+        dots.selectAll('circle').data(hits).join('circle').attr('cx', (d) => x(d.p.x)).attr('cy', (d) => y(d.p.y)).attr('r', 3.8).style('fill', (d) => d.s.color);
         const L = hits.sort((a, b) => b.p.y - a.p.y).map((d) => ({ color: d.s.color, name: d.s.name, value: yfmt(d.p.y) }));
         const bp = band?.pts.find((p) => p.x === xv);
         if (bp && bp.lo != null) L.push({ name: 'Faixa da coorte', value: `${yfmt(bp.lo)} a ${yfmt(bp.hi)}` });
-        tip.show(ev, tituloTip ? tituloTip(xv) : String(xv), L.length ? L : [{ name: 'Sem dado neste ano', value: '' }]);
+        tip.show(ev, tituloTip ? tituloTip(mensal && hits.length ? hits[0].p : xv) : String(xv), L.length ? L : [{ name: 'Sem dado neste ano', value: '' }]);
       })
       .on('pointerleave', () => { tip.hide(); rule.attr('visibility', 'hidden'); dots.selectAll('*').remove(); });
     if (legenda && !endLabels) { // sem rótulos no fim das linhas (tela estreita): legenda embaixo
@@ -588,6 +593,28 @@
     return [['No Brasil, agora', f(c).replace(/\.\.$/, '.')]];
   };
   const CARD_INFO = {
+    'cb-hoje': { titulo: 'Quanto custa hoje', blocos: [
+      ['O que mostra', 'O preço médio mais recente de cada item no Brasil, a variação em 12 meses já descontada a inflação, e quanto um salário mínimo compra daquele item em um mês.'],
+      ['Como ler a variação', 'Verde quer dizer que ficou mais barato em relação ao resto dos preços; vermelho, mais caro. Como o valor é corrigido pela inflação, um item que subiu menos que a inflação aparece em verde, mesmo tendo subido em reais.'],
+      ['Atenção', 'São médias nacionais: o preço na sua cidade pode ser bem diferente. A cesta básica é a média das capitais pesquisadas pelo DIEESE no mês, e cada capital tem a sua própria lista de preços.'],
+    ] },
+    'cb-serie': { titulo: 'Preço ao longo do tempo', blocos: [
+      ['O que mostra', 'O preço médio do item escolhido, mês a mês. As faixas marcam os mandatos presidenciais.'],
+      ['Corrigir pela inflação', 'Com a opção marcada, todos os meses aparecem em preços de hoje: é o que aquele valor valeria agora. Assim dá para comparar 2005 com 2026. Sem a correção, o gráfico mostra o preço que estava na bomba ou na prateleira na época, e quase tudo parece sempre subir, porque a moeda perde valor.'],
+      ['Por que isso importa', 'Em reais correntes, o gás de cozinha e a gasolina batem recordes quase todo ano. Corrigido pela inflação, o desenho muda e mostra os períodos em que esses itens de fato pesaram mais no bolso.'],
+      ['Atenção', 'A cesta básica começa antes dos combustíveis: a série da ANP é mensal desde julho de 2001. O último mês pode ser revisado pela fonte.'],
+    ] },
+    'cb-poder': { titulo: 'Quanto um salário mínimo compra', blocos: [
+      ['O que mostra', 'Quantas unidades do item um salário mínimo compraria naquele mês: cestas básicas, litros de combustível ou botijões de gás.'],
+      ['Como ler', 'A linha subindo quer dizer que o salário mínimo passou a comprar mais, por ter aumentado mais que o preço. Descendo, o preço subiu mais que o salário. Essa é a medida mais direta de poder de compra, porque junta preço e renda num número só.'],
+      ['Atenção', 'O salário mínimo é só uma referência: a maioria das pessoas ganha mais ou menos que isso, e uma família costuma ter mais de uma renda. O cálculo usa o salário mínimo vigente no mês, sem descontos.'],
+    ] },
+    'cb-renda': { titulo: 'Renda e salário mínimo', blocos: [
+      ['O que mostra', 'As barras são o rendimento médio mensal domiciliar per capita: a soma de tudo o que entra numa casa dividida pelo número de moradores, em média. Vem da PNAD Contínua do IBGE e já está em valores reais.'],
+      ['Como ler', 'Per capita quer dizer por morador: numa família de quatro pessoas com renda de R$ 8.000, a renda per capita é R$ 2.000. É uma média, então convive com muita gente ganhando bem menos e pouca gente ganhando muito.'],
+      ['Salário mínimo real', 'O gráfico de baixo mostra o salário mínimo de cada mês corrigido para preços de hoje. Os degraus são os reajustes anuais, e a queda entre um reajuste e outro é a inflação corroendo o valor.'],
+      ['Atenção', 'Não há dado de 2020: a pandemia interrompeu a coleta presencial da PNAD Contínua anual. A série começa em 2016.'],
+    ] },
     placar: { titulo: 'Placar entre mandatos', blocos: [
       ['O que mostra', 'Para cada indicador, compara a média do Brasil nos dois mandatos escolhidos e conta em quantos cada um teve a média melhor. Cada quadrado é um indicador: passe o mouse para ver qual é e as duas médias.'],
       ['Como se decide', '"Melhor" leva em conta o sentido de cada indicador: em desemprego e pobreza, menor é melhor; em PIB e expectativa de vida, maior é melhor; em inflação e juros reais, o melhor é ficar perto da meta (3% e 2%). Os indicadores só de contexto, como receita tributária, não entram na disputa.'],
@@ -734,6 +761,16 @@
   const linkExt = (txt, url) => el('a', { href: url, target: '_blank', rel: 'noopener' }, txt);
   /** Conteúdo do botão de fonte: um indicador, os indicadores de um tema ou as bases de dados. */
   function preencherFonte(spec) {
+    if (spec.startsWith('fonte:')) { // fontes da aba Consumo básico
+      const F = FONTES_EXTRA[spec.slice(6)];
+      const partes = [el('h4', {}, 'Fonte original dos dados'), el('p', {}, F.t)];
+      const ul = el('ul', { class: 'fontes-lista' });
+      for (const [n, u] of F.l) { const li = el('li'); li.append(linkExt(n, u)); ul.append(li); }
+      partes.push(ul);
+      partes.push(el('p', { class: 'dado' }, `Dados coletados em ${fmtData(D.raw.consumo?.coletado_em)}.`));
+      infoEl.replaceChildren(...partes);
+      return;
+    }
     const alvo = spec === 'ind' ? st.ind : spec === 'tema' ? st.tema : spec === 'cstema' ? st.cstema : spec.startsWith('tema:') ? spec.slice(5) : spec;
     const partes = [el('h4', {}, 'Fonte original dos dados')];
     const meta = D.ind.get(alvo);
@@ -761,6 +798,17 @@
     partes.push(nota);
     infoEl.replaceChildren(...partes);
   }
+  const FONTES_EXTRA = {
+    precos: { t: 'Preços de consumo básico, de duas fontes oficiais:', l: [
+      ['DIEESE: Pesquisa Nacional da Cesta Básica de Alimentos', 'https://www.dieese.org.br/analisecestabasica/analiseCestaBasica.html'],
+      ['ANP: Levantamento de Preços de Combustíveis', 'https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/precos-revenda-e-de-distribuicao-combustiveis'],
+      ['Ipeadata (séries da cesta básica, do salário mínimo e do IPCA)', 'http://www.ipeadata.gov.br/'],
+    ] },
+    renda: { t: 'Renda e salário mínimo:', l: [
+      ['IBGE, PNAD Contínua anual, tabela 7395 do SIDRA', 'https://sidra.ibge.gov.br/tabela/7395'],
+      ['Ipeadata: salário mínimo e IPCA', 'http://www.ipeadata.gov.br/'],
+    ] },
+  };
   function preencherInfo(id) {
     if (id.startsWith('card:')) return preencherInfoCard(id.slice(5));
     if (id.startsWith('fonte:')) return preencherFonte(id.slice(6));
@@ -866,6 +914,8 @@
   /** Texto da fonte de um cartão, a partir do botão de fonte dele. */
   function fonteDoCartao(card) {
     const spec = card.querySelector('[data-fonte]')?.dataset.fonte || 'bases';
+    if (spec === 'fonte:precos') return 'DIEESE (cesta básica) e ANP (combustíveis)';
+    if (spec === 'fonte:renda') return 'IBGE (PNAD Contínua) e Ipeadata';
     const alvo = spec === 'ind' ? st.ind : spec === 'tema' ? st.tema : spec === 'cstema' ? st.cstema : spec.startsWith('tema:') ? spec.slice(5) : spec;
     const meta = D.ind.get(alvo);
     if (meta) return meta.fonte;
@@ -960,7 +1010,7 @@
     posicionarInfo(btn);
   }
   /** Coloca o botão de compartilhar ao lado do título de cada cartão com gráfico ou tabela. */
-  document.querySelectorAll('#visao article.card, #series article.card, #coortes article.card').forEach((card) => {
+  document.querySelectorAll('#visao article.card, #series article.card, #coortes article.card, #consumo article.card').forEach((card) => {
     const alvo = card.querySelector('.titulo-info');
     if (!alvo) return;
     const b = el('button', { class: 'info-btn share-btn', type: 'button', 'aria-label': 'Compartilhar este gráfico como imagem', 'aria-haspopup': 'dialog' });
@@ -1282,6 +1332,104 @@
     av.hidden = hoje > turno2;
     if (!av.hidden) av.textContent = 'Eleições 2026: o 2º turno é no domingo, 25 de outubro, nos lugares onde houver segundo turno.';
   }
+  // ---------------------------------------------------------------- consumo básico
+  const CB_ORDEM = ['cesta', 'gasolina', 'etanol', 'diesel', 'gas'];
+  const CB_UNIDADE = { cesta: 'cestas', gasolina: 'litros', etanol: 'litros', diesel: 'litros', gas: 'botijões' };
+  /** Unidades da fonte em texto corrido ("R$/13kg" vira "R$ pelo botijão de 13 kg"). */
+  const unTexto = (u) => ({ 'R$/l': 'R$ por litro', 'R$/13kg': 'R$ pelo botijão de 13 kg', 'R$ por mês': 'R$ por mês' }[u] || u);
+  const mesTexto = (m) => { const [a, b] = String(m).split('-'); return `${['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'][+b - 1]}/${a}`; };
+  const fmtData = (s) => (s ? new Date(s + 'T12:00').toLocaleDateString('pt-BR') : '—');
+  const brl = (v) => (v == null ? '—' : `R$ ${v >= 100 ? f0(v) : f2(v)}`);
+  /** Barras verticais simples, com o valor em cima e tooltip. */
+  function barras(box, rows, { fmt = f1, cor: corB = cor(0), height = 240, tipLinhas = null } = {}) {
+    box.replaceChildren(); box.classList.remove('carregando');
+    if (!rows.length) return vazio(box);
+    const W = largura(box), H = height, mt = 22, mb = 40, ml = 8, mr = 8;
+    const x = d3.scaleBand(rows.map((r) => r.label), [ml, W - mr]).padding(0.22);
+    const y = d3.scaleLinear([0, d3.max(rows, (r) => r.v) || 1], [H - mb, mt]).nice();
+    const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img');
+    svg.append('line').attr('x1', ml).attr('x2', W - mr).attr('y1', y(0)).attr('y2', y(0)).style('stroke', css('--axis'));
+    for (const r of rows) {
+      svg.append('rect').attr('x', x(r.label)).attr('y', y(r.v)).attr('width', x.bandwidth()).attr('height', Math.max(0, y(0) - y(r.v))).attr('rx', 3)
+        .style('fill', typeof corB === 'function' ? corB(r) : corB).style('fill-opacity', r.fraco ? 0.4 : 0.9)
+        .on('pointermove', (ev) => tip.show(ev, r.titulo || r.label, tipLinhas ? tipLinhas(r) : [{ name: 'Valor', value: fmt(r.v) }]))
+        .on('pointerleave', () => tip.hide());
+      svg.append('text').attr('x', x(r.label) + x.bandwidth() / 2).attr('y', y(r.v) - 5).attr('text-anchor', 'middle')
+        .style('font-size', '11px').style('fill', css('--fg')).text(fmt(r.v));
+    }
+    const passo = Math.ceil(rows.length / Math.max(1, Math.floor((W - ml - mr) / 56)));
+    svg.append('g').selectAll('text').data(rows.filter((r, i) => i % passo === 0)).join('text')
+      .attr('x', (r) => x(r.label) + x.bandwidth() / 2).attr('y', H - mb + 16).attr('text-anchor', 'middle').style('font-size', '11px').text((r) => r.label);
+  }
+  const FAIXAS_MANDATO = () => PERIODOS.map((p) => ({ de: +p.slice(0, 4), ate: +p.slice(0, 4) + 3, rotulo: MANDATO[p].replace(' (até 2025)', '') }));
+  /** Converte 'AAAA-MM' no ano fracionário usado no eixo x dos gráficos de linha. */
+  const mesX = (m) => +m.slice(0, 4) + (+m.slice(5, 7) - 0.5) / 12;
+
+  function drawConsumo() {
+    const C = D.raw.consumo;
+    if (!C) return vazio($('#cb-tiles'), 'Dados de consumo indisponíveis.');
+    const itens = C.itens;
+    // --- cartão 1: quanto custa hoje
+    $('#cb-hoje-nota').textContent = `Preços médios no Brasil. Variação em 12 meses já descontada a inflação. Dados até ${mesTexto(C.base_ipca)}, coletados em ${fmtData(C.coletado_em)}.`;
+    const box = $('#cb-tiles'); box.replaceChildren();
+    for (const k of CB_ORDEM) {
+      const it = itens[k]; if (!it || !it.pontos.length) continue;
+      const u = it.pontos.at(-1), ant = it.pontos.at(-13);
+      const t = el('div', { class: 'cb-tile' });
+      t.append(el('span', { class: 'nome' }, it.titulo), el('span', { class: 'valor' }, brl(u.v)), el('span', { class: 'un' }, unTexto(it.unidade)));
+      if (ant && ant.real && u.real) {
+        const d = 100 * (u.real - ant.real) / ant.real;
+        t.append(el('span', { class: 'var ' + (d < -0.5 ? 'bom' : d > 0.5 ? 'ruim' : '') }, `${sgn(d, f1)}% em 12 meses, já com a inflação descontada`));
+      }
+      if (u.sm) t.append(el('span', { class: 'sm' }, `Um salário mínimo compra ${f1(u.sm)} ${CB_UNIDADE[k]}`));
+      box.append(t);
+    }
+    // --- cartão 2: preço ao longo do tempo
+    fillSelect($('#cb-item'), CB_ORDEM.filter((k) => itens[k]).map((k) => ({ label: itens[k].titulo, value: k })), st.cbItem);
+    const it = itens[st.cbItem] || itens.cesta;
+    const anoIni = +it.pontos[0].mes.slice(0, 4), anoFim = +C.base_ipca.slice(0, 4);
+    fillSelect($('#cb-y0'), d3.range(anoIni, anoFim).map((a) => ({ label: a, value: a })), Math.max(st.cbY0, anoIni));
+    $('#cb-real').checked = st.cbReal;
+    const y0 = Math.max(st.cbY0, anoIni);
+    const pts = it.pontos.filter((p) => +p.mes.slice(0, 4) >= y0);
+    $('#cb-serie-titulo').textContent = `${it.titulo}: preço ao longo do tempo`;
+    const un = unTexto(it.unidade).replace('R$', 'reais');
+    $('#cb-serie-nota').textContent = st.cbReal
+      ? `Preço médio no Brasil, em ${un}, corrigido para preços de ${mesTexto(C.base_ipca)}.`
+      : `Preço médio no Brasil, em ${un}, nos reais de cada época, sem corrigir pela inflação.`;
+    lineChart($('#cb-chart'), {
+      series: [{ name: it.titulo, color: cor(0), width: 2.4, pts: pts.map((p) => ({ x: mesX(p.mes), y: st.cbReal ? p.real : p.v, mes: p.mes })) }],
+      yfmt: brl, xdomain: [y0, anoFim + 1], faixas: FAIXAS_MANDATO(), endLabels: false, height: 320,
+      mensal: true, tituloTip: (p) => mesTexto(p.mes),
+    });
+    // --- cartão 3: quanto um salário mínimo compra
+    const comSm = pts.filter((p) => p.sm != null);
+    $('#cb-poder-titulo').textContent = `Quanto um salário mínimo compra de ${it.titulo.toLowerCase()}`;
+    const u = comSm.at(-1), ini = comSm[0];
+    $('#cb-poder-nota').textContent = u && ini
+      ? `Em ${mesTexto(ini.mes)}, um salário mínimo comprava ${f1(ini.sm)} ${CB_UNIDADE[st.cbItem]}. Em ${mesTexto(u.mes)}, ${f1(u.sm)}.`
+      : 'Sem dados para esta seleção.';
+    lineChart($('#cb-poder'), {
+      series: [{ name: CB_UNIDADE[st.cbItem], color: cor(5), width: 2.4, pts: comSm.map((p) => ({ x: mesX(p.mes), y: p.sm, mes: p.mes })) }],
+      yfmt: (v) => `${f1(v)} ${CB_UNIDADE[st.cbItem]}`, xdomain: [y0, anoFim + 1], faixas: FAIXAS_MANDATO(), endLabels: false, height: 280,
+      mensal: true, tituloTip: (p) => mesTexto(p.mes),
+    });
+    // --- cartão 4: renda e salário mínimo
+    const r = C.renda_per_capita || [];
+    $('#cb-renda-nota').textContent = `Rendimento médio mensal domiciliar per capita, em valores reais, da PNAD Contínua do IBGE. Não há dado de 2020, porque a pandemia interrompeu a coleta.`;
+    barras($('#cb-renda'), r.map((x) => ({ label: String(x.ano), v: x.valor })), {
+      fmt: (v) => brl(v), height: 240,
+      tipLinhas: (x) => [{ name: 'Renda per capita', value: brl(x.v) }, { name: 'Por mês, por morador', value: 'média de todas as casas' }],
+    });
+    const sm = (C.salario_minimo || []).filter((p) => +p.mes.slice(0, 4) >= y0 && p.real != null);
+    lineChart($('#cb-sm'), {
+      series: [{ name: 'Salário mínimo', color: cor(2), width: 2.4, pts: sm.map((p) => ({ x: mesX(p.mes), y: p.real, mes: p.mes })) }],
+      yfmt: brl, xdomain: [y0, anoFim + 1], faixas: FAIXAS_MANDATO(), endLabels: false, height: 260,
+      mensal: true, tituloTip: (p) => mesTexto(p.mes),
+    });
+  }
+  $('#cb-real').addEventListener('change', (e) => { st.cbReal = e.target.checked; render(); });
+
   function show(page, push = true) {
     if (!PAGINAS.includes(page)) page = 'visao';
     st.page = page;
@@ -1305,6 +1453,8 @@
   on('#p-b', (v) => { st.pb = v; });
   on('#c-ano', (v) => { st.cano = +v; st.canoInd = st.ind; });
   on('#cs-tema', (v) => { st.cstema = v; });
+  on('#cb-item', (v) => { st.cbItem = v; });
+  on('#cb-y0', (v) => { st.cbY0 = +v; });
   on('#pl-a', (v) => { st.ga = v; });
   on('#pl-b', (v) => { st.gb = v; });
   on('#ct-y0', (v) => { st.cy0 = +v; });
@@ -1320,6 +1470,7 @@
     } else if (st.page === 'series') { drawSeries(); drawPeriodos(); }
     else if (st.page === 'coortes') drawCoortes();
     else if (st.page === 'votar') drawVotar();
+    else if (st.page === 'consumo') drawConsumo();
     else drawMetodo();
   }
 

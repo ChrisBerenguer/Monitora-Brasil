@@ -140,6 +140,38 @@ Gerado para as coortes grandes (`mundo` e `umic`), para cada indicador e ano com
 | `posicao` | inteiro | Posição do Brasil no escore geral (1 = melhor) |
 | `paises` | inteiro | Total de países com escore geral no ano |
 
+## Dados da aba Consumo básico
+
+Vêm de fontes fora do Banco Mundial e são coletados por `scripts/coletar_consumo.py`, que roda no GitHub Actions (workflow `dados-consumo.yml`, todo dia 12 e quando disparado à mão), porque precisa acessar os sites do governo. Gera `consumo.json`.
+
+| Fonte | O que traz | Como é obtida |
+|---|---|---|
+| DIEESE, Pesquisa Nacional da Cesta Básica de Alimentos | Gasto mensal da cesta em cada capital | Ipeadata, série `CESBTOTAL` (mensal, por município) |
+| ANP, Levantamento de Preços de Combustíveis | Preço médio de revenda no Brasil de gasolina comum, etanol hidratado, óleo diesel e GLP | Duas planilhas mensais da ANP: 2001–2012 e de janeiro de 2013 em diante |
+| Salário mínimo | Valor nominal vigente em cada mês | Ipeadata, série `MTE12_SALMIN12` |
+| IPCA (número-índice) | Correção dos preços | Ipeadata, série `PRECOS12_IPCA12` |
+| IBGE, PNAD Contínua anual | Rendimento médio mensal real domiciliar per capita | SIDRA, tabela 7395, variável 4196 |
+
+### `consumo.json`
+
+| Campo | Descrição |
+|---|---|
+| `coletado_em` | Data da coleta |
+| `base_ipca` | Mês mais recente do IPCA; é a base para corrigir os preços |
+| `itens.<id>` | Um por item (`cesta`, `gasolina`, `etanol`, `diesel`, `gas`), com `titulo`, `unidade` e `pontos[]` |
+| `itens.<id>.pontos[]` | `mes` (`AAAA-MM`), `v` (preço em reais da época), `real` (corrigido para `base_ipca`) e `sm` (quantas unidades um salário mínimo compra naquele mês) |
+| `cesta_capitais` | Gasto da cesta por capital e mês, como vem do DIEESE |
+| `salario_minimo[]` | `mes`, `v` (nominal) e `real` (corrigido) |
+| `renda_per_capita[]` | `ano` e `valor` (já em valores reais, como o IBGE publica) |
+
+**Cesta básica do Brasil.** O DIEESE pesquisa capital por capital e não publica uma média nacional. O painel usa a **média simples das capitais pesquisadas no mês**, só para os meses com pelo menos 3 capitais, e guarda também a série de cada capital em `cesta_capitais`.
+
+**Correção pela inflação.** `real = v × IPCA(base) ÷ IPCA(mês)`, com o IPCA do mês em que o preço foi medido. É o mesmo critério para preços e para o salário mínimo.
+
+**Poder de compra (`sm`).** Salário mínimo vigente no mês dividido pelo preço do item. Para os meses em que o Ipeadata não traz o salário, repete-se o último valor conhecido (o salário muda uma vez por ano).
+
+**Cobertura.** A cesta básica tem dados desde 1959, mas a aba começa em 2001 para acompanhar a série da ANP, que é mensal desde julho de 2001. A renda per capita da PNAD Contínua anual começa em 2016 e não tem 2020, porque a pandemia interrompeu a coleta.
+
 ## Cálculos feitos no navegador
 
 Três conjuntos são derivados em `site/assets/js/app.js`:

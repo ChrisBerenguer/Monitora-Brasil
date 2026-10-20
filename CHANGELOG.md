@@ -1,5 +1,16 @@
 # Histórico de versões
 
+## 1.17 — 20/10/2026
+
+### Adicionado
+- **Aba "Consumo básico"** (`#consumo`): cesta básica, gasolina, etanol, óleo diesel e gás de cozinha, comparados com a renda das pessoas.
+  - **Quanto custa hoje:** preço mais recente de cada item, variação em 12 meses já descontada a inflação e quanto um salário mínimo compra.
+  - **Preço ao longo do tempo:** série mensal desde 2001, com faixas de mandato e a opção de corrigir pela inflação (ligada por padrão).
+  - **Quanto um salário mínimo compra:** a mesma série em cestas, litros ou botijões por salário mínimo.
+  - **Renda e salário mínimo:** rendimento domiciliar per capita (PNAD Contínua) e salário mínimo real mês a mês.
+- `scripts/coletar_consumo.py` e o workflow `dados-consumo.yml` (coleta automática todo dia 12). Fontes: DIEESE (cesta básica), ANP (combustíveis), IBGE (PNAD Contínua e IPCA) e Ipeadata.
+- `lineChart` ganhou a opção `mensal`, para séries mês a mês, e voltou o componente `barras`.
+
 ## 1.16 — 19/10/2026
 
 ### Alterado

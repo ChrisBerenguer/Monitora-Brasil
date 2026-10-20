@@ -197,6 +197,19 @@ svg .info-svg:focus-visible .anel { stroke-width: 2.2; }
 .waffle-leg i.sd { border: 2px dashed var(--axis); }
 .waffle-leg i.ct { border: 2px solid var(--axis); }
 
+/* consumo básico */
+.cb-tiles { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); margin-top: 6px; }
+.cb-tile { border: 1px solid var(--line); border-radius: 12px; padding: 14px 16px; background: var(--panel-2); display: grid; gap: 2px; }
+.cb-tile .nome { font-size: var(--t-sm); color: var(--muted); font-weight: 500; }
+.cb-tile .valor { font-family: var(--f-display); font-size: var(--t-xl, 28px); line-height: 1.1; font-variant-numeric: tabular-nums; }
+.cb-tile .un { font-size: var(--t-xs); color: var(--muted); }
+.cb-tile .var { font-size: var(--t-sm); font-variant-numeric: tabular-nums; }
+.cb-tile .var.bom { color: var(--ok); }
+.cb-tile .var.ruim { color: var(--critical); }
+.cb-tile .sm { font-size: var(--t-xs); color: var(--muted); border-top: 1px dashed var(--line); padding-top: 6px; margin-top: 4px; }
+.ctl-check { display: inline-flex; align-items: center; gap: 8px; font-size: var(--t-sm); color: var(--muted); cursor: pointer; margin-top: 4px; }
+.ctl-check input { accent-color: var(--accent); }
+
 /* onde votar */
 .aba-votar { color: var(--accent); }
 .votar { max-width: 760px; display: grid; gap: 12px; }

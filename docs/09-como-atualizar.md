@@ -19,6 +19,12 @@ python scripts/gerar_dicionario.py   # atualiza docs/04 com a cobertura nova
 - [ ] O número de países no ranking (`ranking_brasil.json`) está perto de 175.
 - [ ] Nenhum tema do Brasil ficou sem escore no último ano.
 
+### Dados da aba Consumo básico
+
+Não passam pelo pipeline acima. O workflow **Atualizar dados de consumo básico** (`.github/workflows/dados-consumo.yml`) roda todo dia 12 e grava `consumo.json` no repositório. Para rodar na hora: GitHub → **Actions** → esse workflow → **Run workflow**. Leva poucos minutos. No próprio computador: `pip install openpyxl` e `python scripts/coletar_consumo.py`.
+
+Se a ANP mudar o endereço das planilhas, o script falha com "não consegui baixar": basta atualizar `ANP_URLS` em `scripts/coletar_consumo.py`.
+
 ## 2. Publicar
 
 `build_dados.py` grava os JSON em `dados/` e uma cópia em `site/data/`. Para publicar:
