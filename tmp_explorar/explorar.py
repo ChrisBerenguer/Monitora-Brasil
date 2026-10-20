@@ -8,15 +8,16 @@ def get(u, n=2500):
     except Exception as e: print(f'\n=== {u}\nERRO {e}')
 # 1) Obrasgov: rotas citadas na página de documentação
 h = raw('https://api-publica.obrasgov.gestao.gov.br/').decode('utf-8','replace')
-rotas = sorted(set(re.findall(r'["\'(](/[a-zA-Z0-9_\-/{}]*(?:projeto|execucao|historico|situacao|api)[a-zA-Z0-9_\-/{}]*)', h)))
+rotas = sorted(set(re.findall(r'obras/[a-zA-Z0-9_\-/{}?=&]+', h)))
 print('ROTAS', rotas[:80])
 urls = sorted(set(re.findall(r'https?://[^"\'\s<>]+', h)))
 print('URLS', [u for u in urls if 'obrasgov' in u or 'api' in u][:60])
 i = h.find('projeto-investimento'); print('TRECHO', h[max(0,i-1500):i+2500] if i>=0 else 'sem projeto-investimento')
-for p in ['/obrasgov/api/projeto-investimento?pagina=0&tamanhoDaPagina=2', '/projeto-investimento?pagina=0&tamanhoDaPagina=2', '/api/projeto-investimento?pagina=0&tamanhoDaPagina=2', '/obrasgov/projeto-investimento?pagina=0&tamanhoDaPagina=2']:
+for k in ['situacao','Conclu','pagina','tamanho','dataInicial','projetoInvestimento','execucao','historico']:
+    j=h.find(k); print('CTX',k, h[max(0,j-300):j+300].replace('\n',' ') if j>=0 else '-')
+for p in ['/obras', '/obras/v3/api-docs', '/obras/api-docs', '/obras/swagger-ui/index.html', '/obras/projeto-investimento?pagina=0&tamanhoDaPagina=2', '/obras/api/projeto-investimento?pagina=0&tamanhoDaPagina=2', '/obras/projetos-investimento?pagina=0&tamanhoDaPagina=2']:
     get('https://api-publica.obrasgov.gestao.gov.br'+p, 1500)
 # 2) Tesouro RTN
-import subprocess; subprocess.run(['pip','install','-q','openpyxl'])
 import openpyxl
 x = raw('https://www.tesourotransparente.gov.br/ckan/dataset/ab56485b-9c40-4efb-8563-9ce3e1973c4b/resource/527ccdb1-3059-42f3-bf23-b5e3ab4c6dc6/download/seriehistoricajul26.xlsx')
 wb = openpyxl.load_workbook(io.BytesIO(x), read_only=True, data_only=True)

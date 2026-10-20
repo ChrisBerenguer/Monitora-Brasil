@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - run: pip install -q openpyxl
       - run: python3 tmp_explorar/explorar.py > tmp_explorar/saida.txt 2>&1 || true
       - run: |
           git config user.name "github-actions[bot]"
