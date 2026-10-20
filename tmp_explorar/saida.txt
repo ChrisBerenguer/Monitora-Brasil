@@ -1,43 +1,17 @@
-SIDRA 7395 var 4196: [{"id": "4196", "variavel": "Rendimento médio mensal real domiciliar per capita", "unidade": "Reais", "resultados": [{"classificacoes": [], "series": [{"localidade": {"id": "1", "nivel": {"id": "N1", "nome": "Brasil"}, "nome": "Brasil"}, "serie": {"2016": "1781", "2017": "1840", "2018": "1890", "2019": "1924", "2021": "1729", "2022": "1953", "2023": "2039", "2024": "2157", "2025": "2280"}}]}]}]
-
-ANP OK mensal-brasil-desde-jan2013.xlsx | abas ['BRASIL - DESDE JANEIRO DE 2013']
-  aba "BRASIL - DESDE JANEIRO DE 2013": 1073 linhas x 18 col
-    ['AGÊNCIA NACIONAL DO PETRÓL', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['SUPERINTENDÊNCIA DE DEFESA', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['SISTEMA DE LEVANTAMENTO DE', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['RELATÓRIO DE DEFESA DA CON', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['INTERVALO DE TEMPO: MENSAL', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['PERÍODO: JANEIRO DE 2013 E', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['COMBUSTÍVEL: TODOS', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['TIPO RELATÓRIO: BRASIL', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['Obs: Entre 30/07/17 e 30/1', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['Entre 27/5/18 e 2/6/18, o ', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['Não houve pesquisa de preç', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ÚLTIMA ['2026-09-01 00:00:00', 'OLEO DIESEL S10', '13682', 'R$/l', '7.16', '0.449', '5.74', '9.99', '-', '0.063', '-']
-    col0 (169 distintos): ['2013-01-01 00:00:00', '2013-02-01 00:00:00', '2013-03-01 00:00:00', '2013-04-01 00:00:00', '2013-05-01 00:00:00', '2013-06-01 00:00:00', '2013-07-01 00:00:00', '2013-08-01 00:00:00', '2013-09-01 00:00:00', '2013-10-01 00:00:00', '2013-11-01 00:00:00', '2013-12-01 00:00:00', '2014-01-01 00:00:00', '2014-02-01 00:00:00', '2014-03-01 00:00:00', '2014-04-01 00:00:00']
-    col1 (8 distintos): ['ETANOL HIDRATADO', 'GASOLINA ADITIVADA', 'GASOLINA COMUM', 'GLP', 'GNV', 'OLEO DIESEL', 'OLEO DIESEL S10', 'PRODUTO']
-    col2 (1027 distintos): ['10001', '1001', '1009', '1010', '10113', '1012', '10125', '1018', '10186', '10188', '10201', '10252', '10270', '10274', '10382', '10402']
-
-ANP OK mensal-brasil-2001-a-2012.xlsx | abas ['BRASIL']
-  aba "BRASIL": 704 linhas x 15 col
-    ['AGÊNCIA NACIONAL DO PETRÓL', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['COORDENADORIA DE DEFESA DA', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['SISTEMA DE LEVANTAMENTO DE', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['RELATÓRIO DE DEFESA DA CON', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['INTERVALO DE TEMPO: MENSAL', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['PERÍODO: 01/07/2001 A 31/1', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['COMBUSTÍVEL: TODOS', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['TIPO RELATÓRIO: BRASIL', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None', 'None']
-    ['MÊS', 'PRODUTO', 'NÚMERO DE POSTOS PESQUISAD', 'UNIDADE DE MEDIDA', 'PRECO MÉDIO REVENDA', 'DESVIO PADRÃO REVENDA', 'PRECO MÍNIMO REVENDA', 'PRECO MÁXIMO REVENDA', 'MARGEM MÉDIA REVENDA', 'COEF DE VARIAÇÃO REVENDA', 'PRECO MÉDIO DISTRIBUIÇÃO']
-    ÚLTIMA ['2012-12-01 00:00:00', 'ÓLEO DIESEL S10', '100', 'R$/l', '2.226', '0.07', '2.039', '2.399', '0.241', '0.031', '1.985']
-    col0 (139 distintos): ['2001-07-01 00:00:00', '2001-08-01 00:00:00', '2001-09-01 00:00:00', '2001-10-01 00:00:00', '2001-11-01 00:00:00', '2001-12-01 00:00:00', '2002-01-01 00:00:00', '2002-02-01 00:00:00', '2002-03-01 00:00:00', '2002-04-01 00:00:00', '2002-05-01 00:00:00', '2002-06-01 00:00:00', '2002-07-01 00:00:00', '2002-08-01 00:00:00', '2002-09-01 00:00:00', '2002-10-01 00:00:00']
-    col1 (7 distintos): ['ETANOL HIDRATADO', 'GASOLINA COMUM', 'GLP', 'GNV', 'PRODUTO', 'ÓLEO DIESEL', 'ÓLEO DIESEL S10']
-    col2 (678 distintos): ['100', '1019', '1053', '1056', '1082', '1085', '1143', '1160', '1171', '1176', '1177', '12299', '1263', '1269', '1294', '1344']
-
-ANP ERRO mensal-brasil-desde-jan2013.xlsx: HTTP Error 404: Not Found
+IPCA...
+  índice de 562 meses; base de correção: 2026-09
+Cesta básica (DIEESE)...
+  27 capitais, 564 meses com 3+ capitais (1979-09 a 2026-09)
+Combustíveis (ANP)...
+  ANP mensal-brasil-2001-a-2012.xlsx: 552 linhas úteis
+  ANP mensal-brasil-desde-jan2013.xlsx: 656 linhas úteis
+  unidades: {'etanol': 'R$/l', 'gasolina': 'R$/l', 'gas': 'R$/13kg', 'diesel': 'R$/l'}
+Salário mínimo...
+Renda domiciliar per capita (IBGE)...
+   [{'ano': 2016, 'valor': 1781.0}, {'ano': 2017, 'valor': 1840.0}, {'ano': 2018, 'valor': 1890.0}, {'ano': 2019, 'valor': 1924.0}, {'ano': 2021, 'valor': 1729.0}, {'ano': 2022, 'valor': 1953.0}, {'ano': 2023, 'valor': 2039.0}, {'ano': 2024, 'valor': 2157.0}, {'ano': 2025, 'valor': 2280.0}]
+  cesta: 309 meses, último 2026-09 = R$ 752.91 (real R$ 752.91, 2.15 por salário mínimo)
+  gasolina: 302 meses, último 2026-09 = R$ 6.54 (real R$ 6.54, 247.86 por salário mínimo)
+  etanol: 302 meses, último 2026-09 = R$ 4.08 (real R$ 4.08, 397.3 por salário mínimo)
+  diesel: 302 meses, último 2026-09 = R$ 6.7 (real R$ 6.7, 241.94 por salário mínimo)
+  gas: 302 meses, último 2026-09 = R$ 114.33 (real R$ 114.33, 14.18 por salário mínimo)
+gravado consumo.json (230 KB)
