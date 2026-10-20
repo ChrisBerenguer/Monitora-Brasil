@@ -1,0 +1,10 @@
+name: Explorar fontes (temporário)
+on:
+  push:
+    branches: [explorar-fontes]
+jobs:
+  explorar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python3 tmp_explorar/explorar.py
