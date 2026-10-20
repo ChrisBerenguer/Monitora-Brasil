@@ -1,0 +1,149 @@
+
+=== https://api-publica.obrasgov.gestao.gov.br/
+status 200 type text/html bytes 2716060
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-ZE8ZBG6G51"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-ZE8ZBG6G51');
+</script>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="API de Dados Abertos Obrasgov.br">
+<title>API | Obrasgov.br</title>
+
+<link rel="icon" type="image/png"
+href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAyEAAAMaCAYAAACRU0mdAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAGHaVRYdFhNTDpjb20uYWRvYmUueG1wAAAAAAA8P3hwYWNrZXQgYmVnaW49J++7vycgaWQ9J1c1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCc/Pg0KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyI+PHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj48cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0idXVpZDpmYWY1YmRkNS1iYTNkLTExZGEtYWQzMS1kMzNkNzUxODJmMWIiIHhtbG5zOnRpZmY9Imh0dHA6Ly9ucy5hZG9iZS5jb20vdGlmZi8xLjAvIj48dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPjwvcmRmOkRlc2NyaXB0aW9uPjwvcmRmOlJERj48L3g6eG1wbWV0YT4NCjw/eHBhY2tldCBlbmQ9J3cnPz4slJgLAABvd2NhQlgAAG93anVtYgAAAB5qdW1kYzJwYQARABCAAACqADibcQNjMnBhAAAAZwlqdW1iAAAAR2p1bWRjMm1hABEAEIAAAKoAOJtxA3VybjpjMnBhOjBmY2U5NDEwLTdlMGYtNDc3ZS04NTg1LTgxNTU3OTI2NWUwZAAAABblanVtYgAAAClqdW1kYzJhcwARABCAAACqADibcQNjMnBhLmFzc2VydGlvbnMAAAAJ0Wp1bWIAAAA7anVtZEDLDDK7ikidpwsq1vR/Q2kTYzJwYS5pY29uAAAAABhjMnNog46iCMWNsFGYQ/s7WXN0/wAAABdiZmRiAGltYWdlL3N2Zyt4bWwAAAAJd2JpZGI8c3ZnIHdpZHRoPSI3MTYiIGhlaWdodD0iNzE2IiB2aWV3Qm94PSIwIDAgNzE2IDcxNiIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTUwOC43NDkgMzE3LjM5OUM1MTYuNzc3IDI4Ny4zMTQgNTA4Ljk5MSAyNTMuODg0IDQ4NS4zODkgMjMwLjI4MkM0NjEuNzg4IDIwNi42ODEgNDI4LjM2IDE5OC44OTUgMzk4LjI3MyAyMDYuOTIzQzM3Ni4yMzEgMTg0LjkyOCAzNDMuMzkgMTc0Ljk1NiAzMTEuMTQ4IDE4My41OTZDMjc4LjkwNiAxOTIuMjM0IDI1NS40NSAyMTcuMjkyIDI0Ny4zNiAyNDcuMzYxQzIxNy4yOTEgMjU1LjQ1MSAxOTIuMjMzIDI3OC45MSAxODMuNTk1IDMxMS4xNDlDMTc0Ljk1NyAzNDMuMzkxIDE4NC45MjcgMzc2LjIzMiAyMDYuOTI0IDM5OC4yNzRDMTk4Ljg5NiA0MjguMzU5IDIwNi42ODMgNDYxLjc4OSAyMzAuMjg0IDQ4NS4zOTFDMjUzLjg4NSA1MDguOTkyIDI4Ny4zMTMgNTE2Ljc3OSAzMTcuNDAxIDUwOC43NUMzMzkuNDQyIDUzMC43NDUgMzcyLjI4NiA1NDAuNzE3IDQwNC41MjUgNTMyLjA3OUM0MzYuNzY3IDUyMy40NDEgNDYwLjIyMyA0OTguMzg0IDQ2OC4zMTMgNDY4LjMxNUM0OTguMzgzIDQ2MC4yMjQgNTIzLjQ0IDQzNi43NjYgNTMyLjA3OCA0MDQuNTI2QzU0MC43MTYgMzcyLjI4NSA1MzAuNzQ3IDMzOS40NDMgNTA4Ljc0OSAzMTcuNDAyV
+
+=== https://api-publica.obrasgov.gestao.gov.br/obrasgov/api/v3/api-docs
+ERRO HTTP Error 404: Not Found
+
+=== https://api-publica.obrasgov.gestao.gov.br/v3/api-docs
+ERRO HTTP Error 404: Not Found
+
+=== https://api-publica.obrasgov.gestao.gov.br/obrasgov/api/swagger-ui/index.html
+ERRO HTTP Error 404: Not Found
+
+=== https://api-publica.obrasgov.gestao.gov.br/obrasgov/api/v3/api-docs/swagger-config
+ERRO HTTP Error 404: Not Found
+
+=== https://api-publica.obrasgov.gestao.gov.br/obrasgov/api/projeto-investimento?pagina=0&tamanhoDaPagina=2
+ERRO HTTP Error 404: Not Found
+
+=== https://api-publica.obrasgov.gestao.gov.br/obrasgov/api/projeto-investimento?pagina=0&tamanhoDaPagina=2&situacao=Conclu%C3%ADda
+ERRO HTTP Error 404: Not Found
+
+=== https://api-publica.obrasgov.gestao.gov.br/obrasgov/api/historico-situacao?pagina=0&tamanhoDaPagina=2
+ERRO HTTP Error 404: Not Found
+
+=== https://www.tesourotransparente.gov.br/ckan/api/3/action/package_search?q=resultado+tesouro+nacional&rows=5
+status 200 type application/json;charset=utf-8 bytes 108248
+{"help": "https://www.tesourotransparente.gov.br/ckan/api/3/action/help_show?name=package_search", "success": true, "result": {"count": 29, "sort": "score desc, metadata_modified desc", "facets": {}, "results": [{"license_title": "Licen\u00e7a Aberta para Bases de Dados (ODbL) do Open Data Commons", "maintainer": "", "relationships_as_object": [], "private": false, "maintainer_email": "", "num_tag
+PACOTE resultado-do-tesouro-nacional Resultado do Tesouro Nacional - Série Histórica
+    Resultado do Tesouro Nacional - Série Histórica - Mensal XLSX https://www.tesourotransparente.gov.br/ckan/dataset/ab56485b-9c40-4efb-8563-9ce3e1973c4b/resource/527ccdb1-3059-42f3-bf23-b5e3ab4c6dc6/download/seriehistoricajul26.xlsx
+    Dicionário de Conceitos e Metodologia de Cálculo XLSX https://www.tesourotransparente.gov.br/ckan/dataset/ab56485b-9c40-4efb-8563-9ce3e1973c4b/resource/7a535375-4e15-4ebb-bb49-25daf05330bb/download/metadados---nfgc.xlsx
+    Metadados PDF https://www.tesourotransparente.gov.br/ckan/dataset/ab56485b-9c40-4efb-8563-9ce3e1973c4b/resource/aaf7f695-9370-46ae-9d7c-1d5cb28b1db4/download/metadados-serie-rtn.pdf
+    API Séries Temporais API https://apiapex.tesouro.gov.br/aria/v1/series-temporais/docs
+    API Séries Temporais  https://apiapex.tesouro.gov.br/aria/v1/series-temporais/docs
+PACOTE seriestemporaisdotesouronacional Séries Temporais do Tesouro Nacional
+    Séries Temporais do Tesouro Nacional Visualização https://www.tesourotransparente.gov.br/visualizacao/series-temporais-do-tesouro-nacional
+PACOTE operacoes-do-tesouro-direto Operações do Tesouro Direto
+    Metadados PDF https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/89640be3-450b-4de1-8135-02194c8a8ada/download/operacoesdotesourodireto-metadados.pdf
+    Operações do Tesouro Direto de 2014 CSV https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/df9bf535-6224-43a7-a390-c7776a37353d/download/operacoestesourodireto2014.csv
+    Operações do Tesouro Direto de 2014 ZIP https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/9f986499-17e6-483f-bd36-221a87138510/download/operacoestesourodireto2014.zip
+    Operações do Tesouro Direto de 2015 CSV https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/aa551a18-7b62-4d68-bffb-a1b17c980e73/download/operacoestesourodireto2015.csv
+    Operações do Tesouro Direto de 2015 ZIP https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/96b7f697-ad3d-4636-ab87-43ca9f7108ad/download/operacoestesourodireto2015.zip
+    Operações do Tesouro Direto de 2016 CSV https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/913285be-a473-40e3-8778-1b71de8d1ca0/download/operacoestesourodireto2016.csv
+    Operações do Tesouro Direto de 2016 ZIP https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/4bd9c038-1e95-4b54-bf30-c7d4e8323b3c/download/operacoestesourodireto2016.zip
+    Operações do Tesouro Direto de 2017 CSV https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/71659642-e5ea-44a0-a0d9-2754895351ef/download/operacoestesourodireto2017.csv
+    Operações do Tesouro Direto de 2017 ZIP https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/b0d9755a-d653-4079-b057-df739dee34e7/download/operacoestesourodireto2017.zip
+    Operações do Tesouro Direto de 2018 CSV https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/d7b28686-1539-46a1-b5aa-21006820fe1e/download/operacoestesourodireto2018.csv
+    Operações do Tesouro Direto de 2018 ZIP https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/6ff0f8cd-6159-4a03-8e6b-362e72b251a4/download/operacoestesourodireto2018.zip
+    Operações do Tesouro Direto de 2019 CSV https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/25b8cf8e-a9b5-40ed-b036-218c08a4e1cd/download/operacoestesourodireto2019.csv
+    Operações do Tesouro Direto de 2019 ZIP https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/20a4a081-c641-4f99-9082-86763ac0ba00/download/operacoestesourodireto2019.zip
+    Operações do Tesouro Direto de 2020 CSV https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/8661070e-d060-42ef-a53f-79b1e1be2d1b/download/operacoestesourodireto2020.csv
+    Operações do Tesouro Direto de 2020 ZIP https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/dd87866b-61bd-461d-8702-a6f268ea6692/download/operacoestesourodireto2020.zip
+    Operações do Tesouro Direto de 2021 CSV https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/18a26022-0248-4c1b-855f-58ff78c43203/download/operacoestesourodireto2021.csv
+    Operações do Tesouro Direto de 2021 ZIP https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/34fd1522-5ae6-475f-8da2-320fb0b52132/download/operacoestesourodireto2021.zip
+    Operações do Tesouro Direto de 2022 CSV https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/63ff55dd-383c-4fcf-b899-0bde78086855/download/operacoestesourodireto2022.csv
+    Operações do Tesouro Direto de 2022 ZIP https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/c1ae8ffe-8900-4fea-9636-7ccb8320e568/download/operacoestesourodireto2022.zip
+    Operações do Tesouro Direto de 2023 CSV https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/3ab8e60c-c722-49ae-86e3-a7756edad6e0/download/operacoestesourodireto2023.csv
+    Operações do Tesouro Direto de 2023 ZIP https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/8ab38494-1971-4a23-b3ab-1f55f881ac47/download/operacoestesourodireto2023.zip
+    Operações do Tesouro Direto de 2024 CSV https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/c781d94d-bc07-4c34-a422-1041e15f2c5e/download/operacoestesourodireto2024.csv
+    Operações do Tesouro Direto de 2024 ZIP https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/fe11ad2c-ee84-4bb6-8d93-398d9e15c914/download/operacoestesourodireto2024.zip
+    Operações do Tesouro Direto de 2025 CSV https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/6908b59b-d9da-4b33-b15a-a89c2b71dc50/download/operacoestesourodireto2025.csv
+    Operações do Tesouro Direto de 2025 ZIP https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/f6c4c83e-281e-4b79-961c-7f11d2ba88b2/download/operacoestesourodireto2025.zip
+    Operações do Tesouro Direto - base completa GZ https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/4c711f0d-bd62-4b32-8f6e-2a2933965ef7/download/operacoestesourodireto.gz
+    Operações do Tesouro Direto de 2026 CSV https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/8206ddf5-4dab-4e5b-9dc1-3a81db840608/download/operacoestesourodireto2026.csv
+    Operações do Tesouro Direto de 2026 ZIP https://www.tesourotransparente.gov.br/ckan/dataset/78739a33-4d2f-4e35-88fd-65f1ccbe81c4/resource/d19f4f5f-f3b2-4381-9571-4d2a13c0ae87/download/operacoestesourodireto2026.zip
+PACOTE despesas-e-transferencias-totais Despesas e Transferências Totais da União (critério valor pago)
+    Metadados - Despesas e Tranferências Sujeitas ao Teto - EC 95 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/7f4f368c-646a-4155-856d-5e8b8c6ba42a/download/metadados-despesa-valor-pago---ec-95.pdf
+    Despesas e Transferências da União - 2025 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/f40d5431-058d-48b8-9ab6-065fb0fce5b3/download/limite-gastos-lc200dez25.xlsx
+    Despesas e Transferências da União - 2024 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/f0ed603a-a3b2-4ed3-8c22-f62c57e146aa/download/limite-gastos-lc200dez24.xlsx
+    Despesas e Transferências da União - 2023 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/44c1aa69-a1ef-4efd-8e77-8346f8883c38/download/tetodez23.xlsx
+    Despesas e Transferências da União - 2022 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/96744fdd-91c6-46e0-a1c4-253fae51936c/download/tetodez22.xlsx
+    Despesas e Transferências da União - 2021 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/a66311e0-fb60-4354-b6d4-5ed3dbe7b297/download/tetodez21.xlsx
+    Despesas e Transferências da União - 2020 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/ea213a0b-26f0-4525-90ec-4e0c3847a48e/download/tetodez20.xlsx
+    Despesas e Transferências da União - 2019 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/e9ae7557-a334-4353-9b02-3f08641afcf7/download/base-despesas-2019.xlsx
+    Despesas e Transferências da União - 2018 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/5d9c3471-9c13-409f-a84a-556b8acf07c7/download/base-despesas-2018.xlsx
+    Despesas e Transferências da União - 2017 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/9fdccd4d-cb62-4a89-9f22-988299bfda28/download/base-despesas-2017.xlsx
+    Despesas e Transferências da União - 2016 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/903c1716-d304-4fed-9f1d-322a4e21bbbf/download/base-despesas-2016.xlsx
+    Despesas e Transferências da União - 2015 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/a6767172-8749-4470-9949-91825e6ab72a/download/base-despesas-2015.xlsx
+    Despesas e Transferências da União - 2014 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/f0abf45a-5cbe-49fc-92c9-44ce3c743f2b/download/base-despesas-2014.xlsx
+    Despesas e Transferências da União - 2013 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/889ee485-2dc8-492b-8bd2-dff0b0785817/download/base-despesas-2013.xlsx
+    Despesas e Transferências da União - 2012 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/975adef6-f5d8-4335-897e-f8c4a5a5aeaf/download/base-despesas-2012.xlsx
+    Despesas e Transferências da União - 2011 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/52735d4b-5262-4f2d-9164-fac9de715779/download/base-despesas-2011.xlsx
+    Despesas e Transferências da União - 2010 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/3ee45d85-7dbd-44d9-8e79-382dc8edec7f/download/base-despesas-2010.xlsx
+    Despesas e Transferências da União - 2009 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/8c524683-dce0-4059-9bbb-d213a551ec39/download/base-despesas-2009.xlsx
+    Despesas e Transferências da União - 2008 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/bb0004d4-0d15-4916-96a3-6fa4b30307d5/download/base-despesas-2008.xlsx
+    Nota Técnica LC 200_out 2023 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/f06d1af1-1754-49ea-aaee-d3f7cedceddc/download/sei37655279notatecnica689.pdf
+    Nota Técnica LC 200_mar 2024 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/225c2f23-e0ff-4ba5-a172-afb7408b5ae3/download/sei40824393notatecnica223.pdf
+    Nota Técnica LC 200_ago 2024 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/ec189d8f-2bdf-4c3b-be77-e1588fa047e0/download/sei44630170notatecnica1016.pdf
+    Nota Técnica LC 200_ago 2025 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/10c93cd8-6e02-45f1-8098-ceb6c9c9a1e4/download/sei53366388notatecnica1152.pdf
+    Nota Técnica LC 200_nov 2025 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/28929d0b-a50e-433a-a23b-709ae48e113b/download/sei55743881notatecnica1698.pdf
+    Nota Técnica LC 200_dez 2025 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/99605083-618f-477d-a74b-4ce1b5d8926e/download/sei56494332notatecnica1886.pdf
+    Limites de Pagamento por Poder PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/08e935cd-70df-45e4-9d72-a5eb616f71c4/download/teto-limites-de-pagamento.pdf
+    Nota Técnica EC 95_fev 2017 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/14c5c90f-ebd8-48b6-aded-c1f9de88ff6c/download/nota-tecnica-ec-95fev-2017.pdf
+    Nota Técnica EC 95_ago 2017 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/231ae224-be5d-42e0-b3a6-0d6ffa18b1cc/download/nota-tecnica-ec-95ago-2017.pdf
+    Nota Técnica EC 95_set 2018 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/bceb287c-3ae7-464c-b752-8418da27073f/download/nota-tecnica-ec-95set-2018.pdf
+    Nota Técnica EC 95_dez 2019 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/fa2ebfca-cbda-4974-b7bc-ef8e1f45d6a5/download/nota-tecnica-ec-95dez2019.pdf
+    Nota Técnica EC 95_fev 2020 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/23e13021-3a51-4a19-a01d-ce9fb2fd684a/download/seime---6498514---nota-conjunta-1-2020.pdf
+    Nota Técnica EC 95_mar 2020 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/7d96a800-0a7f-416e-83d7-76c20ae1d39c/download/nt-alteracao-teto-judiciario.pdf
+    Nota Técnica 33.945/20 - Nova Metodologia FIES PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/a22dcc4e-2488-47bb-95b4-4c7ae18a4d40/download/nt-33.945-20---nova-metodologia-fies.pdf
+    Nota Técnica EC 95_set 2020 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/705a4fe6-6f9e-40b1-85e1-b9ca0f5e20fb/download/nota-tecnica-conjunta-8-2020.pdf
+    Nota Técnica EC 95_dez 2020 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/ce602ade-a3f1-4eb5-b7e1-2ae7d38d3774/download/seime---12762194---nota-conjunta-12.pdf
+    Nota Técnica EC 95_abr 2021 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/74615649-4ed5-4276-a12d-5927e1b99841/download/seime---15337433---nota-conjunta-3-roteiro-apuracao-teto-do-gasto.pdf
+    Nota Técnica EC 95_jan 2022 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/de4b2cea-300f-45d4-8c6f-18859deb2ffb/download/sei17944.104836201943---nota-conjunta-1-2022.pdf
+    Nota Técnica EC 95_nov 2022 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/63907686-a696-40e7-9d4c-ff8042a09774/download/sei29641795notaconjunta8.pdf
+    Nota Tecnica 22/2017 CESEF/SUPEF/STN/MF/DF PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/4c5bd285-443c-46e0-bd7c-0f4209b401dd/download/nota-tecnica-22.2017.cesef.supef.stn.mf.df.pdf
+    Nota Técnica EC 95_mar 2022 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/23d2f1fb-d9ba-4269-b8c4-6181699605d3/download/seime---23243543---nota-conjunta.pdf
+    Nota Técnica EC 95_set 2022 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/97fda837-ac4d-4bed-90ee-c572157210d0/download/nota-tecnica---campo-de-marte-e-comprev.pdf
+    Nota Técnica EC 95_jan 2023 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/d8fe6e28-9e89-4d20-b388-953f2915e117/download/sei31205997notaconjunta2.pdf
+    Nota Técnica EC 95_mar 2023 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/999e2189-b710-4ac4-9202-78aec2fa97cc/download/sei32352702notaconjunta4.pdf
+    Nota Técnica EC 95_mai 2023 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/0be86de8-e30c-4a93-bacd-b5690cc41a77/download/sei34119935notaconjunta5.pdf
+    Nota Técnica EC 95_nov 2023 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/b1e7ffd6-ac83-441b-b979-08f3ea0ad445/download/sei38737456notaconjunta7.pdf
+    Nota Técnica EC 95_dez 2023 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/7bb722db-8170-47d9-b8aa-cfbf6cc895d3/download/sei39372626notaconjunta10.pdf
+    Despesas e Transferências da União - 2026 XLSX https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/a3e4e64b-3378-4d9c-9ee2-f70e69614e53/download/limite-gastos-lc200ago26.xlsx
+    Nota Técnica LC 200_mar 2026 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/ddecd34e-7faa-45af-8f26-521fc85419d7/download/sei58550105notatecnica252.pdf
+    Nota Técnica LC 200_ago 2026 PDF https://www.tesourotransparente.gov.br/ckan/dataset/8675a0a4-31c5-4593-a24d-fb8e17376eca/resource/4da598bc-39ed-484d-8127-470895bc01b3/download/sei64003486notatecnica1301.pdf
+PACOTE capag-estados Capacidade de Pagamento dos Estados e do Distrito Federal
+    Capag Estados 2018 CSV https://www.tesourotransparente.gov.br/ckan/dataset/f04a675e-4e5a-4e88-98de-acc3e22bf778/resource/ca03d8f8-c34e-44e8-a7b2-e914163741d4/download/capag-estados-2018.csv
+    CAPAG Estados 2019 CSV https://www.tesourotransparente.gov.br/ckan/dataset/f04a675e-4e5a-4e88-98de-acc3e22bf778/resource/44d45126-6ce4-4fa1-a404-706468740101/download/capag.csv
+    CAPAG Estados 2020 CSV https://www.tesourotransparente.gov.br/ckan/dataset/f04a675e-4e5a-4e88-98de-acc3e22bf778/resource/427871d3-0d13-4c03-845a-683a37bd64bd/download/capagestadostt2020.csv
+    CAPAG Estados 2021 CSV https://www.tesourotransparente.gov.br/ckan/dataset/f04a675e-4e5a-4e88-98de-acc3e22bf778/resource/c5bc2f34-78c7-4a31-86de-789dcbac8a81/download/capagestados202111.csv
+    Capag Estados 2022 CSV https://www.tesourotransparente.gov.br/ckan/dataset/f04a675e-4e5a-4e88-98de-acc3e22bf778/resource/58a9df19-5b0f-4bac-af00-254ff2a969ff/download/capag-estados-2022-1-revisada.csv
+    CAPAG Estados 2023 CSV https://www.tesourotransparente.gov.br/ckan/dataset/f04a675e-4e5a-4e88-98de-acc3e22bf778/resource/13c60560-ee30-4c15-ab63-57bea30ef9b1/download/2023-11-06capagestados2023.csv
+    Metadados PDF https://www.tesourotransparente.gov.br/ckan/dataset/f04a675e-4e5a-4e88-98de-acc3e22bf778/resource/52163ec6-2b97-4861-a25f-447e4cfbb58c/download/metadados-estados.pdf
+    Capag Estados 2024 CSV https://www.tesourotransparente.gov.br/ckan/dataset/f04a675e-4e5a-4e88-98de-acc3e22bf778/resource/d1c157b5-592c-43c4-a33f-c46601fe2be3/download/capagdosestados.csv
+    Capag Estados 2024 - Revisão CSV https://www.tesourotransparente.gov.br/ckan/dataset/f04a675e-4e5a-4e88-98de-acc3e22bf778/resource/c683ec00-345a-4988-af3c-695036dbed63/download/capagdosestados2024revisao.csv
+    Capag Estados 2025 CSV https://www.tesourotransparente.gov.br/ckan/dataset/f04a675e-4e5a-4e88-98de-acc3e22bf778/resource/54788ba1-536c-456c-8520-32ebafd761e7/download/capagdosestados2025.csv
+
+=== http://www.ipeadata.gov.br/api/odata4/Metadados?$filter=contains(SERNOME,'nvestimento')%20and%20contains(SERNOME,'federal')&$select=SERCODIGO,SERNOME,PERNOME,SERMAXDATA
+ERRO HTTP Error 400: Bad Request
