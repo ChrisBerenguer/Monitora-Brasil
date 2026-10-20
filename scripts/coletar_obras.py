@@ -85,7 +85,7 @@ def obras():
         retrato[s] = pagina('projeto-investimento', situacao=s, pagina=1, tamanho_da_pagina=1).get('total_items')
         print(f'  {s}: {retrato[s]}')
     # todas as obras concluídas
-    tam, pg, itens = 500, 1, []
+    tam, pg, itens = 200, 1, []  # máximo aceito pela API
     while True:
         r = pagina('projeto-investimento', situacao='Concluída', pagina=pg, tamanho_da_pagina=tam)
         itens += r.get('data') or []
