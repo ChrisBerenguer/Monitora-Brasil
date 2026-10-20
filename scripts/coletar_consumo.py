@@ -182,9 +182,9 @@ def main():
         },
         'itens': itens,
         'cesta_capitais': {c: v for c, v in sorted(cesta_cap.items())},
-        'salario_minimo': [{'mes': m, 'v': salario[m], 'real': real(salario[m], m)} for m in sm_meses if m >= '2001-01' and m <= base],
+        'salario_minimo': [{'mes': m, 'v': salario[m], 'real': real(salario[m], m)} for m in sm_meses if m >= '1994-12' and m <= base],
         'renda_per_capita': rend,
-        'ipca': [{'mes': m, 'indice': round(ipca[m], 4)} for m in sorted(ipca) if m >= '2000-12'],
+        'ipca': [{'mes': m, 'indice': round(ipca[m], 4)} for m in sorted(ipca) if m >= '1994-12'],
     })
 
 
