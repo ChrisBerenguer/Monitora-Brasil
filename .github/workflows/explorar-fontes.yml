@@ -2,7 +2,7 @@ name: Explorar fontes (temporário)
 on:
   push:
     branches: [explorar-fontes]
-    paths: ['tmp_explorar/*.py', '.github/workflows/explorar-fontes.yml']
+    paths: ['scripts/coletar_obras.py', '.github/workflows/explorar-fontes.yml']
 permissions:
   contents: write
 jobs:
@@ -11,10 +11,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: pip install -q openpyxl
-      - run: python3 tmp_explorar/explorar.py > tmp_explorar/saida.txt 2>&1 || true
+      - run: python3 scripts/coletar_obras.py > tmp_explorar/saida.txt 2>&1 || true
       - run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add tmp_explorar
-          git commit -m "Saída da exploração" || true
+          git add -A tmp_explorar dados site/data
+          git commit -m "Saída da coleta de obras" || true
           git push
