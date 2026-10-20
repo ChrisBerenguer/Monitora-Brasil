@@ -10,6 +10,7 @@
   - **Renda e salário mínimo:** rendimento domiciliar per capita (PNAD Contínua) e salário mínimo real mês a mês.
 - `scripts/coletar_consumo.py` e o workflow `dados-consumo.yml` (coleta automática todo dia 12). Fontes: DIEESE (cesta básica), ANP (combustíveis), IBGE (PNAD Contínua e IPCA) e Ipeadata.
 - `lineChart` ganhou a opção `mensal`, para séries mês a mês, e voltou o componente `barras`.
+- Em telas estreitas, as barras escondem o rótulo do valor quando ele não cabe; o número aparece ao tocar.
 
 ## 1.16 — 19/10/2026
 

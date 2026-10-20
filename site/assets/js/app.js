@@ -1354,8 +1354,9 @@
         .style('fill', typeof corB === 'function' ? corB(r) : corB).style('fill-opacity', r.fraco ? 0.4 : 0.9)
         .on('pointermove', (ev) => tip.show(ev, r.titulo || r.label, tipLinhas ? tipLinhas(r) : [{ name: 'Valor', value: fmt(r.v) }]))
         .on('pointerleave', () => tip.hide());
-      svg.append('text').attr('x', x(r.label) + x.bandwidth() / 2).attr('y', y(r.v) - 5).attr('text-anchor', 'middle')
-        .style('font-size', '11px').style('fill', css('--fg')).text(fmt(r.v));
+      if (x.bandwidth() >= 34) // em tela estreita o rótulo não cabe; o valor fica no toque
+        svg.append('text').attr('x', x(r.label) + x.bandwidth() / 2).attr('y', y(r.v) - 5).attr('text-anchor', 'middle')
+          .style('font-size', '11px').style('fill', css('--fg')).text(fmt(r.v));
     }
     const passo = Math.ceil(rows.length / Math.max(1, Math.floor((W - ml - mr) / 56)));
     svg.append('g').selectAll('text').data(rows.filter((r, i) => i % passo === 0)).join('text')
