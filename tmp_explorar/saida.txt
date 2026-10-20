@@ -1,163 +1,45 @@
 
-=== http://www.ipeadata.gov.br/api/odata4/Metadados
-bytes 7720216
+IPEA CESBTOTAL: 8769 valores | 1959-01 → 2026-09
+  últimos: [('2026-09', 808.01, '5208707'), ('2026-09', 731.62, '1501402'), ('2026-09', 913.46, '3304557'), ('2026-09', 678.35, '1200401')]
+  territórios: [('Municípios', '1100205'), ('Municípios', '1200401'), ('Municípios', '1302603'), ('Municípios', '1400100'), ('Municípios', '1400605'), ('Municípios', '1501402'), ('Municípios', '1600303'), ('Municípios', '1721000'), ('Municípios', '2111300'), ('Municípios', '2211001'), ('Municípios', '2304400'), ('Municípios', '2408102'), ('Municípios', '2507507'), ('Municípios', '2611606'), ('Municípios', '2704302'), ('Municípios', '2800308'), ('Municípios', '2927408'), ('Municípios', '3106200'), ('Municípios', '3205309'), ('Municípios', '3304557'), ('Municípios', '3550308'), ('Municípios', '4106902'), ('Municípios', '4205407'), ('Municípios', '4314902'), ('Municípios', '5002704'), ('Municípios', '5103403'), ('Municípios', '5208707'), ('Municípios', '5300108')]
 
-  IPEA ANP_PGASOL | Produção - gasolina - quantidade | Anual None None ANP Metro cúbico A
-  IPEA ANP12_CGASOL12 | Consumo - gasolina - média - quantidade/dia | Mensal None None ANP Barril A
-  IPEA ANP12_CGLP12 | Consumo - gás GLP - média - quantidade/dia | Mensal None None ANP Barril A
-  IPEA ANP12_COLDIE12 | Consumo - óleo diesel - média - quantidade/dia | Mensal None None ANP Barril A
-  IPEA ANP_PRGASOL | Preço médio - gasolina - metro cúbico | Anual None None ANP R$ A
-  IPEA ANP_PRGLP | Preço médio - gás GLP - tonelada | Anual None None ANP R$ A
-  IPEA ANP_PROLDIE | Preço médio - óleo diesel - metro cúbico | Anual None None ANP R$ A
-  IPEA CESBTOTAL | Cesta básica - gasto mensal - capitais | Mensal None None Dieese R$ None
-  IPEA DIEESE12_CBSP12 | Cesta básica - município de São Paulo | Mensal None None Dieese R$ A
-  IPEA GAC12_SALMINDOL12 | Salário mínimo - paridade do poder de compra (PPC) | Mensal None None IPEA US$ A
-  IPEA GAC12_SALMINRE12 | Salário mínimo real | Mensal None None IPEA R$ (do último mês) A
-  IPEA MTE12_SALMIN12 | Salário mínimo vigente | Mensal None None Min. Economia/Outras R$ A
-DIEESE scripts ['https://www.dieese.org.br/scripts/geral.js', 'js/jquery.min.js', 'js/bootstrap.min.js', 'https://www.dieese.org.br/imagens/icone-metodologia.gif', 'https://www.dieese.org.br/imagens/icone-banco.gif', 'https://www.dieese.org.br/imagens/icone-boletins.gif', 'https://www.dieese.org.br/imagens/logosgovernofederal.gif']
-DIEESE ajax/urls ['css/cesta.css']
-<form action="cidade" method="post" id="cidadeForm">
-	 	    <input type="hidden" name="farinha" value="true" />
-			<div class="coluna1">
-			   <p>
-			    <label>cidade</label>
-			    <select name="cidades">
-					<option value="16">(09/1995) Aracaju</option>
-					<option value="13">(08/1987) Belém</option>
-					<option value="2">(09/1979) Belo Horizonte</option>
-					<option value="22">(01/2016) Boa Vista</option>
-					<option value="9">(01/1986) Brasília</option>
-					<option value="19">(11/2012) Campo Grande</option>
-					<option value="25">(01/2016) Cuiabá</option>
-					<option value="4">(06/1983) Curitiba</option>
-					<option value="1">(05/1985) Florianópolis</option>
-					<option value="11">(09/1986) Fortaleza</option>
-					<option value="10">(12/1994) Goiânia</option>
-					<option value="3">(07/1988) João Pessoa</option>
-					<option value="18">(10/2012) Macaé</option>
-					<option value="21">(01/2016) Macapá</option>
-					<option value="28">(01/2016) Maceió</option>
-					<option value="17">(09/2008) Manaus</option>
-					<option value="15">(02/1991) Natal</option>
-					<option value="26">(01/2016) Palmas</option>
-					<option value="5">(01/1977) Porto Alegre</option>
-					<option value="23">(01/2016) Porto Velho</option>
-					<option value="12">(02/1987) Recife</option>
-					<option value="20">(01/2016) Rio Branco</option>
-					<option value="6">(01/1983) Rio de Janeiro</option>
-					<option value="7">(04/1983) Salvador</option>
-					<option value="27">(01/2016) São Luís</option>
-					<option value="8" selected="selected">(01/1959) São Paulo</option>
-					<option value="24">(01/2016) Teresina</option>
-					<option value="14">(10/1988) Vitória</option>
-				</select>
-			  </p>	
-			  <p>
-			    <label>tipo de dado</label>
-				<label><input type="radio" value="5" name="tipoDado" checked="checked"/> Gasto mensal</label>
-				<label><input type="radio" value="3" name="tipoDado" /> Tempo de trabalho</label>
-				<label><input type="radio" value="4" name="tipoDado" /> Preço médio</label>
-			  </p>	
-			</div>
-			<div class="coluna2">
-				<p><label>produtos</label> 
-				<select name="produtos" multiple="multiple" size="10">
-					<option value="0" selected="selected">Todos</option>
-					<option value="1">Total da Cesta</option>
-					<option value="2">Carne</option>
-					<option value="3">Leite</option>
-					<option value="4">Feijão</option>
-					<option value="5">Arroz</option>
-					<option value="6">Farinha de Trigo/Mandioca</option>
-					<option value="7">Batata</option>
-					<option value="8">Tomate</option>
-					<option value="9">Pão</option>
-					<option value="10">Café</option>
-					<option value="11">Banana</option>
-					<option value="12">Açúcar</option>
-					<option value="13">Óleo</option>
-					<option value="14">Manteiga</option>
-				</select>
-				</p>
-			</div>
-			<div class="coluna3">
-			  <p>
-				<label>data inicial (mmaaaa)</label><input id="cidadeDataInicial" data-placement="bottom" type="text" name="dataInicial" maxlength="6" title="mma
-  PNADC B5 6446 Rendimento médio mensal real domiciliar per capita em domicílios com televisão, por situação do domicílio e recepção de sinal analógico ou digital de televisão aberta
-  PNADC B5 6979 Rendimento médio mensal real domiciliar per capita em domicílios com televisão, por situação do domicílio e recepção de sinal de televisão por antena parabólica
-  PNADC B5 7234 Viagens com pernoite realizadas pelos moradores dos domicílios no período de referência dos últimos três meses, por faixas de rendimento mensal domiciliar per capita e quantidade de pernoites
-  PNADC B5 7251 Viagens realizadas pelos moradores dos domicílios no período de referência dos últimos três meses, por faixas de rendimento mensal domiciliar per capita e quantidade de moradores participantes na viagem
-  PNADC B5 7252 Viagens por motivo pessoal realizadas pelos moradores dos domicílios no período de referência dos últimos três meses, por faixas de rendimento mensal domiciliar per capita e principal motivo pessoal (2019)
-  PNADC B5 7253 Viagens por motivo de lazer realizadas pelos moradores dos domicílios no período de referência dos últimos três meses, por faixas de rendimento mensal domiciliar per capita e tipo de lazer (2019)
-  PNADC B5 7254 Viagens por motivo profissional realizadas pelos moradores dos domicílios no período de referência dos últimos três meses, por faixas de rendimento mensal domiciliar per capita e principal motivo profissional (2019)
-  PNADC B5 7256 Viagens realizadas pelos moradores dos domicílios no período de referência dos últimos três meses, por faixas de rendimento mensal domiciliar per capita e principal local de hospedagem (2019)
-  PNADC B5 7258 Viagens realizadas pelos moradores dos domicílios no período de referência dos últimos três meses, por faixas de rendimento mensal domiciliar per capita e principal meio de transporte utilizado
-  PNADC B5 7280 Rendimento médio mensal real domiciliar per capita em domicílios com televisão, por acesso à televisão por assinatura
-  PNADC B5 7394 Rendimento médio mensal real domiciliar per capita, por situação do domicílio e existência de televisão e tipo de televisão
-  PNADC B5 7395 Rendimento médio mensal real domiciliar per capita
-  PNADC B5 7396 Rendimento médio mensal real domiciliar per capita em domicílios com televisão
-  PNADC B5 7397 Rendimento médio mensal real domiciliar per capita em domicílios com televisão de tela fina
-  PNADC B5 7398 Rendimento médio mensal real domiciliar per capita em domicílios com televisão de tubo
-  PNADC B5 7399 Rendimento médio mensal real domiciliar per capita em domicílios com televisão, por situação do domicílio e existência de televisão com conversor para receber sinal digital de televisão aberta
-  PNADC B5 7400 Rendimento médio mensal real domiciliar per capita em domicílios com televisão, por situação do domicílio e acesso a televisão por assinatura
-  PNADC B5 7401 Rendimento médio mensal real domiciliar per capita em domicílios com televisão sem acesso a serviço de televisão por assinatura, por motivo de não haver serviço de televisão por assinatura
-  PNADC B5 7404 Rendimento médio mensal real domiciliar per capita, por situação do domicílio e existência de microcomputador ou tablet no domicílio
-  PNADC B5 7406 Rendimento médio mensal real domiciliar per capita em domicílios com microcomputador
-  PNADC B5 7407 Rendimento médio mensal real domiciliar per capita em domicílios com tablet
-  PNADC B5 7408 Rendimento médio mensal real domiciliar per capita em domicílios sem microcomputador e sem tablet
-  PNADC B5 7409 Rendimento médio mensal real domiciliar per capita, por situação do domicílio e existência de telefone
-  PNADC B5 7411 Rendimento médio mensal real domiciliar per capita em domicílios com telefone fixo convencional
-  PNADC B5 7412 Rendimento médio mensal real domiciliar per capita em domicílios com telefone móvel celular
-  PNADC B5 7413 Rendimento médio mensal real domiciliar per capita em domicílios com telefone fixo convencional e telefone móvel celular
-  PNADC B5 7414 Rendimento médio mensal real domiciliar per capita, por situação do domicílio e existência de utilização da Internet no domicílio
-  PNADC B5 7415 Rendimento médio mensal real domiciliar per capita em domicílios que não havia utilização da Internet, por motivo de não haver utilização da Internet no domicílio
-  PNADC B5 7416 Rendimento médio mensal real domiciliar per capita em domicílios que havia utilização da Internet
-  PNADC B5 7417 Rendimento médio mensal real domiciliar per capita em domicílios que não havia utilização da Internet
-  PNADC B5 7418 Rendimento médio mensal real domiciliar per capita em domicílios que havia utilização da Internet, por equipamento utilizado para acessar a Internet
-  PNADC B5 7419 Rendimento médio mensal real domiciliar per capita em domicílios que havia utilização da Internet, por equipamento utilizado para acessar a Internet (inclui UF, RM e RD)
-  PNADC B5 7420 Rendimento médio mensal real domiciliar per capita em domicílios que havia utilização da Internet por banda larga, por tipo de conexão à Internet no domicílio
-  PNADC B5 7421 Rendimento médio mensal real domiciliar per capita em domicílios que havia utilização da Internet por banda larga, por situação do domicílio e tipo de conexão à Internet no domicílio
-  PNADC B5 7422 Rendimento médio mensal real domiciliar per capita em domicílios que havia utilização da Internet por banda larga, por tipo de conexão à Internet no domicílio (inclui UF, RM e RD)
-  PNADC B5 7424 Rendimento médio mensal real domiciliar per capita, por situação do domicílio e funcionamento de serviço de rede móvel celular para telefonia ou Internet no domicílio
-  PNADC B5 7427 Massa de rendimento mensal real domiciliar per capita, a preços médios do último ano, por classes simples de percentual das pessoas em ordem crescente de rendimento domiciliar per capita
-  PNADC B5 7428 Massa de rendimento mensal real domiciliar per capita, a preços médios do ano, por classes simples de percentual das pessoas em ordem crescente de rendimento domiciliar per capita
-  PNADC B5 7429 Participação percentual na composição do rendimento médio mensal real domiciliar per capita, a preços médios do ano, por tipo de rendimento
-  PNADC B5 7435 Índice de Gini do rendimento domiciliar per capita, a preços médios do ano
-  PNADC B5 7438 Limites superiores das classes de percentual das pessoas em ordem crescente de rendimento domiciliar per capita, a preços médios do ano
-  PNADC B5 7458 Rendimento médio mensal real domiciliar per capita, a preços médios do último ano, por recebimento de rendimento de programa social e tipo de programa social
-  PNADC B5 7521 População residente, por classes simples de percentual das pessoas por rendimento domiciliar per capita, a preços médios do ano
-  PNADC B5 7526 Limites superiores das classes de percentual das pessoas em ordem crescente de rendimento domiciliar per capita, a preços médios do último ano
-  PNADC B5 7527 Distribuição da massa de rendimento mensal real domiciliar per capita, a preços médios do ano, por classes simples de percentual das pessoas em ordem crescente de rendimento domiciliar per capita
-  PNADC B5 7529 População residente, por classes simples de percentual das pessoas por rendimento domiciliar per capita, a preços médios do último ano
-  PNADC B5 7530 Distribuição da massa de rendimento mensal real domiciliar per capita, a preços médios do ano, por classes acumuladas de percentual das pessoas em ordem crescente de rendimento domiciliar per capita
-  PNADC B5 7531 Rendimento médio mensal real domiciliar per capita, a preços médios do ano, por classes simples de percentual das pessoas em ordem crescente de rendimento domiciliar per capita
-  PNADC B5 7532 Rendimento médio mensal real domiciliar per capita, a preços médios do ano, por classes acumuladas de percentual das pessoas em ordem crescente de rendimento domiciliar per capita
-  PNADC B5 7533 Rendimento médio mensal real domiciliar per capita, a preços médios do último ano, por classes simples de percentual das pessoas em ordem crescente de rendimento domiciliar per capita
-  PNADC B5 7534 Rendimento médio mensal real domiciliar per capita, a preços médios do último ano, por classes acumuladas de percentual das pessoas em ordem crescente de rendimento domiciliar per capita
-  PNADC B5 7561 População residente, por classes acumuladas de percentual das pessoas por rendimento domiciliar per capita, a preços médios do ano
-  PNADC B5 7564 População residente, por classes acumuladas de percentual das pessoas por rendimento domiciliar per capita, a preços médios do último ano
-  PNADC B5 8457 Viagens por motivo pessoal realizadas pelos moradores dos domicílios no período de referência dos últimos três meses, por faixas de rendimento mensal domiciliar per capita e principal motivo pessoal
-  PNADC B5 8458 Viagens por motivo de lazer realizadas pelos moradores dos domicílios no período de referência dos últimos três meses, por faixas de rendimento mensal domiciliar per capita e tipo de lazer
-  PNADC B5 8460 Viagens realizadas pelos moradores dos domicílios no período de referência dos últimos três meses, por faixas de rendimento mensal domiciliar per capita e principal local de hospedagem
-  PNADC B5 8464 Gasto médio real das viagens nacionais com pernoite, em que ocorreram gastos, realizadas pelos moradores dos domicílios no período de referência dos últimos três meses, por faixas de rendimento mensal domiciliar per capi
-  PNADC B5 8465 Gasto médio real das viagens nacionais com pernoite, em que ocorreram gastos, realizadas pelos moradores dos domicílios no período de referência dos últimos três meses, por faixas de rendimento mensal domiciliar per capi
-  PNADC B5 8468 Gasto médio real das viagens nacionais com pernoite, em que ocorreram gastos, realizadas pelos moradores dos domicílios no período de referência dos últimos três meses, por faixas de rendimento mensal domiciliar per capi
-  PNADC B5 8469 Gasto médio real das viagens nacionais com pernoite, em que ocorreram gastos no item, por motivo pessoal realizadas pelos moradores dos domicílios no período de referência dos últimos três meses, por faixas de rendimento
-  PNADC B5 8493 Gasto per capita diário médio real das viagens nacionais com pernoite, em que ocorreram gastos, realizadas pelos moradores dos domicílios no período de referência dos últimos três meses, por Grande Região e Unidade da Fe
-  PNADC B5 8682 Rendimento médio mensal real domiciliar per capita das pessoas de 15 anos ou mais de idade, a preços médios do último ano, por sensação de segurança ao andar sozinho(a) nas redondezas ou arredores do domicílio em determi
-  PNADC B5 8696 Rendimento médio mensal real domiciliar per capita das pessoas de 15 anos ou mais de idade, a preços médios do último ano
-  PNADC B5 8718 Rendimento médio mensal real domiciliar per capita das pessoas de 15 anos ou mais de idade, a preços médios do último ano, por sensação de segurança ao andar sozinho(a) nas redondezas ou arredores do domicílio
-  PNADC B5 8737 Rendimento médio mensal real domiciliar per capita das pessoas de 15 anos ou mais de idade, a preços médios do último ano, por nível de confiança nas pessoas e grupo de pessoas
-  PNADC B5 8738 Rendimento médio mensal real domiciliar per capita das pessoas de 15 anos ou mais de idade, a preços médios do último ano, por nível de confiança nas instituições e tipo de instituição
-  PNADC B5 8744 Rendimento médio mensal real domiciliar per capita das pessoas de 15 anos ou mais de idade, a preços médios do último ano, por percepção do risco de vitimização e tipo de vitimização
-  PNADC B5 8753 Rendimento médio mensal real domiciliar per capita das pessoas de 15 anos ou mais de idade, a preços médios do último ano, por evitação de atividade ou situação por motivo de segurança nos últimos 12 meses e atividade ou
-  PNADC B5 9398 Domicílios com pessoas de 5 a 17 anos de idade e rendimento médio mensal real domiciliar per capita destes domicílios, por realização de atividade econômica ou produção para o próprio consumo - Estatísticas experimentais
-  PNADC B5 9404 Domicílios com pessoas de 5 a 17 anos de idade e rendimento médio mensal real domiciliar per capita destes domicílios, por situação do trabalho infantil - Estatísticas experimentais
-  PNADC B5 9410 Domicílios com pessoas de 5 a 17 anos de idade e rendimento médio mensal real domiciliar per capita destes domicílios, por recebimento de dinheiro do Programa Bolsa Família - Estatísticas experimentais
-  PNADC B5 9695 Rendimento médio mensal real domiciliar per capita em domicílios com televisão, por situação do domicílio e recepção de sinal de televisão por antena parabólica grande ou mini parabólica com sinal aberto no domicílio
-  PNADC B5 9696 Rendimento médio mensal real domiciliar per capita em domicílios com televisão, por situação do domicílio e acesso a serviço de televisão por assinatura no domicílio
-  PNADC B5 9697 Rendimento médio mensal real domiciliar per capita em domicílios com televisão que não tinham recepção de sinal analógico ou digital de televisão aberta, nem recepção de sinal de televisão por antena parabólica grande ou
-  PNADC B5 9698 Rendimento médio mensal real domiciliar per capita, por situação do domicílio e existência de dispositivo inteligente no domicílio
-  PNADC B5 9699 Rendimento médio mensal real domiciliar per capita em domicílios com televisão, por acesso a serviço pago de streaming de vídeo e acesso a canais abertos ou fechados de televisão
-  PNADC B5 9708 Rendimento médio mensal real domiciliar per capita em domicílios que não havia utilização da Internet, por situação do domicílio e motivo de não haver utilização da Internet no domicílio
-  PNADC B5 9709 Rendimento médio mensal real domiciliar per capita, por situação do domicílio e existência de rádio no domicílio
+IPEA DIEESE12_CBSP12: 802 valores | 1959-01 → 2026-08
+  últimos: [('2026-05', 952.2, ''), ('2026-06', 965.47, ''), ('2026-07', 915.01, ''), ('2026-08', 900.59, '')]
+
+IPEA MTE12_SALMIN12: 1038 valores | 1940-07 → 2026-12
+  últimos: [('2026-09', 1621.0, ''), ('2026-10', 1621.0, ''), ('2026-11', 1621.0, ''), ('2026-12', 1621.0, '')]
+
+IPEA PRECOS12_IPCAG12: 561 valores | 1980-01 → 2026-09
+  últimos: [('2026-06', 0.16, ''), ('2026-07', 0.07, ''), ('2026-08', -0.32, ''), ('2026-09', 0.82, '')]
+
+IPEA PRECOS12_IPCA12: 562 valores | 1979-12 → 2026-09
+  últimos: [('2026-06', 7652.37, ''), ('2026-07', 7657.73, ''), ('2026-08', 7633.23, ''), ('2026-09', 7695.82, '')]
+
+SIDRA 7395 Rendimento médio mensal real domiciliar per capita | periodicidade {'frequencia': 'anual', 'inicio': 2016, 'fim': 2025} | níveis {'Administrativo': ['N1', 'N2', 'N14', 'N7', 'N3'], 'Especial': [], 'IBGE': []}
+  variáveis [(4196, 'Rendimento médio mensal real domiciliar per capita', 'Reais'), (4197, 'Coeficiente de variação - Rendimento médio mensal real domiciliar per capita', '%')]
+  classificações []
+Traceback (most recent call last):
+  File "/home/runner/work/Monitora-Brasil/Monitora-Brasil/tmp_explorar/explorar.py", line 24, in <module>
+    d = json.loads(raw('https://servicodados.ibge.gov.br/api/v3/agregados/7395/periodos/all/variaveis/10267?localidades=N1[all]'))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/Monitora-Brasil/Monitora-Brasil/tmp_explorar/explorar.py", line 4, in raw
+    with urllib.request.urlopen(req, timeout=t) as r:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 215, in urlopen
+    return opener.open(url, data, timeout)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 521, in open
+    response = meth(req, response)
+               ^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 630, in http_response
+    response = self.parent.error(
+               ^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 559, in error
+    return self._call_chain(*args)
+           ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 492, in _call_chain
+    result = func(*args)
+             ^^^^^^^^^^^
+  File "/usr/lib/python3.12/urllib/request.py", line 639, in http_error_default
+    raise HTTPError(req.full_url, code, msg, hdrs, fp)
+urllib.error.HTTPError: HTTP Error 500: Internal Server Error
