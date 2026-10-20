@@ -1,11 +1,9 @@
 # Histórico de versões
 
-## 1.15 — 19/10/2026
+## 1.16 — 19/10/2026
 
 ### Alterado
-- **Placar entre mandatos agora compara percentis, não valores brutos.** Para cada indicador, vence o mandato com o maior percentil médio do Brasil no período (a posição frente aos outros países, com o sentido do indicador embutido). Isso desconta o que aconteceu com o mundo todo: se a inflação caiu no Brasil mas caiu mais nos outros países, a posição piora. Para 2019–2022 contra 2023–2026 o placar passa a ser Bolsonaro 20, Lula 3 18, com 2 indicadores só de contexto; a diferença média de percentil é de 0,1 ponto a favor de Lula 3.
-- A regra de empate por desvio-padrão (1.12) foi substituída: empate só quando a diferença de percentil é menor que 0,05 ponto. O rodapé mostra a diferença média de percentil em vez do placar sem empates.
-- O "i" do placar explica o percentil, por que ele foi usado e os cuidados (percentis só a partir de 2000; anos sem dado novo repetem o último percentil, como nos escores).
+- O placar entre mandatos voltou a comparar a **média do valor** de cada indicador, com a regra de empate por desvio-padrão da versão 1.12. A comparação por percentil (versão 1.15) foi desfeita.
 
 ## 1.14 — 19/10/2026
 

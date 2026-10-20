@@ -370,26 +370,25 @@
 
   // ---------------------------------------------------------------- visão geral
   // ---------------------------------------------------------------- placar entre mandatos
-  /** Diferença de percentil abaixo da qual os dois mandatos contam como empate (mesmo valor com 1 casa decimal). */
-  const EMPATE_PCT = 0.05;
+  /** Diferenças menores que esta fração do desvio-padrão entre os países do mundo contam como empate. */
+  const EMPATE_SD = 0.03;
   const COR_A = () => css('--s3'), COR_B = () => css('--s5'), COR_I = () => css('--chart-muted');
   const nomeMandato = (p) => MANDATO[p].replace(' (até 2025)', '');
   const anosTexto = (p) => { const i = +p.slice(0, 4), f = Math.min(i + 3, ANOS.at(-1)); return `${i} a ${f}`; };
-  /** Percentil médio do Brasil num indicador, nos anos do mandato (só anos com percentil). */
-  function pctMedio(ind, p) {
-    const i = +p.slice(0, 4), f = i + 3;
-    const v = (D.pct.get(ind) || []).filter((r) => +r.ano >= i && +r.ano <= f && r.percentil != null).map((r) => +r.percentil);
-    return v.length ? d3.mean(v) : null;
-  }
-  /** Classifica cada indicador pelo percentil médio: 'A' ou 'B' (mais pontos), 'I' (empate), 'S' (sem dado), 'C' (contexto). */
+  /** Classifica cada indicador: 'A' ou 'B' (média melhor), 'I' (praticamente igual), 'S' (sem dado), 'C' (contexto). */
   function calcPlacar(a, b) {
+    const ia = +a.slice(0, 4), fb = Math.min(+b.slice(0, 4) + 3, ANOS.at(-1));
     return D.indicadores.map((m) => {
       const va = D.perBr.get(`${m.id}|${a}`), vb = D.perBr.get(`${m.id}|${b}`);
       if (!m.entra_no_escore) return { m, va, vb, k: 'C' };
-      const pa = pctMedio(m.id, a), pb = pctMedio(m.id, b);
-      if (pa == null || pb == null) return { m, va, vb, pa, pb, k: 'S' };
-      const dif = pb - pa;
-      return { m, va, vb, pa, pb, dif, k: Math.abs(dif) < EMPATE_PCT ? 'I' : dif > 0 ? 'B' : 'A' };
+      if (va == null || vb == null || Number.isNaN(va) || Number.isNaN(vb)) return { m, va, vb, k: 'S' };
+      const alvo = /mais perto de ([\d.,]+)/.exec(m.direcao);
+      const bom = (v) => (alvo ? -Math.abs(v - +alvo[1].replace(',', '.')) : m.direcao.startsWith('maior') ? v : -v);
+      const dif = bom(vb) - bom(va);
+      const sds = (D.coo.get(m.id)?.get('mundo') || []).filter((r) => +r.ano >= ia && +r.ano <= fb && r.sd != null).map((r) => +r.sd);
+      const sd = sds.length ? d3.median(sds) : null;
+      const k = sd != null && Math.abs(dif) < EMPATE_SD * sd ? 'I' : dif > 0 ? 'B' : dif < 0 ? 'A' : 'I';
+      return { m, va, vb, k, estrito: dif > 0 ? 'B' : dif < 0 ? 'A' : 'I' };
     });
   }
   function drawPlacar() {
@@ -404,27 +403,24 @@
     const rows = calcPlacar(a, b);
     const n = (k) => rows.filter((r) => r.k === k).length;
     $('#pl-titulo').textContent = `${nomeMandato(a)} e ${nomeMandato(b)}: placar dos ${rows.length} indicadores`;
-    $('#pl-sub').textContent = `Em quantos dos ${rows.length} indicadores cada mandato deixou o Brasil em melhor posição no mundo: vence quem tiver o maior percentil médio no período.`;
+    $('#pl-sub').textContent = `Em quantos dos ${rows.length} indicadores cada mandato teve média melhor, levando em conta se é melhor ter valor alto ou baixo.`;
     const cartao = (p, k, cor) => {
       const d = el('div'); d.style.background = cor;
-      d.append(el('small', {}, nomeMandato(p)), el('strong', {}, String(n(k))), el('span', {}, `${anosTexto(p)} · percentil maior`));
+      d.append(el('small', {}, nomeMandato(p)), el('strong', {}, String(n(k))), el('span', {}, `${anosTexto(p)} · média melhor`));
       return d;
     };
     num.replaceChildren(cartao(a, 'A', COR_A()), cartao(b, 'B', COR_B()));
     const ordem = { A: 0, B: 1, I: 2, S: 3, C: 4 };
-    const rotulo = { A: `${nomeMandato(a)} melhor`, B: `${nomeMandato(b)} melhor`, I: 'Empate', S: 'Sem percentil em um dos mandatos', C: 'Só de contexto (sem percentil)' };
+    const rotulo = { A: `${nomeMandato(a)} melhor`, B: `${nomeMandato(b)} melhor`, I: 'Praticamente iguais', S: 'Sem dado em um dos mandatos', C: 'Só de contexto' };
     const corK = { A: COR_A(), B: COR_B(), I: COR_I() };
     waf.replaceChildren();
     for (const r of [...rows].sort((x, y) => ordem[x.k] - ordem[y.k] || x.m.nome.localeCompare(y.m.nome, 'pt'))) {
       const q = el('i', { role: 'listitem', 'aria-label': `${r.m.nome}: ${rotulo[r.k]}` });
       if (corK[r.k]) { q.style.background = corK[r.k]; if (r.k === 'I') q.style.opacity = '.55'; } else q.className = r.k === 'S' ? 'sd' : 'ct';
-      const nd = (v) => (v == null || Number.isNaN(v) ? 'sem dado' : null);
       q.addEventListener('pointermove', (ev) => tip.show(ev, r.m.nome, [
-        { color: COR_A(), name: `${nomeMandato(a)}: percentil médio`, value: nd(r.pa) ?? f1(r.pa) },
-        { color: COR_B(), name: `${nomeMandato(b)}: percentil médio`, value: nd(r.pb) ?? f1(r.pb) },
-        ...(r.dif != null ? [{ name: 'Diferença', value: `${sgn(r.dif, f1)} pontos` }] : []),
-        { name: 'Resultado', value: rotulo[r.k] },
-        { name: 'Média do valor (A · B)', value: `${nd(r.va) ?? fmtv(r.va)} · ${nd(r.vb) ?? fmtv(r.vb)}` },
+        { color: COR_A(), name: `${nomeMandato(a)} (média)`, value: r.va == null || Number.isNaN(r.va) ? 'sem dado' : fmtv(r.va) },
+        { color: COR_B(), name: `${nomeMandato(b)} (média)`, value: r.vb == null || Number.isNaN(r.vb) ? 'sem dado' : fmtv(r.vb) },
+        { name: 'Resultado', value: r.k === 'C' ? 'só de contexto' : rotulo[r.k] },
         { name: 'Sentido', value: r.m.direcao },
       ]));
       q.addEventListener('pointerleave', () => tip.hide());
@@ -437,10 +433,8 @@
       if (corK[k]) { i.style.background = corK[k]; if (k === 'I') i.style.opacity = '.55'; } else i.className = k === 'S' ? 'sd' : 'ct';
       s.append(i, `${rotulo[k]}: ${n(k)}`); leg.append(s);
     }
-    const difs = rows.filter((r) => r.dif != null).map((r) => r.dif);
-    const md = difs.length ? d3.mean(difs) : null;
-    rod.replaceChildren(md == null ? '' : `Em média, ${nomeMandato(b)} ficou ${f1(Math.abs(md))} ${Math.abs(md) >= 0.95 && Math.abs(md) < 1.05 ? 'ponto' : 'pontos'} de percentil ${md >= 0 ? 'acima' : 'abaixo'} de ${nomeMandato(a)} nos ${difs.length} indicadores comparados.`,
-      el('span', { class: 'so-tela' }, ' Passe o mouse sobre um quadrado para ver o indicador e os percentis.'));
+    const ea = rows.filter((r) => r.estrito === 'A').length, eb = rows.filter((r) => r.estrito === 'B').length;
+    rod.replaceChildren(`Contando qualquer diferença, por menor que seja: ${nomeMandato(a)} ${ea}, ${nomeMandato(b)} ${eb}.`, el('span', { class: 'so-tela' }, ' Passe o mouse sobre um quadrado para ver o indicador e as duas médias.'));
   }
 
   function drawCartoes() {
@@ -595,10 +589,10 @@
   };
   const CARD_INFO = {
     placar: { titulo: 'Placar entre mandatos', blocos: [
-      ['O que mostra', 'Para cada indicador, compara a posição do Brasil no mundo nos dois mandatos escolhidos e conta em quantos indicadores cada mandato teve a posição melhor. Cada quadrado é um indicador: passe o mouse para ver qual é e os percentis.'],
-      ['Como se decide', 'Em cada ano, os países são ordenados do pior para o melhor e o Brasil recebe um percentil de 0 a 100 (100 é o melhor do mundo). O sentido já está embutido: em homicídios, ter menos dá percentil alto; em inflação, ficar perto de 3% dá percentil alto. Para cada mandato, o painel faz a média dos percentis dos seus anos. Vence quem tiver mais pontos de percentil. Empate só quando a diferença some no arredondamento.'],
-      ['Por que percentil', 'O percentil mede a posição frente aos outros países, então desconta o que aconteceu com o mundo todo. Se a inflação caiu no Brasil mas caiu mais nos outros países, o percentil piora. É a mesma medida usada nos escores.'],
-      ['Atenção', 'Os percentis existem de 2000 em diante; mandatos anteriores aparecem sem dado. Como nos escores, um ano sem dado novo repete o último percentil disponível (até 5 anos), por isso o mandato atual pode carregar valores de anos anteriores. Diferenças de 1 ou 2 pontos são pequenas. Cada indicador vale um ponto, e coincidir com um mandato não prova que o governo causou o resultado.'],
+      ['O que mostra', 'Para cada indicador, compara a média do Brasil nos dois mandatos escolhidos e conta em quantos cada um teve a média melhor. Cada quadrado é um indicador: passe o mouse para ver qual é e as duas médias.'],
+      ['Como se decide', '"Melhor" leva em conta o sentido de cada indicador: em desemprego e pobreza, menor é melhor; em PIB e expectativa de vida, maior é melhor; em inflação e juros reais, o melhor é ficar perto da meta (3% e 2%). Os indicadores só de contexto, como receita tributária, não entram na disputa.'],
+      ['Praticamente iguais', 'Quando a diferença entre as médias é menor que 3% da distância típica entre os países do mundo naquele indicador (o desvio-padrão), o indicador conta como empate. Assim, uma diferença de 99,75% para 99,80% em acesso à eletricidade não decide nada. O rodapé mostra o placar sem essa regra.'],
+      ['Atenção', 'Cada indicador vale um ponto, então o placar diz em quantos indicadores cada mandato foi melhor, e não quanto melhor. O mandato atual tem dados só até 2025, e vários indicadores saem com atraso. Crises de fora, como a pandemia de 2020 e 2021, e tendências herdadas do governo anterior pesam nas médias. Coincidir com um mandato não prova que o governo causou o resultado.'],
     ] },
     cartao: { titulo: (t) => `Cartão: ${TNOME[t]}`, blocos: (t) => {
       const inds = D.indicadores.filter((r) => r.tema === t && r.entra_no_escore);
