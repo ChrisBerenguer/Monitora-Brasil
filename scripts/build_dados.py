@@ -207,14 +207,6 @@ for t in SYEARS:
     pos=[i for i,(s,g) in enumerate(lst) if g=='bra']
     rk[t]={'pos':pos[0]+1 if pos else None,'n':len(lst)}
 out['rankBR']=rk
-# posição do Brasil entre as maiores economias do mundo (PIB em US$ correntes)
-pib_abs = load('ny_gdp_mktp_cd.csv')
-ec={}
-for t in SYEARS:
-    lst=sorted([(v[t],g) for g,v in pib_abs.items() if t in v], reverse=True)
-    pos=[i for i,(v,g) in enumerate(lst) if g=='bra']
-    ec[t]={'pos':pos[0]+1 if pos else None,'n':len(lst),'pib':pib_abs['bra'].get(t)}
-out['econBR']=ec
 
 print('BR geral', out['scores']['bra']['geral'])
 for k,_ in THEMES: print(k, out['scores']['bra'][k][::5], out['scores']['bra'][k][-3:])
@@ -345,6 +337,4 @@ for c,vals in out['pctBR'].items():
     for t,v in zip(SYEARS,vals):
         if v is not None: bp.append({'ind':c,'ano':t,'percentil':v})
 dump('percentis_brasil.json', bp)
-dump('ranking_brasil.json', [{'ano':t,'posicao':v['pos'],'paises':v['n'],
-    'pos_econ':ec[t]['pos'],'paises_econ':ec[t]['n'],
-    'pib_usd':round(ec[t]['pib']) if ec[t].get('pib') else None} for t,v in rk.items()])
+dump('ranking_brasil.json', [{'ano':t,'posicao':v['pos'],'paises':v['n']} for t,v in rk.items()])

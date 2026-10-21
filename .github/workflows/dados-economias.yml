@@ -1,0 +1,28 @@
+name: Atualizar ranking das maiores economias
+# Baixa o PIB nominal (série NGDPD do World Economic Outlook, FMI) pela API do DataMapper
+# e grava site/data/economias.json.
+# Roda todo mês e pode ser disparado à mão em Actions → "Atualizar ranking das maiores economias" → Run workflow.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '41 7 14 * *'   # dia 14 de cada mês, 04h41 em Brasília
+permissions:
+  contents: write
+concurrency: dados-economias
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: python scripts/coletar_economias.py
+      - name: Gravar no repositório se algo mudou
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dados/economias.json site/data/economias.json
+          git diff --cached --quiet && echo "Sem mudanças." && exit 0
+          git commit -m "Dados: ranking das maiores economias (FMI, WEO), coleta automática"
+          git push
