@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.25 — 21/10/2026
+
+### Removido
+- No cartão "Posição do Brasil entre as economias do mundo", saíram o gráfico e as colunas do **escore geral do painel**. O cartão agora trata só do tamanho da economia (PIB nominal, FMI): gráfico de posição com a projeção tracejada e tabela por mandato com a posição, as posições ganhas ou perdidas, o PIB em dólares e o número de países.
+
 ## 1.24 — 21/10/2026
 
 ### Corrigido

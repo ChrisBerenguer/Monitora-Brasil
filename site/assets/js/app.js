@@ -220,7 +220,7 @@
     // garante o último ano no eixo: sem isso a régua pode parar em 2024 e dar a impressão de que a série acabou ali
     if (xt.length > 1 && xt.at(-1) !== xdomain[1]) {
       const passo = xt[1] - xt[0];
-      if (xdomain[1] - xt.at(-1) >= passo / 2) xt.push(xdomain[1]); else xt[xt.length - 1] = xdomain[1];
+      if (xdomain[1] - xt.at(-1) >= passo) xt.push(xdomain[1]); else xt[xt.length - 1] = xdomain[1];
     }
     svg.append('g').selectAll('text').data(xt).join('text').attr('x', x).attr('y', H - 6).attr('text-anchor', 'middle').text((d) => d);
     svg.append('line').attr('x1', ml).attr('x2', W - mr).attr('y1', H - 24).attr('y2', H - 24).style('stroke', css('--axis'));
@@ -382,78 +382,57 @@
 
   // ---------------------------------------------------------------- visão geral
   // ---------------------------------------------------------------- posição do Brasil no mundo
-  const ordinal = (n) => `${f0(n)}º`;
   const ordinalF = (n) => `${f0(n)}ª`;  // economia: "a 11ª maior do mundo"
   function drawPosicao() {
-    const rk = [...D.rank.entries()].map(([ano, r]) => ({ ano: +ano, pos: +r.posicao, n: +r.paises })).sort((a, b) => a.ano - b.ano);
     // posição por tamanho da economia: PIB nominal (FMI, série NGDPD), 1ª = maior economia do mundo
     const ec = new Map();
     for (const r of D.raw.economias?.anos || []) {
-      ec.set(+r.ano, { pos: +r.posicao, n: +r.paises, pib: r.pib_usd, proj: !!r.projecao, topo: r.topo || [] });
+      ec.set(+r.ano, { pos: +r.posicao, n: +r.paises, pib: r.pib_usd, proj: !!r.projecao });
     }
-    const anos = rk.map((r) => r.ano);
-    const ult = rk.at(-1), pri = rk[0];
-    // dois gráficos: as duas filas têm escalas muito diferentes (7ª a 13ª economia x 68º a 106º no escore)
-    const serEc = [...ec.entries()].filter(([a]) => a >= anos[0]).sort((x, y) => x[0] - y[0])
+    const serEc = [...ec.entries()].sort((x, y) => x[0] - y[0])
+      .filter(([a]) => a >= ANOS[0])
       .map(([a, v]) => ({ x: a, y: v.pos, n: v.n, pib: v.pib, proj: v.proj }));
+    if (!serEc.length) return;
     const obs = serEc.filter((p) => !p.proj), proj = serEc.filter((p) => p.proj);
-    const eObs = obs.at(-1), eProj = proj.at(-1), ePri = ec.get(pri.ano);
+    const ePri = serEc[0], eObs = obs.at(-1), eProj = proj.at(-1);
     const tri = (v) => `US$ ${f2(v / 1e12)} tri`;
     const anoHoje = new Date().getFullYear();
     const eHoje = serEc.find((p) => p.x === anoHoje);
-    const txtEcon = eObs && ePri
-      ? ` Em tamanho da economia, o Brasil era a ${ordinalF(ePri.pos)} maior do mundo em ${pri.ano} e a ${ordinalF(eObs.y)} em ${eObs.x}, o último ano fechado, com ${tri(eObs.pib)}.` +
-        (eHoje && eHoje.proj ? ` Para ${anoHoje} o FMI projeta a ${ordinalF(eHoje.y)} posição, com ${tri(eHoje.pib)}` : '') +
-        (eProj && eProj.x > anoHoje ? `, e a ${ordinalF(eProj.y)} em ${eProj.x}.` : eHoje && eHoje.proj ? '.' : '')
-      : '';
-    $('#pos-nota').textContent = `Posição do Brasil entre todos os países com dado, do melhor para o pior. Quanto mais baixo o número, melhor. Em ${pri.ano} o Brasil era o ${ordinal(pri.pos)} de ${f0(pri.n)} países no escore geral; em ${ult.ano}, o ${ordinal(ult.pos)} de ${f0(ult.n)}.${txtEcon} A quantidade de países muda de um ano para outro, então a linha também se mexe quando outros países entram ou saem da conta.`;
-    if (serEc.length) {
-      const boxE = $('#pos-chart-econ');
-      lineChart(boxE, {
-        series: [
-          { name: 'Posição do Brasil', color: css('--s4'), width: 2.6, pts: obs },
-          // a projeção do FMI entra tracejada e emendada no último ano observado
-          ...(proj.length ? [{ name: 'Projeção do FMI', color: css('--s4'), width: 2, dash: '5 4', pts: eObs ? [eObs, ...proj] : proj }] : []),
-        ],
-        legenda: proj.length > 0,
-        // eixo invertido: a melhor posição (1ª) fica em cima
-        ydomain: [d3.max(serEc, (p) => p.y) + 2, 1], yfmt: ordinalF,
-        xdomain: [anos[0], d3.max(serEc, (p) => p.x)],
-        faixas: FAIXAS_MANDATO(), endLabels: boxE.clientWidth > 560, height: 210,
-        tituloTip: (a) => {
-          const p = serEc.find((x) => x.x === a);
-          return p ? `${a}${p.proj ? ' (projeção)' : ''} · ${tri(p.pib)} · entre ${f0(p.n)} países` : String(a);
-        },
-      });
-    }
-    const box = $('#pos-chart');
-    lineChart(box, {
-      series: [{ name: 'Escore geral', color: cor(0), width: 2.6, pts: rk.map((r) => ({ x: r.ano, y: r.pos, n: r.n })) }],
-      ydomain: [d3.max(rk, (r) => r.pos) + 6, 1], yfmt: ordinal, xdomain: [anos[0], anos.at(-1)],
-      faixas: FAIXAS_MANDATO(), endLabels: box.clientWidth > 560, height: 240,
-      tituloTip: (a) => { const r = rk.find((x) => x.ano === a); return r ? `${a} · entre ${f0(r.n)} países` : String(a); },
+    $('#pos-nota').textContent = `Posição do Brasil entre as maiores economias do mundo, pelo PIB nominal em dólares: 1ª é a maior. Em ${ePri.x} o Brasil era a ${ordinalF(ePri.y)} e em ${eObs.x}, o último ano fechado, a ${ordinalF(eObs.y)}, com ${tri(eObs.pib)}.` +
+      (eHoje && eHoje.proj ? ` Para ${anoHoje} o FMI projeta a ${ordinalF(eHoje.y)} posição, com ${tri(eHoje.pib)}` : '') +
+      (eProj && eProj.x > anoHoje ? `, e a ${ordinalF(eProj.y)} em ${eProj.x}.` : eHoje && eHoje.proj ? '.' : '') +
+      ' A quantidade de países muda de um ano para outro, e o valor em dólares depende do câmbio.';
+    const boxE = $('#pos-chart-econ');
+    lineChart(boxE, {
+      series: [
+        { name: 'Posição do Brasil', color: css('--s4'), width: 2.6, pts: obs },
+        // a projeção do FMI entra tracejada e emendada no último ano observado
+        ...(proj.length ? [{ name: 'Projeção do FMI', color: css('--s4'), width: 2, dash: '5 4', pts: eObs ? [eObs, ...proj] : proj }] : []),
+      ],
+      legenda: proj.length > 0,
+      // eixo invertido: a melhor posição (1ª) fica em cima
+      ydomain: [d3.max(serEc, (p) => p.y) + 2, 1], yfmt: ordinalF,
+      xdomain: [ePri.x, d3.max(serEc, (p) => p.x)],
+      faixas: FAIXAS_MANDATO(), endLabels: boxE.clientWidth > 560, height: 240,
+      tituloTip: (a) => {
+        const p = serEc.find((x) => x.x === a);
+        return p ? `${a}${p.proj ? ' (projeção)' : ''} · ${tri(p.pib)} · entre ${f0(p.n)} países` : String(a);
+      },
     });
     const tb = $('#pos-table tbody'); tb.replaceChildren();
-    const posEm = (lista, ano) => lista.find((x) => (x.ano ?? x.x) === ano);
     for (const p of MANDATOS_ESC) {
       const { a, b } = anosMandato(p, D.escLast);
-      const ra = posEm(rk, a), rb = posEm(rk, b);
-      if (!ra || !rb) continue;
       const pa = ec.get(a), pb = ec.get(b);
-      const tr = el('tr');
+      if (!pa || !pb) continue;
+      const d = pa.pos - pb.pos; // ganhar posições quer dizer subir no ranking, ou seja, o número cair
       const nome = el('td');
       nome.append(p.nome.replace(' (até 2025)', ''), el('span', { class: 'cod' }, ` · ${a} a ${b}`));
-      // ganhar posições quer dizer subir no ranking, ou seja, o número cair
-      const cel = (ini, fim, ord = ordinal) => {
-        if (ini == null || fim == null) return [el('td', { class: 'some-p' }, '—'), el('td', { class: 'some-p' }, '—')];
-        const d = ini - fim;
-        return [el('td', {}, `${ord(ini)} → ${ord(fim)}`),
-                el('td', { class: d > 0 ? 'bom' : d < 0 ? 'ruim' : '' }, d === 0 ? 'manteve' : `${sgn(d, f0)}`)];
-      };
-      const [c1, c2] = cel(ra.pos, rb.pos);
-      const [c3, c4] = cel(pa?.pos, pb?.pos, ordinalF);
-      c3.classList.add('some-p'); c4.classList.add('some-p');
-      tr.append(nome, c1, c2, c3, c4, el('td', { class: 'some-p' }, `${f0(ra.n)} → ${f0(rb.n)}`));
+      const tr = el('tr');
+      tr.append(nome,
+        el('td', {}, `${ordinalF(pa.pos)} → ${ordinalF(pb.pos)}`),
+        el('td', { class: d > 0 ? 'bom' : d < 0 ? 'ruim' : '' }, d === 0 ? 'manteve' : sgn(d, f0)),
+        el('td', {}, `${tri(pa.pib)} → ${tri(pb.pib)}`),
+        el('td', { class: 'some-p' }, `${f0(pa.n)} → ${f0(pb.n)}`));
       tb.append(tr);
     }
   }
@@ -678,11 +657,11 @@
   };
   const CARD_INFO = {
     posicao: { titulo: 'Posição do Brasil entre as economias do mundo', blocos: [
-      ['O que mostra', 'Em que lugar o Brasil fica quando todos os países do mundo são postos em fila, de duas maneiras. O primeiro gráfico é o tamanho da economia: os países em ordem do PIB nominal em dólares, da maior economia do mundo (1ª) para a menor — é o ranking que aparece nas manchetes. O segundo é o escore geral do painel, que junta os cinco temas, do melhor para o pior. São duas coisas diferentes: o Brasil está entre as dez ou doze maiores economias do mundo há décadas e, ao mesmo tempo, perto do meio da fila na qualidade de vida e nas instituições.'],
-      ['Como ler', 'O eixo está invertido: a melhor posição (1º lugar) fica em cima. Linha subindo quer dizer que o Brasil ganhou posições; descendo, perdeu. Na tabela, um número positivo é ganho de posições.'],
-      ['Por mandato', 'A tabela compara a posição no ano anterior à posse com a do fim do mandato, do mesmo jeito que a variação dos escores na Visão geral. Como os escores começam em 2000, o mandato de FHC 2 é medido de 2000 a 2002.'],
-      ['De onde vem o PIB', 'Da série NGDPD do World Economic Outlook do FMI: PIB a preços correntes, convertido em dólares pelo câmbio de mercado (PIB nominal). Como o valor depende do câmbio, uma desvalorização do real derruba a posição do Brasil mesmo sem a economia encolher em reais — foi o que aconteceu em 2015 e em 2020. O ano mais recente é projeção do FMI, e não dado fechado.'],
-      ['Atenção', 'O número de países com dado muda de ano para ano (eram 156 em 2000 e são 176 hoje no escore). Entrar mais países na conta já empurra a posição para baixo, mesmo sem o Brasil piorar. Por isso o escore de 0 a 100, que mede a posição em proporção, é mais estável que o lugar na fila.'],
+      ['O que mostra', 'Em que lugar o Brasil fica quando os países do mundo são postos em fila pelo tamanho da economia: o PIB nominal em dólares, da maior economia (1ª) para a menor. É o ranking que aparece nas manchetes. O Brasil está entre as dez ou doze maiores economias do mundo há décadas.'],
+      ['Como ler', 'O eixo está invertido: a melhor posição (1ª) fica em cima. Linha subindo quer dizer que o Brasil ganhou posições; descendo, perdeu. Na tabela, um número positivo é ganho de posições.'],
+      ['Por mandato', 'A tabela compara a posição e o PIB no ano anterior à posse com os do fim do mandato. Como o painel começa em 2000, o mandato de FHC 2 é medido de 2000 a 2002.'],
+      ['De onde vem o PIB', 'Da série NGDPD do World Economic Outlook do FMI: PIB a preços correntes, convertido em dólares pelo câmbio de mercado (PIB nominal). Como o valor depende do câmbio, uma desvalorização do real derruba a posição do Brasil mesmo sem a economia encolher em reais. O ano mais recente é projeção do FMI, e não dado fechado.'],
+      ['Atenção', 'O número de países com dado muda de ano para ano, o que também mexe na posição. Tamanho da economia não diz nada sobre a vida das pessoas: para isso, veja o PIB per capita e os demais indicadores do painel.'],
     ] },    'cb-ganho': { titulo: 'Salário mínimo acima da inflação', blocos: [
       ['O que mostra', 'Em cada mandato, quanto o salário mínimo aumentou, quanto a inflação subiu no mesmo período e o que sobrou disso: o ganho real. É a medida mais direta do poder de compra de quem vive do piso salarial.'],
       ['Como é calculado', 'Compara o salário mínimo de dezembro anterior à posse com o do fim do mandato, e a inflação (IPCA) entre os mesmos dois meses. Ganho real é o aumento do salário descontada a inflação: se o salário subiu 30% e a inflação foi 20%, o ganho real é de cerca de 8%, e não de 10 pontos, porque o cálculo é uma divisão e não uma subtração.'],
