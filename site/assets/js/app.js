@@ -217,6 +217,11 @@
     svg.append('g').selectAll('line').data(ticks).join('line').attr('x1', ml).attr('x2', W - mr).attr('y1', y).attr('y2', y).style('stroke', css('--grid'));
     svg.append('g').selectAll('text').data(ticks).join('text').attr('x', ml - 6).attr('y', y).attr('dy', '0.32em').attr('text-anchor', 'end').text(tf);
     const xt = x.ticks(Math.min(xdomain[1] - xdomain[0], Math.floor((W - ml - mr) / 56))).filter(Number.isInteger);
+    // garante o último ano no eixo: sem isso a régua pode parar em 2024 e dar a impressão de que a série acabou ali
+    if (xt.length > 1 && xt.at(-1) !== xdomain[1]) {
+      const passo = xt[1] - xt[0];
+      if (xdomain[1] - xt.at(-1) >= passo / 2) xt.push(xdomain[1]); else xt[xt.length - 1] = xdomain[1];
+    }
     svg.append('g').selectAll('text').data(xt).join('text').attr('x', x).attr('y', H - 6).attr('text-anchor', 'middle').text((d) => d);
     svg.append('line').attr('x1', ml).attr('x2', W - mr).attr('y1', H - 24).attr('y2', H - 24).style('stroke', css('--axis'));
     if (faixas) { // períodos alternados (ex.: mandatos), com rótulo curto quando cabe
@@ -394,9 +399,12 @@
     const obs = serEc.filter((p) => !p.proj), proj = serEc.filter((p) => p.proj);
     const eObs = obs.at(-1), eProj = proj.at(-1), ePri = ec.get(pri.ano);
     const tri = (v) => `US$ ${f2(v / 1e12)} tri`;
+    const anoHoje = new Date().getFullYear();
+    const eHoje = serEc.find((p) => p.x === anoHoje);
     const txtEcon = eObs && ePri
-      ? ` Em tamanho da economia, o Brasil era a ${ordinalF(ePri.pos)} maior do mundo em ${pri.ano} e é a ${ordinalF(eObs.y)} em ${eObs.x}, com ${tri(eObs.pib)}.` +
-        (eProj ? ` Pela projeção do FMI, chega a ${ordinalF(eProj.y)} em ${eProj.x}.` : '')
+      ? ` Em tamanho da economia, o Brasil era a ${ordinalF(ePri.pos)} maior do mundo em ${pri.ano} e a ${ordinalF(eObs.y)} em ${eObs.x}, o último ano fechado, com ${tri(eObs.pib)}.` +
+        (eHoje && eHoje.proj ? ` Para ${anoHoje} o FMI projeta a ${ordinalF(eHoje.y)} posição, com ${tri(eHoje.pib)}` : '') +
+        (eProj && eProj.x > anoHoje ? `, e a ${ordinalF(eProj.y)} em ${eProj.x}.` : eHoje && eHoje.proj ? '.' : '')
       : '';
     $('#pos-nota').textContent = `Posição do Brasil entre todos os países com dado, do melhor para o pior. Quanto mais baixo o número, melhor. Em ${pri.ano} o Brasil era o ${ordinal(pri.pos)} de ${f0(pri.n)} países no escore geral; em ${ult.ano}, o ${ordinal(ult.pos)} de ${f0(ult.n)}.${txtEcon} A quantidade de países muda de um ano para outro, então a linha também se mexe quando outros países entram ou saem da conta.`;
     if (serEc.length) {

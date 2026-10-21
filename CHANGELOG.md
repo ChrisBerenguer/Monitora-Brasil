@@ -1,5 +1,18 @@
 # Histórico de versões
 
+## 1.24 — 21/10/2026
+
+### Corrigido
+- **Eixo dos anos:** o último ano da série passa a aparecer sempre na régua. Antes, num gráfico de 2000 a 2025 a régua parava em 2024 e dava a impressão de que os dados acabavam ali.
+
+### Alterado
+- O texto do cartão de posição agora diz qual é o último ano fechado e traz a projeção do FMI para o ano corrente — hoje, a 10ª posição em 2026, com US$ 2,65 trilhões.
+
+## 1.23 — 21/10/2026
+
+### Alterado
+- No gráfico de tamanho da economia, os anos observados ficam em linha cheia e as projeções do FMI em linha tracejada, com legenda.
+
 ## 1.22 — 21/10/2026
 
 ### Alterado
