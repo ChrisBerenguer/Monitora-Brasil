@@ -391,16 +391,23 @@
     // dois gráficos: as duas filas têm escalas muito diferentes (7ª a 13ª economia x 68º a 106º no escore)
     const serEc = [...ec.entries()].filter(([a]) => a >= anos[0]).sort((x, y) => x[0] - y[0])
       .map(([a, v]) => ({ x: a, y: v.pos, n: v.n, pib: v.pib, proj: v.proj }));
-    const eUlt = serEc.at(-1), ePri = ec.get(pri.ano);
-    const tri = (v) => `US$ ${f1(v / 1e12)} tri`;
-    const txtEcon = eUlt && ePri
-      ? ` Em tamanho da economia, o Brasil era a ${ordinalF(ePri.pos)} maior do mundo em ${pri.ano} e é a ${ordinalF(eUlt.y)} em ${eUlt.x}, com ${tri(eUlt.pib)}${eUlt.proj ? ' (projeção do FMI)' : ''}.`
+    const obs = serEc.filter((p) => !p.proj), proj = serEc.filter((p) => p.proj);
+    const eObs = obs.at(-1), eProj = proj.at(-1), ePri = ec.get(pri.ano);
+    const tri = (v) => `US$ ${f2(v / 1e12)} tri`;
+    const txtEcon = eObs && ePri
+      ? ` Em tamanho da economia, o Brasil era a ${ordinalF(ePri.pos)} maior do mundo em ${pri.ano} e é a ${ordinalF(eObs.y)} em ${eObs.x}, com ${tri(eObs.pib)}.` +
+        (eProj ? ` Pela projeção do FMI, chega a ${ordinalF(eProj.y)} em ${eProj.x}.` : '')
       : '';
     $('#pos-nota').textContent = `Posição do Brasil entre todos os países com dado, do melhor para o pior. Quanto mais baixo o número, melhor. Em ${pri.ano} o Brasil era o ${ordinal(pri.pos)} de ${f0(pri.n)} países no escore geral; em ${ult.ano}, o ${ordinal(ult.pos)} de ${f0(ult.n)}.${txtEcon} A quantidade de países muda de um ano para outro, então a linha também se mexe quando outros países entram ou saem da conta.`;
     if (serEc.length) {
       const boxE = $('#pos-chart-econ');
       lineChart(boxE, {
-        series: [{ name: 'Maior economia (PIB)', color: css('--s4'), width: 2.6, pts: serEc }],
+        series: [
+          { name: 'Posição do Brasil', color: css('--s4'), width: 2.6, pts: obs },
+          // a projeção do FMI entra tracejada e emendada no último ano observado
+          ...(proj.length ? [{ name: 'Projeção do FMI', color: css('--s4'), width: 2, dash: '5 4', pts: eObs ? [eObs, ...proj] : proj }] : []),
+        ],
+        legenda: proj.length > 0,
         // eixo invertido: a melhor posição (1ª) fica em cima
         ydomain: [d3.max(serEc, (p) => p.y) + 2, 1], yfmt: ordinalF,
         xdomain: [anos[0], d3.max(serEc, (p) => p.x)],
