@@ -375,6 +375,60 @@
   }
 
   // ---------------------------------------------------------------- visão geral
+  // ---------------------------------------------------------------- posição do Brasil no mundo
+  /** Posição do Brasil em PIB per capita entre todos os países, por ano (1 = mais rico). */
+  function posPibPc() {
+    const m = new Map();
+    for (const r of D.coo.get('ny_gdp_pcap_pp_kd')?.get('mundo') || []) {
+      if (r.n_comp && r.n_supera != null) m.set(+r.ano, { pos: Math.round(r.n_comp - r.n_supera + 1), n: r.n_comp + 1 });
+    }
+    return m;
+  }
+  const ordinal = (n) => `${f0(n)}º`;
+  function drawPosicao() {
+    const rk = [...D.rank.entries()].map(([ano, r]) => ({ ano: +ano, pos: +r.posicao, n: +r.paises })).sort((a, b) => a.ano - b.ano);
+    const pib = posPibPc();
+    const anos = rk.map((r) => r.ano);
+    const ult = rk.at(-1), pri = rk[0];
+    $('#pos-nota').textContent = `Posição do Brasil entre todos os países com dado, do melhor para o pior. Quanto mais baixo o número, melhor. Em ${pri.ano} o Brasil era o ${ordinal(pri.pos)} de ${f0(pri.n)} países no escore geral; em ${ult.ano}, o ${ordinal(ult.pos)} de ${f0(ult.n)}. A quantidade de países muda de um ano para outro, então a linha também se mexe quando outros países entram ou saem da conta.`;
+    const box = $('#pos-chart');
+    const serPib = anos.filter((a) => pib.has(a)).map((a) => ({ x: a, y: pib.get(a).pos, n: pib.get(a).n }));
+    const todos = rk.map((r) => r.pos).concat(serPib.map((p) => p.y));
+    lineChart(box, {
+      series: [
+        { name: 'Escore geral', color: cor(0), width: 2.6, pts: rk.map((r) => ({ x: r.ano, y: r.pos, n: r.n })) },
+        { name: 'PIB per capita', color: css('--s4'), width: 2, dash: '5 4', pts: serPib },
+      ],
+      // eixo invertido: a melhor posição (1) fica em cima
+      ydomain: [d3.max(todos) + 6, 1], yfmt: ordinal, xdomain: [anos[0], anos.at(-1)],
+      faixas: FAIXAS_MANDATO(), endLabels: box.clientWidth > 560, legenda: true, height: 300,
+      tituloTip: (a) => { const r = rk.find((x) => x.ano === a); return r ? `${a} · entre ${f0(r.n)} países` : String(a); },
+    });
+    const tb = $('#pos-table tbody'); tb.replaceChildren();
+    const posEm = (lista, ano) => lista.find((x) => (x.ano ?? x.x) === ano);
+    for (const p of MANDATOS_ESC) {
+      const { a, b } = anosMandato(p, D.escLast);
+      const ra = posEm(rk, a), rb = posEm(rk, b);
+      if (!ra || !rb) continue;
+      const pa = pib.get(a), pb = pib.get(b);
+      const tr = el('tr');
+      const nome = el('td');
+      nome.append(p.nome.replace(' (até 2025)', ''), el('span', { class: 'cod' }, ` · ${a} a ${b}`));
+      // ganhar posições quer dizer subir no ranking, ou seja, o número cair
+      const cel = (ini, fim) => {
+        if (ini == null || fim == null) return [el('td', { class: 'some-p' }, '—'), el('td', { class: 'some-p' }, '—')];
+        const d = ini - fim;
+        return [el('td', {}, `${ordinal(ini)} → ${ordinal(fim)}`),
+                el('td', { class: d > 0 ? 'bom' : d < 0 ? 'ruim' : '' }, d === 0 ? 'manteve' : `${sgn(d, f0)}`)];
+      };
+      const [c1, c2] = cel(ra.pos, rb.pos);
+      const [c3, c4] = cel(pa?.pos, pb?.pos);
+      c3.classList.add('some-p'); c4.classList.add('some-p');
+      tr.append(nome, c1, c2, c3, c4, el('td', { class: 'some-p' }, `${f0(ra.n)} → ${f0(rb.n)}`));
+      tb.append(tr);
+    }
+  }
+
   // ---------------------------------------------------------------- placar entre mandatos
   /** Diferenças menores que esta fração do desvio-padrão entre os países do mundo contam como empate. */
   const EMPATE_SD = 0.03;
@@ -594,7 +648,12 @@
     return [['No Brasil, agora', f(c).replace(/\.\.$/, '.')]];
   };
   const CARD_INFO = {
-    'cb-ganho': { titulo: 'Salário mínimo acima da inflação', blocos: [
+    posicao: { titulo: 'Posição do Brasil entre as economias do mundo', blocos: [
+      ['O que mostra', 'Em que lugar o Brasil fica quando todos os países do mundo são postos em fila, do melhor para o pior. A linha cheia usa o escore geral do painel, que junta os cinco temas; a tracejada usa só o PIB per capita, que é a medida mais comum de tamanho da economia por habitante.'],
+      ['Como ler', 'O eixo está invertido: a melhor posição (1º lugar) fica em cima. Linha subindo quer dizer que o Brasil ganhou posições; descendo, perdeu. Na tabela, um número positivo é ganho de posições.'],
+      ['Por mandato', 'A tabela compara a posição no ano anterior à posse com a do fim do mandato, do mesmo jeito que a variação dos escores na Visão geral. Como os escores começam em 2000, o mandato de FHC 2 é medido de 2000 a 2002.'],
+      ['Atenção', 'O número de países com dado muda de ano para ano (eram 156 em 2000 e são 176 hoje). Entrar mais países na conta já empurra a posição para baixo, mesmo sem o Brasil piorar. Por isso o escore de 0 a 100, que mede a posição em proporção, é mais estável que o lugar na fila.'],
+    ] },    'cb-ganho': { titulo: 'Salário mínimo acima da inflação', blocos: [
       ['O que mostra', 'Em cada mandato, quanto o salário mínimo aumentou, quanto a inflação subiu no mesmo período e o que sobrou disso: o ganho real. É a medida mais direta do poder de compra de quem vive do piso salarial.'],
       ['Como é calculado', 'Compara o salário mínimo de dezembro anterior à posse com o do fim do mandato, e a inflação (IPCA) entre os mesmos dois meses. Ganho real é o aumento do salário descontada a inflação: se o salário subiu 30% e a inflação foi 20%, o ganho real é de cerca de 8%, e não de 10 pontos, porque o cálculo é uma divisão e não uma subtração.'],
       ['Como ler', 'Barra verde quer dizer que o salário mínimo subiu mais que a inflação naquele mandato, e o trabalhador passou a comprar mais com ele. Vermelha quer dizer que a inflação comeu o aumento. A última coluna da tabela é o poder de compra acumulado desde o início da série, com 100 no primeiro mandato mostrado.'],
@@ -1592,7 +1651,7 @@
     if (st.page === 'visao') {
       fillSelect($('#v-coorte'), cohortOpts, st.coorte);
       fillSelect($('#v-mandato'), [...MANDATOS_ESC].reverse().map((m) => ({ label: `${m.id} · ${m.nome}`, value: m.id })), st.mandato);
-      drawPlacar(); drawCartoes(); drawEvolucao(); drawDecomp(); drawRanking();
+      drawPosicao(); drawPlacar(); drawCartoes(); drawEvolucao(); drawDecomp(); drawRanking();
     } else if (st.page === 'series') { drawSeries(); drawPeriodos(); }
     else if (st.page === 'coortes') drawCoortes();
     else if (st.page === 'votar') drawVotar();

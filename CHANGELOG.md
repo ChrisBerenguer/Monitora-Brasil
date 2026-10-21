@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.21 — 21/10/2026
+
+### Adicionado
+- **Visão geral: "Posição do Brasil entre as economias do mundo"**, antes do placar dos 40 indicadores. Mostra em que lugar o Brasil fica quando todos os países são postos em fila, por escore geral e por PIB per capita, com o eixo invertido e faixas de mandato, e uma tabela com as posições ganhas ou perdidas em cada mandato. O "i" avisa que o número de países muda de ano para ano, o que por si só mexe na posição.
+
 ## 1.20 — 20/10/2026
 
 ### Alterado
