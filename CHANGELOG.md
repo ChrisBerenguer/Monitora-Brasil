@@ -3,11 +3,12 @@
 ## 1.22 — 21/10/2026
 
 ### Alterado
-- **"Posição do Brasil entre as economias do mundo":** no lugar da posição em PIB per capita, o cartão passa a mostrar a **posição por tamanho da economia** — os países em ordem do PIB total em dólares, da maior economia do mundo (1ª) para a menor. O Brasil era a 10ª maior em 2000, chegou a 7ª entre 2010 e 2014 e está em 11ª em 2025.
-- As duas filas agora aparecem em **gráficos separados**, porque as escalas são muito diferentes: na mesma escala do escore geral (68º a 106º), a linha da economia (7ª a 13ª) ficava achatada no topo e não dava para ver nada.
+- **"Posição do Brasil entre as economias do mundo":** no lugar da posição em PIB per capita, o cartão passa a mostrar a **posição entre as maiores economias do mundo por PIB nominal**, que é o ranking das manchetes: os países em ordem do PIB em dólares correntes, da maior (1ª) para a menor.
+- As duas filas agora aparecem em **gráficos separados**, porque as escalas são muito diferentes: na mesma escala do escore geral, a linha da economia ficava achatada no topo e não dava para ver nada.
 
 ### Adicionado
-- `ranking_brasil.json` ganhou os campos `pos_econ`, `paises_econ` e `pib_usd`. A série `ny_gdp_mktp_cd` (PIB em US$ correntes) entrou em `baixar_brutos.py`; ela não conta como indicador, serve só para esse ranking.
+- **`economias.json`**, com o ranking por PIB nominal desde 1995, o PIB do Brasil em dólares a cada ano e as 15 maiores economias de cada ano. Vem da série NGDPD do *World Economic Outlook* do FMI, coletada por `scripts/coletar_economias.py` no workflow `dados-economias.yml` (todo dia 14). O último ano é projeção do FMI e aparece marcado como tal.
+- O botão de fonte do cartão passa a apontar para o FMI e para o Banco Mundial, as duas bases que o cartão usa.
 
 ## 1.21 — 21/10/2026
 

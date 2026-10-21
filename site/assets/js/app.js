@@ -18,6 +18,7 @@
     ranking_br: 'ranking_brasil.json',
     histogramas: 'histogramas.json',
     consumo: 'consumo.json',
+    economias: 'economias.json',
   };
 
   const TEMAS = [
@@ -380,35 +381,40 @@
   const ordinalF = (n) => `${f0(n)}ª`;  // economia: "a 11ª maior do mundo"
   function drawPosicao() {
     const rk = [...D.rank.entries()].map(([ano, r]) => ({ ano: +ano, pos: +r.posicao, n: +r.paises })).sort((a, b) => a.ano - b.ano);
-    // posição por tamanho da economia (PIB total em US$ correntes): 1 = maior economia do mundo
+    // posição por tamanho da economia: PIB nominal (FMI, série NGDPD), 1ª = maior economia do mundo
     const ec = new Map();
-    for (const [ano, r] of D.rank) {
-      if (r.pos_econ != null) ec.set(+ano, { pos: +r.pos_econ, n: +r.paises_econ });
+    for (const r of D.raw.economias?.anos || []) {
+      ec.set(+r.ano, { pos: +r.posicao, n: +r.paises, pib: r.pib_usd, proj: !!r.projecao, topo: r.topo || [] });
     }
     const anos = rk.map((r) => r.ano);
     const ult = rk.at(-1), pri = rk[0];
-    const eUlt = ec.get(ult.ano), ePri = ec.get(pri.ano);
+    // dois gráficos: as duas filas têm escalas muito diferentes (7ª a 13ª economia x 68º a 106º no escore)
+    const serEc = [...ec.entries()].filter(([a]) => a >= anos[0]).sort((x, y) => x[0] - y[0])
+      .map(([a, v]) => ({ x: a, y: v.pos, n: v.n, pib: v.pib, proj: v.proj }));
+    const eUlt = serEc.at(-1), ePri = ec.get(pri.ano);
+    const tri = (v) => `US$ ${f1(v / 1e12)} tri`;
     const txtEcon = eUlt && ePri
-      ? ` Em tamanho da economia, o Brasil era a ${ordinalF(ePri.pos)} maior do mundo em ${pri.ano} e a ${ordinalF(eUlt.pos)} em ${ult.ano}, entre ${f0(eUlt.n)} países.`
+      ? ` Em tamanho da economia, o Brasil era a ${ordinalF(ePri.pos)} maior do mundo em ${pri.ano} e é a ${ordinalF(eUlt.y)} em ${eUlt.x}, com ${tri(eUlt.pib)}${eUlt.proj ? ' (projeção do FMI)' : ''}.`
       : '';
     $('#pos-nota').textContent = `Posição do Brasil entre todos os países com dado, do melhor para o pior. Quanto mais baixo o número, melhor. Em ${pri.ano} o Brasil era o ${ordinal(pri.pos)} de ${f0(pri.n)} países no escore geral; em ${ult.ano}, o ${ordinal(ult.pos)} de ${f0(ult.n)}.${txtEcon} A quantidade de países muda de um ano para outro, então a linha também se mexe quando outros países entram ou saem da conta.`;
-    const xdom = [anos[0], anos.at(-1)];
-    // dois gráficos: as duas filas têm escalas muito diferentes (7ª a 13ª economia x 68º a 106º no escore)
-    const serEc = anos.filter((a) => ec.has(a)).map((a) => ({ x: a, y: ec.get(a).pos, n: ec.get(a).n }));
     if (serEc.length) {
       const boxE = $('#pos-chart-econ');
       lineChart(boxE, {
         series: [{ name: 'Maior economia (PIB)', color: css('--s4'), width: 2.6, pts: serEc }],
         // eixo invertido: a melhor posição (1ª) fica em cima
-        ydomain: [d3.max(serEc, (p) => p.y) + 2, 1], yfmt: ordinalF, xdomain: xdom,
+        ydomain: [d3.max(serEc, (p) => p.y) + 2, 1], yfmt: ordinalF,
+        xdomain: [anos[0], d3.max(serEc, (p) => p.x)],
         faixas: FAIXAS_MANDATO(), endLabels: boxE.clientWidth > 560, height: 210,
-        tituloTip: (a) => { const p = serEc.find((x) => x.x === a); return p ? `${a} · entre ${f0(p.n)} países` : String(a); },
+        tituloTip: (a) => {
+          const p = serEc.find((x) => x.x === a);
+          return p ? `${a}${p.proj ? ' (projeção)' : ''} · ${tri(p.pib)} · entre ${f0(p.n)} países` : String(a);
+        },
       });
     }
     const box = $('#pos-chart');
     lineChart(box, {
       series: [{ name: 'Escore geral', color: cor(0), width: 2.6, pts: rk.map((r) => ({ x: r.ano, y: r.pos, n: r.n })) }],
-      ydomain: [d3.max(rk, (r) => r.pos) + 6, 1], yfmt: ordinal, xdomain: xdom,
+      ydomain: [d3.max(rk, (r) => r.pos) + 6, 1], yfmt: ordinal, xdomain: [anos[0], anos.at(-1)],
       faixas: FAIXAS_MANDATO(), endLabels: box.clientWidth > 560, height: 240,
       tituloTip: (a) => { const r = rk.find((x) => x.ano === a); return r ? `${a} · entre ${f0(r.n)} países` : String(a); },
     });
@@ -657,10 +663,11 @@
   };
   const CARD_INFO = {
     posicao: { titulo: 'Posição do Brasil entre as economias do mundo', blocos: [
-      ['O que mostra', 'Em que lugar o Brasil fica quando todos os países do mundo são postos em fila. A linha cheia usa o escore geral do painel, que junta os cinco temas, do melhor para o pior. A tracejada é o tamanho da economia: os países em ordem do PIB total em dólares, da maior economia do mundo (1ª) para a menor. São duas coisas diferentes — o Brasil está entre as dez ou doze maiores economias do mundo há décadas, e ao mesmo tempo perto do meio da fila na qualidade de vida e nas instituições.'],
+      ['O que mostra', 'Em que lugar o Brasil fica quando todos os países do mundo são postos em fila, de duas maneiras. O primeiro gráfico é o tamanho da economia: os países em ordem do PIB nominal em dólares, da maior economia do mundo (1ª) para a menor — é o ranking que aparece nas manchetes. O segundo é o escore geral do painel, que junta os cinco temas, do melhor para o pior. São duas coisas diferentes: o Brasil está entre as dez ou doze maiores economias do mundo há décadas e, ao mesmo tempo, perto do meio da fila na qualidade de vida e nas instituições.'],
       ['Como ler', 'O eixo está invertido: a melhor posição (1º lugar) fica em cima. Linha subindo quer dizer que o Brasil ganhou posições; descendo, perdeu. Na tabela, um número positivo é ganho de posições.'],
       ['Por mandato', 'A tabela compara a posição no ano anterior à posse com a do fim do mandato, do mesmo jeito que a variação dos escores na Visão geral. Como os escores começam em 2000, o mandato de FHC 2 é medido de 2000 a 2002.'],
-      ['Atenção', 'O número de países com dado muda de ano para ano (eram 156 em 2000 e são 176 hoje). Entrar mais países na conta já empurra a posição para baixo, mesmo sem o Brasil piorar. Por isso o escore de 0 a 100, que mede a posição em proporção, é mais estável que o lugar na fila.'],
+      ['De onde vem o PIB', 'Da série NGDPD do World Economic Outlook do FMI: PIB a preços correntes, convertido em dólares pelo câmbio de mercado (PIB nominal). Como o valor depende do câmbio, uma desvalorização do real derruba a posição do Brasil mesmo sem a economia encolher em reais — foi o que aconteceu em 2015 e em 2020. O ano mais recente é projeção do FMI, e não dado fechado.'],
+      ['Atenção', 'O número de países com dado muda de ano para ano (eram 156 em 2000 e são 176 hoje no escore). Entrar mais países na conta já empurra a posição para baixo, mesmo sem o Brasil piorar. Por isso o escore de 0 a 100, que mede a posição em proporção, é mais estável que o lugar na fila.'],
     ] },    'cb-ganho': { titulo: 'Salário mínimo acima da inflação', blocos: [
       ['O que mostra', 'Em cada mandato, quanto o salário mínimo aumentou, quanto a inflação subiu no mesmo período e o que sobrou disso: o ganho real. É a medida mais direta do poder de compra de quem vive do piso salarial.'],
       ['Como é calculado', 'Compara o salário mínimo de dezembro anterior à posse com o do fim do mandato, e a inflação (IPCA) entre os mesmos dois meses. Ganho real é o aumento do salário descontada a inflação: se o salário subiu 30% e a inflação foi 20%, o ganho real é de cerca de 8%, e não de 10 pontos, porque o cálculo é uma divisão e não uma subtração.'],
@@ -884,6 +891,10 @@
       ['DIEESE: Pesquisa Nacional da Cesta Básica de Alimentos', 'https://www.dieese.org.br/analisecestabasica/analiseCestaBasica.html'],
       ['ANP: Levantamento de Preços de Combustíveis', 'https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/precos-revenda-e-de-distribuicao-combustiveis'],
       ['Ipeadata (séries da cesta básica, do salário mínimo e do IPCA)', 'http://www.ipeadata.gov.br/'],
+    ] },
+    economias: { t: 'Ranking das maiores economias e escore geral do painel:', l: [
+      ['FMI, World Economic Outlook: PIB nominal em dólares (série NGDPD)', 'https://www.imf.org/external/datamapper/NGDPD@WEO'],
+      ['Banco Mundial, World Development Indicators (base do escore geral)', 'https://databank.worldbank.org/source/world-development-indicators'],
     ] },
     renda: { t: 'Renda e salário mínimo:', l: [
       ['IBGE, PNAD Contínua anual, tabela 7395 do SIDRA', 'https://sidra.ibge.gov.br/tabela/7395'],

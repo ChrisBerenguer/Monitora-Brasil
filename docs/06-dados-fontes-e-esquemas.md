@@ -139,11 +139,22 @@ Gerado para as coortes grandes (`mundo` e `umic`), para cada indicador e ano com
 | `ano` | inteiro | 2000–2025 |
 | `posicao` | inteiro | Posição do Brasil no escore geral (1 = melhor) |
 | `paises` | inteiro | Total de países com escore geral no ano |
-| `pos_econ` | inteiro | Posição do Brasil por tamanho da economia, PIB total em US$ correntes (1 = maior economia do mundo) |
-| `paises_econ` | inteiro | Total de países com PIB no ano |
-| `pib_usd` | inteiro | PIB do Brasil no ano, em US$ correntes |
 
-A posição por tamanho da economia usa `ny_gdp_mktp_cd` (PIB a preços de mercado, US$ correntes), baixado por `baixar_brutos.py` junto com as outras séries, restrito aos países membros da ONU — os mesmos usados no resto do painel. Essa série não entra nos 40 indicadores: serve só para esse ranking.
+### `economias.json`
+
+Ranking das maiores economias do mundo por **PIB nominal**: PIB a preços correntes convertido em dólares pelo câmbio de mercado. É a série NGDPD do *World Economic Outlook* do FMI, a mesma usada nas manchetes sobre "maiores economias do mundo", e não o PIB per capita nem o PIB em PPC usados nos 40 indicadores. Coletado por `scripts/coletar_economias.py` no GitHub Actions (workflow `dados-economias.yml`, todo dia 14 e quando disparado à mão), porque a API do FMI não é acessível do ambiente de build.
+
+| Campo | Tipo | Descrição |
+|---|---|---|
+| `coletado_em` | data | Dia da coleta |
+| `fonte` | objeto | `nome`, `url` e `api` |
+| `anos[]` | lista | Uma linha por ano |
+| `anos[].ano` | inteiro | 1995 ao último ano projetado |
+| `anos[].posicao` | inteiro | Posição do Brasil (1 = maior economia do mundo) |
+| `anos[].paises` | inteiro | Países com PIB no ano |
+| `anos[].pib_usd` | número | PIB do Brasil no ano, em US$ |
+| `anos[].projecao` | booleano | `true` quando o ano ainda é projeção do FMI, não dado fechado |
+| `anos[].topo` | lista | As 15 maiores economias do ano: `pais` (sigla ISO-3), `nome` e `pib_usd` |
 
 ## Dados da aba Vida do Cidadão
 
