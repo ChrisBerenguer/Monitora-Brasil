@@ -12,7 +12,7 @@ sl_uem_totl_zs ny_gdp_pcap_pp_kd nv_ind_manf_zs tx_val_tech_mf_zs gb_xpd_rsdv_gd
 ne_trd_gnfs_zs si_pov_gini si_dst_10th_10 si_pov_dday si_pov_umic sg_gen_parl_zs sl_tlf_cact_fe_zs ne_con_prvt_pc_kd
 gov_wgi_va_est gov_wgi_pv_est gov_wgi_ge_est gov_wgi_rq_est gov_wgi_rl_est gov_wgi_cc_est vc_ihr_psrc_p5 gc_tax_totl_gd_zs
 sp_dyn_le00_in sh_h2o_smdw_zs sh_sta_smss_zs eg_elc_accs_zs se_xpd_totl_gd_zs sh_xpd_chex_gd_zs en_ghg_co2_pc_ce_ar5
-ag_lnd_frst_zs sp_pop_totl sp_pop_dpnd_ol""".split()
+ag_lnd_frst_zs sp_pop_totl sp_pop_dpnd_ol ny_gdp_mktp_cd""".split()
 jobs = [(f'{WDI}/datapoints/ddf--datapoints--{c}--by--geo--time.csv', f'{c}.csv') for c in CODES]
 jobs += [(f'{WDI}/ddf--entities--geo--country.csv', 'countries.csv'),
          (f'{SG}/ddf--datapoints--hdi_human_development_index--by--geo--time.csv', 'hdi.csv')]

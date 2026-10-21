@@ -139,6 +139,11 @@ Gerado para as coortes grandes (`mundo` e `umic`), para cada indicador e ano com
 | `ano` | inteiro | 2000–2025 |
 | `posicao` | inteiro | Posição do Brasil no escore geral (1 = melhor) |
 | `paises` | inteiro | Total de países com escore geral no ano |
+| `pos_econ` | inteiro | Posição do Brasil por tamanho da economia, PIB total em US$ correntes (1 = maior economia do mundo) |
+| `paises_econ` | inteiro | Total de países com PIB no ano |
+| `pib_usd` | inteiro | PIB do Brasil no ano, em US$ correntes |
+
+A posição por tamanho da economia usa `ny_gdp_mktp_cd` (PIB a preços de mercado, US$ correntes), baixado por `baixar_brutos.py` junto com as outras séries, restrito aos países membros da ONU — os mesmos usados no resto do painel. Essa série não entra nos 40 indicadores: serve só para esse ranking.
 
 ## Dados da aba Vida do Cidadão
 

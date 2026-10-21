@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 1.22 — 21/10/2026
+
+### Alterado
+- **"Posição do Brasil entre as economias do mundo":** no lugar da posição em PIB per capita, o cartão passa a mostrar a **posição por tamanho da economia** — os países em ordem do PIB total em dólares, da maior economia do mundo (1ª) para a menor. O Brasil era a 10ª maior em 2000, chegou a 7ª entre 2010 e 2014 e está em 11ª em 2025.
+- As duas filas agora aparecem em **gráficos separados**, porque as escalas são muito diferentes: na mesma escala do escore geral (68º a 106º), a linha da economia (7ª a 13ª) ficava achatada no topo e não dava para ver nada.
+
+### Adicionado
+- `ranking_brasil.json` ganhou os campos `pos_econ`, `paises_econ` e `pib_usd`. A série `ny_gdp_mktp_cd` (PIB em US$ correntes) entrou em `baixar_brutos.py`; ela não conta como indicador, serve só para esse ranking.
+
 ## 1.21 — 21/10/2026
 
 ### Adicionado

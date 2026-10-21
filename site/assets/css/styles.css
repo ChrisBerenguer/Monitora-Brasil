@@ -107,6 +107,7 @@ select { font: inherit; font-size: var(--t-md); color: var(--fg); background: va
 .card h3 { font-size: var(--t-md); font-weight: 600; margin-top: 8px; }
 .card-topo { display: flex; justify-content: space-between; align-items: start; gap: 12px; flex-wrap: wrap; }
 .nota { color: var(--muted); font-size: var(--t-sm); max-width: 90ch; }
+.nota.sub { margin: 16px 0 -6px; font-weight: 600; color: var(--fg); }
 .grade2 { display: grid; gap: var(--gap); grid-template-columns: repeat(auto-fit, minmax(min(100%, 30rem), 1fr)); }
 .cartoes { display: grid; gap: 12px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
 @media (min-width: 720px) { .cartoes { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
