@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.29 — 25/10/2026
+
+### Adicionado
+- **Estatais, "Resultado de cada estatal":** botão "i" ao lado de **Mostrar** que explica, ao passar o mouse, o que entra em cada opção do seletor (todas as estatais, só os grupos, empresas que se sustentam e dependentes do Tesouro), com exemplos. Cada opção tem também o texto no próprio item da lista, e o seletor mostra a explicação da opção escolhida.
+
 ## 1.28 — 25/10/2026
 
 ### Adicionado

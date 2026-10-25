@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=1.28">
+  <link rel="stylesheet" href="assets/css/styles.css?v=1.29">
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -376,12 +376,12 @@
           <button class="botao" type="button" id="csv-estatais">Baixar CSV</button>
         </div>
         <div class="controles">
-          <label class="ctl">Mostrar <select id="est-filtro">
-            <option value="todas">Todas as estatais</option>
-            <option value="grupo">Só os grupos</option>
-            <option value="empresa">Empresas que se sustentam</option>
-            <option value="dependente">Dependentes do Tesouro</option>
-          </select></label>
+          <div class="ctl"><span class="ctl-rotulo"><label for="est-filtro">Mostrar</label><button class="info-btn" type="button" data-info-card="est-filtro" aria-label="O que quer dizer cada opção"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button></span><select id="est-filtro">
+            <option value="todas" title="Todas as estatais federais com balanço na SEST: grupos e empresas, dependentes do Tesouro ou não.">Todas as estatais</option>
+            <option value="grupo" title="Só a empresa-mãe com as subsidiárias num balanço consolidado: Petrobras, Banco do Brasil, BNDES, Caixa, Eletrobras (até 2021), ENBPar e NAV Brasil.">Só os grupos</option>
+            <option value="empresa" title="Estatais fora de grupo que pagam as próprias despesas com o que vendem, sem dinheiro do Orçamento: Correios, Serpro, Dataprev, BNB, Basa, Infraero, portos...">Empresas que se sustentam</option>
+            <option value="dependente" title="Estatais que recebem dinheiro do Orçamento da União para pagar salários ou custeio: Embrapa, Ebserh, Codevasf, Conab, hospitais, CBTU...">Dependentes do Tesouro</option>
+          </select></div>
         </div>
         <label class="ctl-check"><input type="checkbox" id="est-sem-vendas" checked> Tirar os ganhos com venda de empresas e participações</label>
         <div class="tabela-box">
@@ -509,6 +509,6 @@
 
   <script src="assets/js/d3.v7.9.0.min.js"></script>
   <script src="assets/js/html-to-image.v1.11.11.min.js"></script>
-  <script src="assets/js/app.js?v=1.28"></script>
+  <script src="assets/js/app.js?v=1.29"></script>
 </body>
 </html>

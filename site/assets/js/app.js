@@ -658,6 +658,12 @@
     return [['No Brasil, agora', f(c).replace(/\.\.$/, '.')]];
   };
   const CARD_INFO = {
+    'est-filtro': { titulo: 'O que mostra cada opção', blocos: [
+      ['Todas as estatais', 'Todas as estatais federais que entregam balanço à SEST: os grupos e as empresas avulsas, dependentes do Tesouro ou não. É a soma que aparece no gráfico acima.'],
+      ['Só os grupos', 'Só as estatais que têm subsidiárias e aparecem num balanço consolidado, com as filhas dentro: Petrobras, Banco do Brasil, BNDES, Caixa, Eletrobras (até a privatização em 2022), ENBPar (Eletronuclear e INB) e NAV Brasil. São elas que fazem quase todo o lucro.'],
+      ['Empresas que se sustentam', 'Estatais fora de grupo que pagam salários e custeio com o que vendem, sem dinheiro do Orçamento (as "não dependentes"): Correios, Serpro, Dataprev, Banco do Nordeste, Banco da Amazônia, Infraero, Casa da Moeda, companhias docas e outras. Delas se espera lucro.'],
+      ['Dependentes do Tesouro', 'Estatais que recebem dinheiro do Orçamento da União para pagar pessoal ou custeio: Embrapa, Ebserh, Codevasf, Conab, hospitais federais, CBTU, Trensurb e outras. Existem para prestar um serviço público, quase sempre sem cobrar o custo dele, então prejuízo nelas é o normal e não quer dizer má gestão.'],
+    ] },
     'est-total': { titulo: 'Lucro líquido das estatais federais', blocos: [
       ['O que mostra', 'A soma do lucro líquido (ou prejuízo) de todas as estatais federais em cada ano, sem o ganho com a venda de empresas, participações e outros ativos: privatizações de subsidiárias, venda de ações e desinvestimentos. Assim o gráfico mostra o que as empresas ganham com o próprio negócio. As barras têm a cor do mandato presidencial em que o ano caiu, e a tabela abaixo mostra a média por ano de cada mandato.'],
       ['Como se tira a venda', 'O ganho com a venda sai do lucro depois do imposto (34% de IR e CSLL). Ele vem da base da SEST (ganhos de capital das empresas e resultado não operacional dos bancos) e, onde ela não separa, dos balanços das próprias empresas: Petrobras (alienação de ativos de 2022 a 2024 e a venda da BR Distribuidora em 2019), BNDES (venda de ações em todos os anos) e Caixa (ações da Petrobras em 2019). O dinheiro das privatizações feitas pela União, como a da Eletrobras, nunca entra: vai para o Tesouro, não para o lucro das estatais. Passe o mouse numa barra para ver o lucro com e sem as vendas.'],
@@ -1777,6 +1783,7 @@
       tbe.append(tr);
     }
     $('#est-filtro').value = st.estFiltro;
+    $('#est-filtro').title = $('#est-filtro').selectedOptions[0]?.title || '';
     $('#est-sem-vendas').checked = st.estSemVendas;
     $('#est-t-nota').firstChild.textContent = st.estSemVendas
       ? 'Lucro líquido sem os ganhos com venda de ativos, em R$ milhões; prejuízo em vermelho.'
