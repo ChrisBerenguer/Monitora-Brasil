@@ -57,7 +57,7 @@
     page: 'visao', coorte: 'latam', mandato: '2023–2026', tema: 'geral', ind: 'ny_gdp_pcap_pp_kd', banda: 'latam',
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
     ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cbMa: '2019–2022', cbMb: '2023–2026', cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
-    estFiltro: 'todas', estSort: { key: null, dir: -1 },
+    estFiltro: 'todas', estSort: { key: null, dir: -1 }, estSemVendas: true,
   };
   let D = null; // dados carregados e indexados
 
@@ -659,12 +659,13 @@
   };
   const CARD_INFO = {
     'est-total': { titulo: 'Lucro líquido das estatais federais', blocos: [
-      ['O que mostra', 'A soma do lucro líquido (ou prejuízo) de todas as estatais federais em cada ano: o que sobra depois de pagar custos, juros e impostos. As barras têm a cor do mandato presidencial em que o ano caiu. A tabela abaixo soma os anos de cada mandato e mostra a média por ano, que permite comparar mandatos com número diferente de anos.'],
+      ['O que mostra', 'A soma do lucro líquido (ou prejuízo) de todas as estatais federais em cada ano, sem o ganho com a venda de empresas, participações e outros ativos: privatizações de subsidiárias, venda de ações e desinvestimentos. Assim o gráfico mostra o que as empresas ganham com o próprio negócio. As barras têm a cor do mandato presidencial em que o ano caiu, e a tabela abaixo mostra a média por ano de cada mandato.'],
+      ['Como se tira a venda', 'O ganho com a venda sai do lucro depois do imposto (34% de IR e CSLL). Ele vem da base da SEST (ganhos de capital das empresas e resultado não operacional dos bancos) e, onde ela não separa, dos balanços das próprias empresas: Petrobras (alienação de ativos de 2022 a 2024 e a venda da BR Distribuidora em 2019), BNDES (venda de ações em todos os anos) e Caixa (ações da Petrobras em 2019). O dinheiro das privatizações feitas pela União, como a da Eletrobras, nunca entra: vai para o Tesouro, não para o lucro das estatais. Passe o mouse numa barra para ver o lucro com e sem as vendas.'],
       ['Como se conta', 'Grupos como Petrobras, Banco do Brasil, BNDES e Caixa entram uma vez só, pelo balanço consolidado do grupo, com as subsidiárias dentro. As demais estatais entram uma a uma. Os valores estão em reais de cada ano, sem correção pela inflação.'],
       ['Atenção', 'Lucro de estatal depende muito do preço do petróleo, dos juros e de vendas de ativos (privatizações e venda de participações), que inflam o resultado de um ano só. A Petrobras sozinha costuma responder por mais da metade da soma. Lucro alto não quer dizer, por si só, empresa bem gerida, nem prejuízo quer dizer o contrário: hospitais, empresas de pesquisa e de trens urbanos existem para prestar serviço e vivem de recursos do Tesouro.'],
     ] },
     'est-tabela': { titulo: 'Resultado de cada estatal', blocos: [
-      ['O que mostra', 'O lucro líquido de cada estatal federal (ou grupo) em cada ano, em milhões de reais, e a soma nos dois últimos mandatos. Prejuízo aparece em vermelho. O traço quer dizer que a empresa não existia, não era estatal ou ainda não entregou o balanço daquele ano.'],
+      ['O que mostra', 'O lucro líquido de cada estatal federal (ou grupo) em cada ano, em milhões de reais, e a soma nos dois últimos mandatos. Com a caixa marcada (o padrão), os ganhos com venda de empresas, participações e outros ativos já saíram, como no gráfico; desmarque para ver o lucro contábil. Prejuízo aparece em vermelho. O traço quer dizer que a empresa não existia, não era estatal ou ainda não entregou o balanço daquele ano.'],
       ['Grupos e dependentes', 'Grupo é a empresa-mãe com as subsidiárias, num balanço só. "Dependentes do Tesouro" são as estatais que recebem dinheiro do Orçamento para pagar salários ou custeio, como Embrapa, Ebserh e Codevasf. As demais se sustentam com o que vendem.'],
       ['Atenção', 'A Eletrobras deixou de ser estatal em junho de 2022, quando foi privatizada; a partir de então Eletronuclear e INB passam ao grupo ENBPar. Mudanças de grupo e fusões explicam linhas que começam ou terminam no meio da tabela.'],
     ] },
@@ -1656,16 +1657,18 @@
     empresa: (e) => e.tipo === 'empresa' && !e.dependente,
     dependente: (e) => e.dependente,
   };
+  /** Lucro de uma estatal num ano: sem as vendas de ativos (padrão) ou contábil. */
+  const valEst = (e, y, semVendas = st.estSemVendas) => (e.valores[y] == null ? null : e.valores[y] - (semVendas ? (e.vendas?.[y] || 0) : 0));
   /** Soma dos valores de uma estatal entre dois anos (null se não há nenhum ano com dado). */
-  function somaAnos(e, a, b) {
+  function somaAnos(e, a, b, semVendas = st.estSemVendas) {
     let s = 0, n = 0;
-    for (let y = a; y <= b; y++) { const v = e.valores[y]; if (v != null) { s += v; n++; } }
+    for (let y = a; y <= b; y++) { const v = valEst(e, y, semVendas); if (v != null) { s += v; n++; } }
     return n ? s : null;
   }
   function estatisOrdenadas(E, anos) {
     const { key, dir } = st.estSort;
     const k = key || String(anos.at(-1));
-    const val = (e) => (k === 'estatal' ? e.estatal : k === 'b' ? somaAnos(e, 2019, 2022) : k === 'l' ? somaAnos(e, 2023, 2026) : e.valores[k]);
+    const val = (e) => (k === 'estatal' ? e.estatal : k === 'b' ? somaAnos(e, 2019, 2022) : k === 'l' ? somaAnos(e, 2023, 2026) : valEst(e, k));
     return E.estatais.filter(ESTF[st.estFiltro] || ESTF.todas).sort((x, y) => {
       if (k === 'estatal') return dir * x.estatal.localeCompare(y.estatal, 'pt-BR');
       const vx = val(x), vy = val(y); // quem não tem dado vai para o fim, nos dois sentidos
@@ -1680,19 +1683,24 @@
     if (!E || !E.anos?.length) return vazio($('#est-chart'), 'Dados das estatais indisponíveis.');
     const anos = E.anos.map((r) => r.ano);
     const u = E.anos.at(-1), p = E.anos.at(-2);
-    const lider = E.estatais.filter((e) => e.valores[u.ano] != null).sort((a, b) => b.valores[u.ano] - a.valores[u.ano])[0];
-    const pior = E.estatais.filter((e) => e.valores[u.ano] != null).sort((a, b) => a.valores[u.ano] - b.valores[u.ano])[0];
-    const d = p ? 100 * (u.lucro_mi - p.lucro_mi) / Math.abs(p.lucro_mi) : null;
-    $('#est-nota').textContent = `Em ${u.ano}${u.parcial ? ` (${u.periodo})` : ''}, as ${u.n} estatais federais somaram ${bi(u.lucro_mi)} de lucro líquido`
+    const semV = (r) => r.sem_vendas_mi ?? r.lucro_mi;
+    const comDado = E.estatais.filter((e) => e.valores[u.ano] != null);
+    const lider = [...comDado].sort((a, b) => valEst(b, u.ano, true) - valEst(a, u.ano, true))[0];
+    const pior = [...comDado].sort((a, b) => valEst(a, u.ano, true) - valEst(b, u.ano, true))[0];
+    const d = p ? 100 * (semV(u) - semV(p)) / Math.abs(semV(p)) : null;
+    $('#est-nota').textContent = `Em ${u.ano}${u.parcial ? ` (${u.periodo})` : ''}, as ${u.n} estatais federais lucraram ${bi(semV(u))} sem contar a venda de ativos`
       + (d != null ? `, ${d >= 0 ? 'alta' : 'queda'} de ${f1(Math.abs(d))}% sobre ${p.ano}` : '') + '.'
-      + (lider ? ` O maior resultado foi do ${lider.estatal} (${bi(lider.valores[u.ano])})` : '')
-      + (pior && pior.valores[u.ano] < 0 ? ` e o maior prejuízo, de ${pior.estatal} (${bi(pior.valores[u.ano])}).` : '.')
+      + (u.vendas_mi ? ` Com as vendas, o lucro contábil foi de ${bi(u.lucro_mi)}.` : '')
+      + (lider ? ` O maior resultado foi do ${lider.estatal} (${bi(valEst(lider, u.ano, true))})` : '')
+      + (pior && valEst(pior, u.ano, true) < 0 ? ` e o maior prejuízo, de ${pior.estatal} (${bi(valEst(pior, u.ano, true))}).` : '.')
       + ` Reais de cada ano, sem correção pela inflação. Dados coletados em ${fmtData(E.coletado_em)}.`;
-    barras($('#est-chart'), E.anos.map((r) => ({ label: String(r.ano), v: r.lucro_mi / 1000, r })), {
+    barras($('#est-chart'), E.anos.map((r) => ({ label: String(r.ano), v: semV(r) / 1000, r })), {
       fmt: (v) => f0(v), height: 280, negativos: true,
       cor: (x) => corDoAno(x.r.ano),
       tipLinhas: (x) => [
-        { name: 'Lucro líquido somado', value: bi(x.r.lucro_mi) },
+        { name: 'Lucro sem vendas de ativos', value: bi(semV(x.r)) },
+        { name: 'Ganho com vendas, após imposto', value: bi(x.r.vendas_mi || 0) },
+        { name: 'Lucro contábil', value: bi(x.r.lucro_mi) },
         { name: 'Mandato', value: MANDATO[periodoDoAno(x.r.ano)]?.replace(' (até 2025)', '') || '—' },
         { name: 'Estatais na conta', value: f0(x.r.n) },
         ...(x.r.parcial ? [{ name: 'Período', value: x.r.periodo }] : []),
@@ -1708,14 +1716,14 @@
       const i = +per.slice(0, 4), f = i + 3;
       const rs = E.anos.filter((r) => r.ano >= i && r.ano <= f);
       if (!rs.length) continue;
-      const soma = d3.sum(rs, (r) => r.lucro_mi);
-      const porEst = E.estatais.map((e) => ({ e, s: somaAnos(e, i, f) })).filter((x) => x.s != null).sort((a, b) => b.s - a.s);
+      const soma = d3.sum(rs, (r) => semV(r)), vendas = d3.sum(rs, (r) => r.vendas_mi || 0);
+      const porEst = E.estatais.map((e) => ({ e, s: somaAnos(e, i, f, true) })).filter((x) => x.s != null).sort((a, b) => b.s - a.s);
       const mx = porEst[0], mn = porEst.at(-1);
       const nome = el('td');
       nome.append(MANDATO[per].replace(' (até 2025)', ''));
       if (rs[0].ano > i || rs.at(-1).ano < f) nome.append(el('span', { class: 'cod' }, ` · ${rs[0].ano} a ${rs.at(-1).ano}`));
       const tr = el('tr');
-      tr.append(nome, el('td', { class: 'some-p' }, f0(rs.length)), el('td', { class: 'some-p' }, bi(soma)), el('td', {}, bi(soma / rs.length)),
+      tr.append(nome, el('td', { class: 'some-p' }, f0(rs.length)), el('td', { class: 'some-p' }, bi(soma)), el('td', {}, bi(soma / rs.length)), el('td', { class: 'some-p' }, bi(vendas)),
         el('td', { class: 'some-p' }, mx ? `${mx.e.estatal} (${bi(mx.s)})` : '—'),
         el('td', { class: 'some-p' + (mn && mn.s < 0 ? ' ruim' : '') }, mn && mn.s < 0 ? `${mn.e.estatal} (${bi(mn.s)})` : 'nenhum'));
       tb.append(tr);
@@ -1740,13 +1748,17 @@
       nome.title = e.nome;
       tr.append(nome);
       for (const [k] of cols.slice(1)) {
-        const v = k === 'b' ? somaAnos(e, 2019, 2022) : k === 'l' ? somaAnos(e, 2023, 2026) : e.valores[k];
+        const v = k === 'b' ? somaAnos(e, 2019, 2022) : k === 'l' ? somaAnos(e, 2023, 2026) : valEst(e, k);
         const td = el('td', { class: (/^\d{4}$/.test(k) && +k < ult - 3 ? 'some-p ' : '') + (v != null && v < 0 ? 'ruim' : '') }, v == null ? '—' : sgn(v, f0).replace(/^\+/, ''));
         tr.append(td);
       }
       tbe.append(tr);
     }
     $('#est-filtro').value = st.estFiltro;
+    $('#est-sem-vendas').checked = st.estSemVendas;
+    $('#est-t-nota').firstChild.textContent = st.estSemVendas
+      ? 'Lucro líquido sem os ganhos com venda de ativos, em R$ milhões; prejuízo em vermelho.'
+      : 'Lucro líquido contábil, com os ganhos com venda de ativos, em R$ milhões; prejuízo em vermelho.';
   }
   $('#est-table thead').addEventListener('click', (ev) => {
     const th = ev.target.closest('th[data-sort]'); if (!th) return;
@@ -1759,7 +1771,8 @@
     baixarCSV('monitora-brasil-estatais-lucro-liquido.csv', estatisOrdenadas(E, anos), [
       { titulo: 'estatal', valor: (e) => e.estatal }, { titulo: 'nome', valor: (e) => e.nome },
       { titulo: 'tipo', valor: (e) => (e.tipo === 'grupo' ? 'grupo' : e.dependente ? 'dependente' : 'empresa') },
-      ...anos.map((a) => ({ titulo: `${a} (R$ milhões)`, valor: (e) => e.valores[a] })),
+      ...anos.map((a) => ({ titulo: `${a} lucro contábil (R$ milhões)`, valor: (e) => e.valores[a] })),
+      ...anos.map((a) => ({ titulo: `${a} ganho com vendas, após imposto (R$ milhões)`, valor: (e) => (e.valores[a] == null ? null : e.vendas?.[a] || 0) })),
     ]);
   });
 
@@ -1796,6 +1809,7 @@
   on('#ct-y0', (v) => { st.cy0 = +v; });
   on('#ct-y1', (v) => { st.cy1 = +v; });
   on('#est-filtro', (v) => { st.estFiltro = v; });
+  $('#est-sem-vendas').addEventListener('change', (e) => { st.estSemVendas = e.target.checked; render(); });
 
   function render() {
     if (!D) return;

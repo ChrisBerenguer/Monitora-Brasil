@@ -204,6 +204,18 @@ Coletados por `scripts/coletar_estatais.py` no GitHub Actions (workflow `dados-e
 
 **Sem dupla contagem.** Cada grupo econômico (Petrobras, Banco do Brasil, BNDES, Caixa, Eletrobras, ENBPar, NAV Brasil...) entra uma vez, pelo consolidado do grupo; sem consolidado no ano, pela controladora; sem nenhum dos dois, não entra, porque as empresas dele estavam em outro grupo (Eletronuclear e INB eram da Eletrobras até 2021). Empresas sem grupo entram uma a uma.
 
+**Lucro sem vendas de ativos.** O gráfico da aba tira do lucro o ganho com a venda de empresas, participações e outros ativos, depois do imposto de 34% (IR e CSLL). Só ganhos entram; perdas na venda não são somadas de volta. As fontes, por ordem:
+
+| Fonte | O que cobre |
+|---|---|
+| SEST, DRE, "Ganhos de capital" (365400 no plano antigo, 240107010 no novo) | Empresas não financeiras, de 2016 a 2021 e em 2025. De 2022 a 2024 a base anual da SEST não traz essa linha. Para a Petrobras, bate com a linha "resultado com alienação e baixa de ativos" dos balanços dela |
+| SEST, DRE, "Resultado não operacional" (350000), só para quem usa o plano dos bancos (tem a rubrica 300000) | Banco do Brasil, Caixa, BNB e Basa, de 2016 a 2024 (no plano Cosif, ganho com venda de investimentos é não operacional) |
+| Petrobras, relatórios de desempenho | Alienação e baixa de ativos em 2022 (R$ 5.884 mi), 2023 (6.511) e 2024 (1.171), e a venda do controle da BR Distribuidora em 2019 (13.948) |
+| BNDES, dados abertos (DRE em BRGAAP), linha 4.7 "Resultado com alienações de títulos de renda variável" | 2019 a 2025. Para 2016 a 2018, os relatórios do banco (877, 3.600 e 6.100). Em 2022 entra também o ganho com a perda de influência na JBS depois da venda de ações (R$ 5.824 mi líquidos) |
+| Caixa | Venda das ações da Petrobras em 2019 (R$ 2.200 mi) |
+
+O dinheiro das privatizações feitas pela própria União (a Eletrobras em 2022, por exemplo) nunca entrou no lucro das estatais: vai para o Tesouro.
+
 **Conferência.** Os totais batem com os anunciados pelo governo em 2018 (R$ 71,3 bi), 2020 (60,6), 2021 (187,7), 2023 (197,9) e 2024 (cerca de 116). Em 2019 o governo anunciou R$ 109,1 bi e a base soma R$ 98,4 bi; em 2025, R$ 169,4 bi contra R$ 173,8 bi. As diferenças vêm de balanços revisados depois do anúncio e de critérios do relatório agregado que a base aberta não traz.
 
 ### `estatais.json`
@@ -213,7 +225,10 @@ Coletados por `scripts/coletar_estatais.py` no GitHub Actions (workflow `dados-e
 | `coletado_em` | Data da coleta |
 | `unidade` | `R$ milhões correntes` (sem correção pela inflação) |
 | `anos[]` | `ano`, `lucro_mi` (soma de todas as estatais), `n` (quantas entraram), `periodo` (`anual`, `ano fechado (4º trimestre)` ou `até o Nº trimestre`) e `parcial` |
-| `estatais[]` | `id` (código SIEST, ou `G-<grupo>`), `estatal` (nome curto), `nome` (razão social), `tipo` (`grupo` ou `empresa`), `setor`, `dependente` (recebe recursos do Tesouro) e `valores` (`{ano: lucro em R$ milhões}`) |
+| `estatais[]` | `id` (código SIEST, ou `G-<grupo>`), `estatal` (nome curto), `nome` (razão social), `tipo` (`grupo` ou `empresa`), `setor`, `dependente` (recebe recursos do Tesouro), `valores` (`{ano: lucro contábil em R$ milhões}`) e `vendas` (`{ano: ganho com venda de ativos após imposto, em R$ milhões}`, só nos anos com ganho) |
+| `anos[].vendas_mi`, `anos[].sem_vendas_mi` | Soma dos ganhos com vendas no ano e lucro sem eles |
+| `imposto_sobre_ganho` | Alíquota usada para passar o ganho bruto a líquido (0,34) |
+| `ganhos_das_empresas[]` | Os valores tirados dos balanços das empresas: `id`, `ano`, `bruto` (R$ milhões; líquido quando `liquido` é `true`), `o_que` e `fonte` |
 
 ## Cálculos feitos no navegador
 

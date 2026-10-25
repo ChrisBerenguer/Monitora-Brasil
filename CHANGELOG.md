@@ -1,5 +1,16 @@
 # Histórico de versões
 
+## 1.27 — 25/10/2026
+
+### Alterado
+- **Estatais: o gráfico passa a mostrar o lucro sem a venda de ativos.** Do lucro de cada ano sai o ganho com a venda de empresas, participações e outros ativos (privatizações de subsidiárias, venda de ações, desinvestimentos), depois do imposto de 34%. A caixa de valores de cada barra mostra o lucro sem as vendas, o ganho com as vendas e o lucro contábil.
+- A tabela por mandato usa o lucro sem as vendas e ganhou a coluna **"Vendas de ativos tiradas"**.
+- A tabela por estatal ganhou a caixa **"Tirar os ganhos com venda de empresas e participações"** (marcada por padrão). Desmarcada, ela volta ao lucro contábil. O CSV traz as duas coisas.
+
+### Adicionado
+- `estatais.json` ganhou, por estatal, `vendas` (ganho com venda de ativos após imposto, por ano) e, por ano, `vendas_mi` e `sem_vendas_mi`. A lista `ganhos_das_empresas` registra cada valor tirado dos balanços das empresas, com a fonte.
+- `coletar_estatais.py` lê da base da SEST os ganhos de capital das empresas não financeiras e o resultado não operacional dos bancos e completa com os balanços de Petrobras (2022–2024 e BR Distribuidora em 2019), BNDES (todos os anos, linha "Resultado com alienações de títulos de renda variável" dos dados abertos do banco, mais o ganho com a perda de influência na JBS em 2022) e Caixa (ações da Petrobras em 2019).
+
 ## 1.26 — 25/10/2026
 
 ### Adicionado
