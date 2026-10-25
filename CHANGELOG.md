@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.28 — 25/10/2026
+
+### Adicionado
+- **Estatais:** o gráfico "Lucro líquido das estatais federais, sem vendas de ativos" ganhou a **média de lucro por ano de cada governo**: uma linha tracejada na cor do mandato sobre as barras dele, o valor na legenda (Dilma 2 / Temer, R$ 28,2 bi; Bolsonaro, R$ 132,7 bi; Lula 3, R$ 160,5 bi até 2025) e a média do governo na caixa de valores de cada barra.
+- `barras` ganhou a opção `medias` (linhas tracejadas sobre grupos de barras). Os valores das barras passam a ficar por cima das linhas, com contorno da cor do fundo.
+
 ## 1.27 — 25/10/2026
 
 ### Alterado

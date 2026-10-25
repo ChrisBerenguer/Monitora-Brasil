@@ -1445,7 +1445,7 @@
   const fmtData = (s) => (s ? new Date(s + 'T12:00').toLocaleDateString('pt-BR') : '—');
   const brl = (v) => (v == null ? '—' : `R$ ${v >= 100 ? f0(v) : f2(v)}`);
   /** Barras verticais simples, com o valor em cima e tooltip. */
-  function barras(box, rows, { fmt = f1, cor: corB = cor(0), height = 240, tipLinhas = null, negativos = false } = {}) {
+  function barras(box, rows, { fmt = f1, cor: corB = cor(0), height = 240, tipLinhas = null, negativos = false, medias = null } = {}) {
     box.replaceChildren(); box.classList.remove('carregando');
     if (!rows.length) return vazio(box);
     const W = largura(box), H = height, mt = 22, mb = 40, ml = 8, mr = 8;
@@ -1453,6 +1453,7 @@
     const y = d3.scaleLinear([negativos ? Math.min(0, d3.min(rows, (r) => r.v)) : 0, d3.max(rows, (r) => r.v) || 1], [H - mb, mt]).nice();
     const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img');
     svg.append('line').attr('x1', ml).attr('x2', W - mr).attr('y1', y(0)).attr('y2', y(0)).style('stroke', css('--axis'));
+    const rotulos = svg.append('g');
     for (const r of rows) {
       const topo = negativos ? y(Math.max(0, r.v)) : y(r.v), alt = negativos ? Math.abs(y(r.v) - y(0)) : Math.max(0, y(0) - y(r.v));
       svg.append('rect').attr('x', x(r.label)).attr('y', topo).attr('width', x.bandwidth()).attr('height', alt).attr('rx', 3)
@@ -1460,8 +1461,19 @@
         .on('pointermove', (ev) => tip.show(ev, r.titulo || r.label, tipLinhas ? tipLinhas(r) : [{ name: 'Valor', value: fmt(r.v) }]))
         .on('pointerleave', () => tip.hide());
       if (x.bandwidth() >= 34) // em tela estreita o rótulo não cabe; o valor fica no toque
-        svg.append('text').attr('x', x(r.label) + x.bandwidth() / 2).attr('y', negativos && r.v < 0 ? y(r.v) + 13 : y(r.v) - 5).attr('text-anchor', 'middle')
+        rotulos.append('text').attr('x', x(r.label) + x.bandwidth() / 2).attr('y', negativos && r.v < 0 ? y(r.v) + 13 : y(r.v) - 5).attr('text-anchor', 'middle')
           .style('font-size', '11px').style('fill', css('--fg')).text(fmt(r.v));
+    }
+    // linhas de média: tracejado sobre as barras de cada grupo (ex.: média por mandato); o valor vai na legenda
+    for (const m of medias || []) {
+      const a = x(m.de), b = x(m.ate);
+      if (a == null || b == null || m.v == null) continue;
+      const x1 = a - x.step() * x.paddingInner() / 2 + 2, x2 = b + x.bandwidth() + x.step() * x.paddingInner() / 2 - 2, yy = y(m.v);
+      svg.append('line').attr('x1', x1).attr('x2', x2).attr('y1', yy).attr('y2', yy)
+        .style('stroke', m.cor).style('stroke-width', 2).style('stroke-dasharray', '6 4');
+    }
+    if (medias?.length) { // os valores das barras ficam por cima das linhas, com um contorno da cor do fundo
+      rotulos.raise().selectAll('text').style('paint-order', 'stroke').style('stroke', css('--panel')).style('stroke-width', 3).style('stroke-linejoin', 'round');
     }
     const passo = Math.ceil(rows.length / Math.max(1, Math.floor((W - ml - mr) / 56)));
     svg.append('g').selectAll('text').data(rows.filter((r, i) => i % passo === 0)).join('text')
@@ -1694,11 +1706,18 @@
       + (lider ? ` O maior resultado foi do ${lider.estatal} (${bi(valEst(lider, u.ano, true))})` : '')
       + (pior && valEst(pior, u.ano, true) < 0 ? ` e o maior prejuízo, de ${pior.estatal} (${bi(valEst(pior, u.ano, true))}).` : '.')
       + ` Reais de cada ano, sem correção pela inflação. Dados coletados em ${fmtData(E.coletado_em)}.`;
+    // média de lucro por ano em cada governo (anos do mandato com dado)
+    const mediasGov = PERIODOS.map((per) => {
+      const i = +per.slice(0, 4), rs = E.anos.filter((r) => r.ano >= i && r.ano <= i + 3);
+      return rs.length ? { per, de: String(rs[0].ano), ate: String(rs.at(-1).ano), v: d3.mean(rs, (r) => semV(r)) / 1000, cor: corDoAno(i) } : null;
+    }).filter(Boolean);
     barras($('#est-chart'), E.anos.map((r) => ({ label: String(r.ano), v: semV(r) / 1000, r })), {
-      fmt: (v) => f0(v), height: 280, negativos: true,
+      fmt: (v) => f0(v), height: 300, negativos: true,
+      medias: mediasGov,
       cor: (x) => corDoAno(x.r.ano),
       tipLinhas: (x) => [
         { name: 'Lucro sem vendas de ativos', value: bi(semV(x.r)) },
+        { name: 'Média do governo, por ano', value: (() => { const m = mediasGov.find((q) => +q.de <= x.r.ano && x.r.ano <= +q.ate); return m ? `R$ ${f1(m.v)} bi` : '—'; })() },
         { name: 'Ganho com vendas, após imposto', value: bi(x.r.vendas_mi || 0) },
         { name: 'Lucro contábil', value: bi(x.r.lucro_mi) },
         { name: 'Mandato', value: MANDATO[periodoDoAno(x.r.ano)]?.replace(' (até 2025)', '') || '—' },
@@ -1707,9 +1726,12 @@
       ],
     });
     const leg = $('#est-leg'); leg.replaceChildren();
+    const sLinha = el('span'); sLinha.append(el('i', { class: 'tracejado' }), 'linha tracejada: média por ano no governo'); 
     for (const per of PERIODOS.filter((q) => E.anos.some((r) => periodoDoAno(r.ano) === q))) {
-      const s = el('span'); s.append(el('i', { style: `background:${corDoAno(+per.slice(0, 4))}` }), MANDATO[per].replace(' (até 2025)', '')); leg.append(s);
+      const m = mediasGov.find((q) => q.per === per);
+      const s = el('span'); s.append(el('i', { style: `background:${corDoAno(+per.slice(0, 4))}` }), MANDATO[per].replace(' (até 2025)', ''), el('b', {}, m ? ` · média de R$ ${f1(m.v)} bi por ano` : '')); leg.append(s);
     }
+    leg.append(sLinha);
     // tabela por mandato
     const tb = $('#est-mand-table tbody'); tb.replaceChildren();
     for (const per of PERIODOS) {
