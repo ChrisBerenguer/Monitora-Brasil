@@ -13,7 +13,7 @@ site/
 │   ├── js/d3.v7.9.0.min.js     biblioteca d3 (cópia local, ISC License)
 │   ├── js/html-to-image.v1.11.11.min.js  gera a imagem de compartilhamento (cópia local, MIT License)
 │   └── favicon.svg
-├── data/                       os 9 JSON gerados por scripts/build_dados.py
+├── data/                       os JSON de scripts/build_dados.py e dos coletores (consumo, economias, estatais)
 ├── _headers                    cabeçalhos de cache e segurança (Netlify, Cloudflare Pages; na Vercel, ver vercel.json na raiz)
 ├── .htaccess                   o mesmo para Apache
 ├── .nojekyll                   impede o GitHub Pages de processar a pasta com Jekyll
@@ -25,7 +25,7 @@ Dependências externas em tempo de execução: as fontes do Google Fonts (IBM Pl
 ## Como roda
 
 1. O navegador carrega `index.html`, o CSS, a d3 e `app.js`.
-2. `app.js` busca os 9 arquivos de `data/` em paralelo (`fetch`). São cerca de 5,8 MB sem compressão e menos de 1 MB com gzip/brotli, que as hospedagens aplicam automaticamente.
+2. `app.js` busca os arquivos de `data/` em paralelo (`fetch`). São cerca de 5,8 MB sem compressão e menos de 1 MB com gzip/brotli, que as hospedagens aplicam automaticamente.
 3. Monta índices em memória (`d3.group`) e faz três cálculos derivados (abaixo).
 4. Desenha a aba atual. Trocar de aba ou de controle só redesenha, sem novas requisições.
 
@@ -87,6 +87,13 @@ Quanto custa viver, comparado com a renda de quem vive aqui. Cinco cartões:
 
 Os gráficos mensais usam `lineChart` com a opção `mensal: true`, que faz a caixa de valores pegar o ponto mais próximo do cursor em vez de casar com o ano inteiro. Dados em `consumo.json` (doc 06); a coleta é automática (doc 09). O identificador da aba é `vida`, e `APELIDOS` no `app.js` mantém o endereço antigo `#consumo` funcionando.
 
+### Estatais (`#estatais`)
+Lucro ou prejuízo das empresas estatais federais, de 2016 ao último balanço publicado, em reais de cada ano. Dois cartões:
+- **Lucro líquido das estatais federais:** barras com a soma de cada ano, na cor do mandato (legenda embaixo), e a tabela **Por mandato presidencial** com os anos com dado, o lucro somado, a média por ano e as estatais com o maior lucro e o maior prejuízo somados no mandato. O texto acima do gráfico diz o total do último ano, a variação sobre o anterior, quem lucrou mais e quem perdeu mais.
+- **Resultado de cada estatal:** uma linha por estatal ou grupo, uma coluna por ano e as somas de 2019–2022 e de 2023 em diante. Ordena clicando no cabeçalho (padrão: último ano, do maior para o menor; quem não tem dado vai para o fim), filtra por grupos, empresas que se sustentam ou dependentes do Tesouro, e tem **Baixar CSV**. No celular, os anos mais antigos somem da tabela.
+
+Dados em `estatais.json` (doc 06); a coleta é automática (doc 09). Funções `drawEstatais`, `somaAnos` e `estatisOrdenadas`; as barras usam `barras` com `negativos: true`.
+
 ### Onde votar (`#votar`)
 Serviço ao eleitor: botão que abre o Autoatendimento Eleitoral do TSE numa nova aba, com o passo a passo para chegar a **Consultas → Onde votar**, as alternativas (aplicativo e-Título e atendimento presencial) e um aviso de data que só aparece até o 2º turno de 2026 (25/10). O site não recebe nenhum dado do eleitor: a consulta é feita no site oficial. O endereço do TSE fica no `index.html`.
 
@@ -142,7 +149,7 @@ A caixa que se abre mostra a prévia e oferece **Compartilhar…** (no celular, 
 
 Como funciona: `gerarImagem` monta fora da tela um quadro com uma cópia do cartão, e a biblioteca html-to-image (servida pelo próprio site) converte esse quadro em PNG. Para que as fontes do Google entrem na imagem, a política de segurança (CSP) libera `fonts.googleapis.com` e `fonts.gstatic.com` em `connect-src`; se forem bloqueadas, a imagem usa as fontes do sistema. Textos que só fazem sentido na tela ("passe o mouse...") ficam em elementos com a classe `so-tela` e não entram na imagem. O atributo `data-ctx` do cartão controla a linha de escolhas (`proprio`: só os controles do cartão; `nenhum`: sem a linha).
 
-**Links diretos:** acrescente `#series`, `#coortes`, `#metodo`, `#vida` ou `#votar` ao endereço (o antigo `#consumo` continua funcionando).
+**Links diretos:** acrescente `#series`, `#coortes`, `#metodo`, `#vida`, `#estatais` ou `#votar` ao endereço (o antigo `#consumo` continua funcionando).
 
 ## Organização do `app.js`
 

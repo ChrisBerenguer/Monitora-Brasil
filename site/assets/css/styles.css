@@ -211,6 +211,10 @@ svg .info-svg:focus-visible .anel { stroke-width: 2.2; }
 .ctl-check { display: inline-flex; align-items: center; gap: 8px; font-size: var(--t-sm); color: var(--muted); cursor: pointer; margin-top: 4px; }
 .ctl-check input { accent-color: var(--accent); }
 
+/* estatais */
+#est-table td:first-child { white-space: normal; min-width: 9rem; }
+#est-table td:first-child .cod { white-space: nowrap; }
+
 /* onde votar */
 .aba-votar { color: var(--accent); }
 .votar { max-width: 760px; display: grid; gap: 12px; }

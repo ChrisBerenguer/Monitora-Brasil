@@ -19,6 +19,7 @@
     histogramas: 'histogramas.json',
     consumo: 'consumo.json',
     economias: 'economias.json',
+    estatais: 'estatais.json',
   };
 
   const TEMAS = [
@@ -42,7 +43,7 @@
   const ORDEM_PAISES = Object.keys(PAIS);
   const PERIODOS = ['1995–1998', '1999–2002', '2003–2006', '2007–2010', '2011–2014', '2015–2018', '2019–2022', '2023–2026'];
   const MANDATO = { '1995–1998': 'FHC 1', '1999–2002': 'FHC 2', '2003–2006': 'Lula 1', '2007–2010': 'Lula 2', '2011–2014': 'Dilma 1', '2015–2018': 'Dilma 2 / Temer', '2019–2022': 'Bolsonaro', '2023–2026': 'Lula 3 (até 2025)' };
-  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'vida', 'votar'];
+  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'vida', 'estatais', 'votar'];
   const APELIDOS = { consumo: 'vida' }; // endereços antigos continuam funcionando
   // Mandatos usados na variação dos escores (Visão geral). Os escores começam em 2000,
   // então FHC 2 é medido de 2000 a 2002.
@@ -56,6 +57,7 @@
     page: 'visao', coorte: 'latam', mandato: '2023–2026', tema: 'geral', ind: 'ny_gdp_pcap_pp_kd', banda: 'latam',
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
     ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cbMa: '2019–2022', cbMb: '2023–2026', cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
+    estFiltro: 'todas', estSort: { key: null, dir: -1 },
   };
   let D = null; // dados carregados e indexados
 
@@ -656,6 +658,16 @@
     return [['No Brasil, agora', f(c).replace(/\.\.$/, '.')]];
   };
   const CARD_INFO = {
+    'est-total': { titulo: 'Lucro líquido das estatais federais', blocos: [
+      ['O que mostra', 'A soma do lucro líquido (ou prejuízo) de todas as estatais federais em cada ano: o que sobra depois de pagar custos, juros e impostos. As barras têm a cor do mandato presidencial em que o ano caiu. A tabela abaixo soma os anos de cada mandato e mostra a média por ano, que permite comparar mandatos com número diferente de anos.'],
+      ['Como se conta', 'Grupos como Petrobras, Banco do Brasil, BNDES e Caixa entram uma vez só, pelo balanço consolidado do grupo, com as subsidiárias dentro. As demais estatais entram uma a uma. Os valores estão em reais de cada ano, sem correção pela inflação.'],
+      ['Atenção', 'Lucro de estatal depende muito do preço do petróleo, dos juros e de vendas de ativos (privatizações e venda de participações), que inflam o resultado de um ano só. A Petrobras sozinha costuma responder por mais da metade da soma. Lucro alto não quer dizer, por si só, empresa bem gerida, nem prejuízo quer dizer o contrário: hospitais, empresas de pesquisa e de trens urbanos existem para prestar serviço e vivem de recursos do Tesouro.'],
+    ] },
+    'est-tabela': { titulo: 'Resultado de cada estatal', blocos: [
+      ['O que mostra', 'O lucro líquido de cada estatal federal (ou grupo) em cada ano, em milhões de reais, e a soma nos dois últimos mandatos. Prejuízo aparece em vermelho. O traço quer dizer que a empresa não existia, não era estatal ou ainda não entregou o balanço daquele ano.'],
+      ['Grupos e dependentes', 'Grupo é a empresa-mãe com as subsidiárias, num balanço só. "Dependentes do Tesouro" são as estatais que recebem dinheiro do Orçamento para pagar salários ou custeio, como Embrapa, Ebserh e Codevasf. As demais se sustentam com o que vendem.'],
+      ['Atenção', 'A Eletrobras deixou de ser estatal em junho de 2022, quando foi privatizada; a partir de então Eletronuclear e INB passam ao grupo ENBPar. Mudanças de grupo e fusões explicam linhas que começam ou terminam no meio da tabela.'],
+    ] },
     posicao: { titulo: 'Posição do Brasil entre as economias do mundo', blocos: [
       ['O que mostra', 'Em que lugar o Brasil fica quando os países do mundo são postos em fila pelo tamanho da economia: o PIB nominal em dólares, da maior economia (1ª) para a menor. É o ranking que aparece nas manchetes. O Brasil está entre as dez ou doze maiores economias do mundo há décadas.'],
       ['Como ler', 'O eixo está invertido: a melhor posição (1ª) fica em cima. Linha subindo quer dizer que o Brasil ganhou posições; descendo, perdeu. Na tabela, um número positivo é ganho de posições.'],
@@ -849,7 +861,7 @@
       const ul = el('ul', { class: 'fontes-lista' });
       for (const [n, u] of F.l) { const li = el('li'); li.append(linkExt(n, u)); ul.append(li); }
       partes.push(ul);
-      partes.push(el('p', { class: 'dado' }, `Dados coletados em ${fmtData(D.raw.consumo?.coletado_em)}.`));
+      partes.push(el('p', { class: 'dado' }, `Dados coletados em ${fmtData(F.data ? F.data() : D.raw.consumo?.coletado_em)}.`));
       infoEl.replaceChildren(...partes);
       return;
     }
@@ -881,6 +893,10 @@
     infoEl.replaceChildren(...partes);
   }
   const FONTES_EXTRA = {
+    estatais: { t: 'Balanços das estatais federais, publicados pelo governo:', l: [
+      ['SEST/Ministério da Gestão: dados abertos das empresas estatais (Dados Financeiros e Identificação)', 'https://www.gov.br/gestao/pt-br/assuntos/estatais/transparencia/dados-abertos'],
+      ['Relatórios agregados e boletins das estatais federais', 'https://www.gov.br/gestao/pt-br/assuntos/estatais'],
+    ], data: () => D.raw.estatais?.coletado_em },
     precos: { t: 'Preços de consumo básico, de duas fontes oficiais:', l: [
       ['DIEESE: Pesquisa Nacional da Cesta Básica de Alimentos', 'https://www.dieese.org.br/analisecestabasica/analiseCestaBasica.html'],
       ['ANP: Levantamento de Preços de Combustíveis', 'https://www.gov.br/anp/pt-br/assuntos/precos-e-defesa-da-concorrencia/precos/precos-revenda-e-de-distribuicao-combustiveis'],
@@ -1002,6 +1018,7 @@
     const spec = card.querySelector('[data-fonte]')?.dataset.fonte || 'bases';
     if (spec === 'fonte:precos') return 'DIEESE (cesta básica) e ANP (combustíveis)';
     if (spec === 'fonte:renda') return 'IBGE (PNAD Contínua) e Ipeadata';
+    if (spec === 'fonte:estatais') return 'SEST/Ministério da Gestão (balanços das estatais federais)';
     const alvo = spec === 'ind' ? st.ind : spec === 'tema' ? st.tema : spec === 'cstema' ? st.cstema : spec.startsWith('tema:') ? spec.slice(5) : spec;
     const meta = D.ind.get(alvo);
     if (meta) return meta.fonte;
@@ -1096,7 +1113,7 @@
     posicionarInfo(btn);
   }
   /** Coloca o botão de compartilhar ao lado do título de cada cartão com gráfico ou tabela. */
-  document.querySelectorAll('#visao article.card, #series article.card, #coortes article.card, #vida article.card').forEach((card) => {
+  document.querySelectorAll('#visao article.card, #series article.card, #coortes article.card, #vida article.card, #estatais article.card').forEach((card) => {
     const alvo = card.querySelector('.titulo-info');
     if (!alvo) return;
     const b = el('button', { class: 'info-btn share-btn', type: 'button', 'aria-label': 'Compartilhar este gráfico como imagem', 'aria-haspopup': 'dialog' });
@@ -1427,21 +1444,22 @@
   const fmtData = (s) => (s ? new Date(s + 'T12:00').toLocaleDateString('pt-BR') : '—');
   const brl = (v) => (v == null ? '—' : `R$ ${v >= 100 ? f0(v) : f2(v)}`);
   /** Barras verticais simples, com o valor em cima e tooltip. */
-  function barras(box, rows, { fmt = f1, cor: corB = cor(0), height = 240, tipLinhas = null } = {}) {
+  function barras(box, rows, { fmt = f1, cor: corB = cor(0), height = 240, tipLinhas = null, negativos = false } = {}) {
     box.replaceChildren(); box.classList.remove('carregando');
     if (!rows.length) return vazio(box);
     const W = largura(box), H = height, mt = 22, mb = 40, ml = 8, mr = 8;
     const x = d3.scaleBand(rows.map((r) => r.label), [ml, W - mr]).padding(0.22);
-    const y = d3.scaleLinear([0, d3.max(rows, (r) => r.v) || 1], [H - mb, mt]).nice();
+    const y = d3.scaleLinear([negativos ? Math.min(0, d3.min(rows, (r) => r.v)) : 0, d3.max(rows, (r) => r.v) || 1], [H - mb, mt]).nice();
     const svg = d3.select(box).append('svg').attr('width', '100%').attr('viewBox', `0 0 ${W} ${H}`).attr('role', 'img');
     svg.append('line').attr('x1', ml).attr('x2', W - mr).attr('y1', y(0)).attr('y2', y(0)).style('stroke', css('--axis'));
     for (const r of rows) {
-      svg.append('rect').attr('x', x(r.label)).attr('y', y(r.v)).attr('width', x.bandwidth()).attr('height', Math.max(0, y(0) - y(r.v))).attr('rx', 3)
+      const topo = negativos ? y(Math.max(0, r.v)) : y(r.v), alt = negativos ? Math.abs(y(r.v) - y(0)) : Math.max(0, y(0) - y(r.v));
+      svg.append('rect').attr('x', x(r.label)).attr('y', topo).attr('width', x.bandwidth()).attr('height', alt).attr('rx', 3)
         .style('fill', typeof corB === 'function' ? corB(r) : corB).style('fill-opacity', r.fraco ? 0.4 : 0.9)
         .on('pointermove', (ev) => tip.show(ev, r.titulo || r.label, tipLinhas ? tipLinhas(r) : [{ name: 'Valor', value: fmt(r.v) }]))
         .on('pointerleave', () => tip.hide());
       if (x.bandwidth() >= 34) // em tela estreita o rótulo não cabe; o valor fica no toque
-        svg.append('text').attr('x', x(r.label) + x.bandwidth() / 2).attr('y', y(r.v) - 5).attr('text-anchor', 'middle')
+        svg.append('text').attr('x', x(r.label) + x.bandwidth() / 2).attr('y', negativos && r.v < 0 ? y(r.v) + 13 : y(r.v) - 5).attr('text-anchor', 'middle')
           .style('font-size', '11px').style('fill', css('--fg')).text(fmt(r.v));
     }
     const passo = Math.ceil(rows.length / Math.max(1, Math.floor((W - ml - mr) / 56)));
@@ -1625,6 +1643,126 @@
   }
   $('#cb-real').addEventListener('change', (e) => { st.cbReal = e.target.checked; render(); });
 
+
+  // ---------------------------------------------------------------- estatais
+  /** Mandato em que cai um ano (para colorir as barras e somar por mandato). */
+  const periodoDoAno = (a) => PERIODOS.find((p) => a >= +p.slice(0, 4) && a <= +p.slice(0, 4) + 3);
+  const COR_MANDATO = { '2015–2018': 3, '2019–2022': 1, '2023–2026': 0 };
+  const corDoAno = (a) => cor(COR_MANDATO[periodoDoAno(a)] ?? 5);
+  const bi = (mi) => (mi == null ? '—' : `R$ ${mi < 0 ? '−' : ''}${f1(Math.abs(mi) / 1000)} bi`);
+  const ESTF = {
+    todas: () => true,
+    grupo: (e) => e.tipo === 'grupo',
+    empresa: (e) => e.tipo === 'empresa' && !e.dependente,
+    dependente: (e) => e.dependente,
+  };
+  /** Soma dos valores de uma estatal entre dois anos (null se não há nenhum ano com dado). */
+  function somaAnos(e, a, b) {
+    let s = 0, n = 0;
+    for (let y = a; y <= b; y++) { const v = e.valores[y]; if (v != null) { s += v; n++; } }
+    return n ? s : null;
+  }
+  function estatisOrdenadas(E, anos) {
+    const { key, dir } = st.estSort;
+    const k = key || String(anos.at(-1));
+    const val = (e) => (k === 'estatal' ? e.estatal : k === 'b' ? somaAnos(e, 2019, 2022) : k === 'l' ? somaAnos(e, 2023, 2026) : e.valores[k]);
+    return E.estatais.filter(ESTF[st.estFiltro] || ESTF.todas).sort((x, y) => {
+      if (k === 'estatal') return dir * x.estatal.localeCompare(y.estatal, 'pt-BR');
+      const vx = val(x), vy = val(y); // quem não tem dado vai para o fim, nos dois sentidos
+      if (vx == null && vy == null) return x.estatal.localeCompare(y.estatal, 'pt-BR');
+      if (vx == null) return 1;
+      if (vy == null) return -1;
+      return dir * (vx - vy);
+    });
+  }
+  function drawEstatais() {
+    const E = D.raw.estatais;
+    if (!E || !E.anos?.length) return vazio($('#est-chart'), 'Dados das estatais indisponíveis.');
+    const anos = E.anos.map((r) => r.ano);
+    const u = E.anos.at(-1), p = E.anos.at(-2);
+    const lider = E.estatais.filter((e) => e.valores[u.ano] != null).sort((a, b) => b.valores[u.ano] - a.valores[u.ano])[0];
+    const pior = E.estatais.filter((e) => e.valores[u.ano] != null).sort((a, b) => a.valores[u.ano] - b.valores[u.ano])[0];
+    const d = p ? 100 * (u.lucro_mi - p.lucro_mi) / Math.abs(p.lucro_mi) : null;
+    $('#est-nota').textContent = `Em ${u.ano}${u.parcial ? ` (${u.periodo})` : ''}, as ${u.n} estatais federais somaram ${bi(u.lucro_mi)} de lucro líquido`
+      + (d != null ? `, ${d >= 0 ? 'alta' : 'queda'} de ${f1(Math.abs(d))}% sobre ${p.ano}` : '') + '.'
+      + (lider ? ` O maior resultado foi do ${lider.estatal} (${bi(lider.valores[u.ano])})` : '')
+      + (pior && pior.valores[u.ano] < 0 ? ` e o maior prejuízo, de ${pior.estatal} (${bi(pior.valores[u.ano])}).` : '.')
+      + ` Reais de cada ano, sem correção pela inflação. Dados coletados em ${fmtData(E.coletado_em)}.`;
+    barras($('#est-chart'), E.anos.map((r) => ({ label: String(r.ano), v: r.lucro_mi / 1000, r })), {
+      fmt: (v) => f0(v), height: 280, negativos: true,
+      cor: (x) => corDoAno(x.r.ano),
+      tipLinhas: (x) => [
+        { name: 'Lucro líquido somado', value: bi(x.r.lucro_mi) },
+        { name: 'Mandato', value: MANDATO[periodoDoAno(x.r.ano)]?.replace(' (até 2025)', '') || '—' },
+        { name: 'Estatais na conta', value: f0(x.r.n) },
+        ...(x.r.parcial ? [{ name: 'Período', value: x.r.periodo }] : []),
+      ],
+    });
+    const leg = $('#est-leg'); leg.replaceChildren();
+    for (const per of PERIODOS.filter((q) => E.anos.some((r) => periodoDoAno(r.ano) === q))) {
+      const s = el('span'); s.append(el('i', { style: `background:${corDoAno(+per.slice(0, 4))}` }), MANDATO[per].replace(' (até 2025)', '')); leg.append(s);
+    }
+    // tabela por mandato
+    const tb = $('#est-mand-table tbody'); tb.replaceChildren();
+    for (const per of PERIODOS) {
+      const i = +per.slice(0, 4), f = i + 3;
+      const rs = E.anos.filter((r) => r.ano >= i && r.ano <= f);
+      if (!rs.length) continue;
+      const soma = d3.sum(rs, (r) => r.lucro_mi);
+      const porEst = E.estatais.map((e) => ({ e, s: somaAnos(e, i, f) })).filter((x) => x.s != null).sort((a, b) => b.s - a.s);
+      const mx = porEst[0], mn = porEst.at(-1);
+      const nome = el('td');
+      nome.append(MANDATO[per].replace(' (até 2025)', ''));
+      if (rs[0].ano > i || rs.at(-1).ano < f) nome.append(el('span', { class: 'cod' }, ` · ${rs[0].ano} a ${rs.at(-1).ano}`));
+      const tr = el('tr');
+      tr.append(nome, el('td', { class: 'some-p' }, f0(rs.length)), el('td', { class: 'some-p' }, bi(soma)), el('td', {}, bi(soma / rs.length)),
+        el('td', { class: 'some-p' }, mx ? `${mx.e.estatal} (${bi(mx.s)})` : '—'),
+        el('td', { class: 'some-p' + (mn && mn.s < 0 ? ' ruim' : '') }, mn && mn.s < 0 ? `${mn.e.estatal} (${bi(mn.s)})` : 'nenhum'));
+      tb.append(tr);
+    }
+    // tabela por estatal
+    const ult = anos.at(-1);
+    const cols = [['estatal', 'Estatal'], ...anos.map((a) => [String(a), String(a)]), ['b', 'Soma 2019–2022'], ['l', `Soma 2023–${ult}`]];
+    const head = $('#est-head');
+    const kAtual = st.estSort.key || String(ult);
+    head.replaceChildren(...cols.map(([k, n]) => {
+      const th = el('th', { scope: 'col', 'data-sort': k, 'aria-sort': k === kAtual ? (st.estSort.dir > 0 ? 'ascending' : 'descending') : 'none' });
+      if (/^\d{4}$/.test(k) && +k < ult - 3) th.className = 'some-p';
+      th.append(el('button', {}, n)); return th;
+    }));
+    const tbe = $('#est-table tbody'); tbe.replaceChildren();
+    for (const e of estatisOrdenadas(E, anos)) {
+      const tr = el('tr');
+      const nome = el('td');
+      nome.append(e.estatal);
+      if (e.tipo === 'grupo') nome.append(el('span', { class: 'cod' }, ' · grupo'));
+      else if (e.dependente) nome.append(el('span', { class: 'cod' }, ' · dependente'));
+      nome.title = e.nome;
+      tr.append(nome);
+      for (const [k] of cols.slice(1)) {
+        const v = k === 'b' ? somaAnos(e, 2019, 2022) : k === 'l' ? somaAnos(e, 2023, 2026) : e.valores[k];
+        const td = el('td', { class: (/^\d{4}$/.test(k) && +k < ult - 3 ? 'some-p ' : '') + (v != null && v < 0 ? 'ruim' : '') }, v == null ? '—' : sgn(v, f0).replace(/^\+/, ''));
+        tr.append(td);
+      }
+      tbe.append(tr);
+    }
+    $('#est-filtro').value = st.estFiltro;
+  }
+  $('#est-table thead').addEventListener('click', (ev) => {
+    const th = ev.target.closest('th[data-sort]'); if (!th) return;
+    const key = th.dataset.sort, atual = st.estSort.key || String(D.raw.estatais.anos.at(-1).ano);
+    st.estSort = { key, dir: atual === key ? -st.estSort.dir : key === 'estatal' ? 1 : -1 };
+    drawEstatais();
+  });
+  $('#csv-estatais').addEventListener('click', () => {
+    const E = D.raw.estatais, anos = E.anos.map((r) => r.ano);
+    baixarCSV('monitora-brasil-estatais-lucro-liquido.csv', estatisOrdenadas(E, anos), [
+      { titulo: 'estatal', valor: (e) => e.estatal }, { titulo: 'nome', valor: (e) => e.nome },
+      { titulo: 'tipo', valor: (e) => (e.tipo === 'grupo' ? 'grupo' : e.dependente ? 'dependente' : 'empresa') },
+      ...anos.map((a) => ({ titulo: `${a} (R$ milhões)`, valor: (e) => e.valores[a] })),
+    ]);
+  });
+
   function show(page, push = true) {
     page = APELIDOS[page] || page;
     if (!PAGINAS.includes(page)) page = 'visao';
@@ -1657,6 +1795,7 @@
   on('#pl-b', (v) => { st.gb = v; });
   on('#ct-y0', (v) => { st.cy0 = +v; });
   on('#ct-y1', (v) => { st.cy1 = +v; });
+  on('#est-filtro', (v) => { st.estFiltro = v; });
 
   function render() {
     if (!D) return;
@@ -1669,6 +1808,7 @@
     else if (st.page === 'coortes') drawCoortes();
     else if (st.page === 'votar') drawVotar();
     else if (st.page === 'vida') drawVida();
+    else if (st.page === 'estatais') drawEstatais();
     else drawMetodo();
   }
 

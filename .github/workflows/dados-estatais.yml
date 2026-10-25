@@ -1,0 +1,28 @@
+name: Atualizar lucro das estatais federais
+# Baixa os dados abertos da SEST/MGI (Dados Financeiros e Identificação das Empresas Estatais)
+# e grava site/data/estatais.json.
+# Roda todo mês e pode ser disparado à mão em Actions → "Atualizar lucro das estatais federais" → Run workflow.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 8 16 * *'   # dia 16 de cada mês, 05h17 em Brasília
+permissions:
+  contents: write
+concurrency: dados-estatais
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: python scripts/coletar_estatais.py
+      - name: Gravar no repositório se algo mudou
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dados/estatais.json site/data/estatais.json
+          git diff --cached --quiet && echo "Sem mudanças." && exit 0
+          git commit -m "Dados: lucro das estatais federais (SEST/MGI), coleta automática"
+          git push

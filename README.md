@@ -15,6 +15,7 @@ Painel que acompanha o desenvolvimento do Brasil em comparação com outros paí
 1. **Como o Brasil está em cada dimensão do desenvolvimento** e no conjunto, em relação ao resto do mundo?
 2. **Como isso mudou no tempo**, ano a ano e entre mandatos presidenciais?
 3. **Como o Brasil se compara aos seus pares**: América Latina, BRICS, OCDE e países de renda média-alta?
+4. **Quanto as estatais federais lucram ou perdem**, ano a ano e por mandato (aba Estatais)?
 
 ## Resultado de referência (dados de outubro de 2026)
 
@@ -51,7 +52,7 @@ Monitora-Brasil/
 │   ├── explicacoes.py         textos para leigos de cada indicador (botão "i" do site)
 │   ├── fontes.py              códigos oficiais e links (página e API) de cada indicador
 │   └── gerar_dicionario.py    gera docs/04 a partir dos dados
-├── dados/                     8 conjuntos de dados em JSON (cópia em site/data/)
+├── dados/                     conjuntos de dados em JSON (cópia em site/data/)
 ├── site/                      o painel web: HTML, CSS, JavaScript, d3 local e dados
 ├── .github/workflows/pages.yml publicação automática no GitHub Pages
 ├── netlify.toml               configuração para Netlify

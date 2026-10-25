@@ -13,7 +13,7 @@ python scripts/gerar_dicionario.py   # atualiza docs/04 com a cobertura nova
 `build_dados.py` imprime no fim um resumo para conferência: o escore geral do Brasil por ano, os escores por tema e a posição no ranking. Compare com a versão anterior antes de publicar. Saltos grandes costumam vir de uma série revisada ou de um país novo no universo.
 
 ### Checklist de conferência
-- [ ] Os 9 arquivos de `dados/` e de `site/data/` foram regravados (confira a data de modificação).
+- [ ] Os 9 arquivos de `build_dados.py` em `dados/` e em `site/data/` foram regravados (confira a data de modificação).
 - [ ] `indicadores.json` mostra `ultimo_ano` coerente (a maioria 2024 ou 2025).
 - [ ] O PIB per capita PPC do Brasil no último ano bate com o site do Banco Mundial (`NY.GDP.PCAP.PP.KD`).
 - [ ] O número de países no ranking (`ranking_brasil.json`) está perto de 175.
@@ -24,6 +24,14 @@ python scripts/gerar_dicionario.py   # atualiza docs/04 com a cobertura nova
 Não passam pelo pipeline acima. O workflow **Atualizar dados de consumo básico** (`.github/workflows/dados-consumo.yml`) roda todo dia 12 e grava `consumo.json` no repositório. Para rodar na hora: GitHub → **Actions** → esse workflow → **Run workflow**. Leva poucos minutos. No próprio computador: `pip install openpyxl` e `python scripts/coletar_consumo.py`.
 
 Se a ANP mudar o endereço das planilhas, o script falha com "não consegui baixar": basta atualizar `ANP_URLS` em `scripts/coletar_consumo.py`.
+
+### Dados da aba Estatais
+
+O workflow **Atualizar lucro das estatais federais** (`.github/workflows/dados-estatais.yml`) roda todo dia 16 e grava `estatais.json`. Para rodar na hora: GitHub → **Actions** → esse workflow → **Run workflow**. No próprio computador: `python scripts/coletar_estatais.py` (só a biblioteca padrão do Python).
+
+Se o gov.br recusar o download (já aconteceu fora do Brasil e em redes com bloqueio), baixe à mão os arquivos **Dados Financeiros** e **Identificação das Empresas Estatais** da página de dados abertos da SEST, ponha os dois `.zip` numa pasta e rode `python scripts/coletar_estatais.py --zips PASTA`.
+
+Confira: o total do último ano fechado deve ficar perto do que o Ministério da Gestão anuncia no relatório agregado das estatais (doc 06, "Conferência").
 
 ## 2. Publicar
 

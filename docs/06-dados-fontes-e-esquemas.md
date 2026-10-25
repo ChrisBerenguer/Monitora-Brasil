@@ -189,6 +189,32 @@ Vêm de fontes fora do Banco Mundial e são coletados por `scripts/coletar_consu
 
 **Cobertura.** A cesta básica tem dados desde 1959, mas a aba começa em 2001 para acompanhar a série da ANP, que é mensal desde julho de 2001. A renda per capita da PNAD Contínua anual começa em 2016 e não tem 2020, porque a pandemia interrompeu a coleta.
 
+## Dados da aba Estatais
+
+Coletados por `scripts/coletar_estatais.py` no GitHub Actions (workflow `dados-estatais.yml`, todo dia 16 e quando disparado à mão), dos dados abertos da SEST (Secretaria de Coordenação e Governança das Empresas Estatais, Ministério da Gestão): https://www.gov.br/gestao/pt-br/assuntos/estatais/transparencia/dados-abertos. Gera `estatais.json`.
+
+| Arquivo da SEST | O que traz |
+|---|---|
+| `sestdadosfinanceiros.zip` → `sest-dadosfinanceiros-demonstracoes.csv` | As demonstrações de cada estatal, rubrica por rubrica, anuais e trimestrais (DRE, balanço, DVA, fluxo de caixa) |
+| `sestidentificacao.zip` → `empresas-ativas`, `empresas-inativas` e `grupos` | Grupo econômico, vínculo (controladora ou subsidiária), dependência do Tesouro e setor de cada empresa |
+
+**Lucro líquido.** Rubrica `500000` ("Lucro ou prejuízo líquido do exercício") no plano de contas antigo e `289900000` ("Lucro/prejuízo líquido c/ part. de não controladores") no plano novo, que a SEST usa desde 2025. Os dois incluem a parte dos sócios minoritários, como o total que o governo divulga.
+
+**Período.** Em cada ano vale a demonstração anual. O ano mais recente pode vir só em trimestres, que são acumulados: vale o último trimestre publicado por pelo menos metade das estatais (o 4º trimestre equivale ao ano fechado). Quem ainda não publicou esse trimestre fica de fora do ano, para não somar meses diferentes.
+
+**Sem dupla contagem.** Cada grupo econômico (Petrobras, Banco do Brasil, BNDES, Caixa, Eletrobras, ENBPar, NAV Brasil...) entra uma vez, pelo consolidado do grupo; sem consolidado no ano, pela controladora; sem nenhum dos dois, não entra, porque as empresas dele estavam em outro grupo (Eletronuclear e INB eram da Eletrobras até 2021). Empresas sem grupo entram uma a uma.
+
+**Conferência.** Os totais batem com os anunciados pelo governo em 2018 (R$ 71,3 bi), 2020 (60,6), 2021 (187,7), 2023 (197,9) e 2024 (cerca de 116). Em 2019 o governo anunciou R$ 109,1 bi e a base soma R$ 98,4 bi; em 2025, R$ 169,4 bi contra R$ 173,8 bi. As diferenças vêm de balanços revisados depois do anúncio e de critérios do relatório agregado que a base aberta não traz.
+
+### `estatais.json`
+
+| Campo | Descrição |
+|---|---|
+| `coletado_em` | Data da coleta |
+| `unidade` | `R$ milhões correntes` (sem correção pela inflação) |
+| `anos[]` | `ano`, `lucro_mi` (soma de todas as estatais), `n` (quantas entraram), `periodo` (`anual`, `ano fechado (4º trimestre)` ou `até o Nº trimestre`) e `parcial` |
+| `estatais[]` | `id` (código SIEST, ou `G-<grupo>`), `estatal` (nome curto), `nome` (razão social), `tipo` (`grupo` ou `empresa`), `setor`, `dependente` (recebe recursos do Tesouro) e `valores` (`{ano: lucro em R$ milhões}`) |
+
 ## Cálculos feitos no navegador
 
 Três conjuntos são derivados em `site/assets/js/app.js`:

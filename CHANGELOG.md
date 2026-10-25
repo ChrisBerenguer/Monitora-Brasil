@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 1.26 — 25/10/2026
+
+### Adicionado
+- **Aba "Estatais"** (`#estatais`): quanto as empresas estatais federais lucram ou perdem por ano, de 2016 ao último balanço publicado.
+  - **Lucro líquido das estatais federais:** barras com a soma de cada ano, na cor do mandato presidencial, e uma tabela por mandato com o lucro somado, a média por ano e as estatais de maior lucro e de maior prejuízo.
+  - **Resultado de cada estatal:** tabela com o lucro ou prejuízo de cada estatal (ou grupo) em cada ano, em R$ milhões, e a soma nos mandatos 2019–2022 e 2023–2026. Ordena por qualquer coluna, filtra por grupos, empresas que se sustentam ou dependentes do Tesouro, e baixa em CSV.
+- **`estatais.json`**, gerado por `scripts/coletar_estatais.py` a partir dos dados abertos da SEST/Ministério da Gestão (Dados Financeiros e Identificação das Empresas Estatais), no workflow `dados-estatais.yml` (todo dia 16). Grupos como Petrobras, Banco do Brasil, BNDES e Caixa entram uma vez só, pelo balanço consolidado. Os totais batem com os divulgados pelo governo em 2018, 2020, 2021, 2023 e 2024.
+- `barras` ganhou a opção `negativos`, para desenhar barras abaixo de zero.
+
 ## 1.25 — 21/10/2026
 
 ### Removido

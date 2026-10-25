@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=1.25">
+  <link rel="stylesheet" href="assets/css/styles.css?v=1.26">
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -55,6 +55,7 @@
       <button class="aba" role="tab" id="aba-coortes" aria-controls="coortes" data-page="coortes" aria-selected="false">Coortes</button>
       <button class="aba" role="tab" id="aba-metodo" aria-controls="metodo" data-page="metodo" aria-selected="false">Metodologia</button>
       <button class="aba" role="tab" id="aba-vida" aria-controls="vida" data-page="vida" aria-selected="false">Vida do Cidadão</button>
+      <button class="aba" role="tab" id="aba-estatais" aria-controls="estatais" data-page="estatais" aria-selected="false">Estatais</button>
       <button class="aba aba-votar" role="tab" id="aba-votar" aria-controls="votar" data-page="votar" aria-selected="false">Onde votar</button>
     </nav>
 
@@ -344,6 +345,53 @@
       </article>
     </section>
 
+    <!-- ESTATAIS -->
+    <section class="pagina" id="estatais" role="tabpanel" aria-labelledby="aba-estatais" hidden>
+      <p class="nota">Quanto as empresas estatais federais lucram ou perdem por ano: Petrobras, Banco do Brasil, BNDES, Caixa, Correios e as demais. Valores em reais de cada ano, sem correção pela inflação, tirados dos balanços que as próprias empresas entregam ao governo.</p>
+
+      <article class="card" data-ctx="nenhum">
+        <div class="titulo-info"><h2>Lucro líquido das estatais federais</h2><button class="info-btn" type="button" data-info-card="est-total" aria-label="Como ler: lucro líquido das estatais federais"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button><button class="info-btn fonte-btn" type="button" data-fonte="fonte:estatais" aria-label="Fonte original dos dados"><svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg></button></div>
+        <p class="nota" id="est-nota"></p>
+        <div class="grafico" id="est-chart"></div>
+        <div class="waffle-leg" id="est-leg"></div>
+        <div class="titulo-info sub"><h3>Por mandato presidencial</h3></div>
+        <div class="tabela-box">
+          <table id="est-mand-table">
+            <thead><tr>
+              <th scope="col">Mandato</th><th scope="col" class="some-p">Anos</th>
+              <th scope="col" class="some-p">Lucro somado</th><th scope="col">Média por ano</th>
+              <th scope="col" class="some-p">Maior lucro</th><th scope="col" class="some-p">Maior prejuízo</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="card" data-ctx="proprio">
+        <div class="card-topo">
+          <div>
+            <div class="titulo-info"><h2>Resultado de cada estatal</h2><button class="info-btn" type="button" data-info-card="est-tabela" aria-label="Como ler: resultado de cada estatal"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button><button class="info-btn fonte-btn" type="button" data-fonte="fonte:estatais" aria-label="Fonte original dos dados"><svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg></button></div>
+            <p class="nota">Lucro líquido em R$ milhões; prejuízo em vermelho.<span class="so-tela"> Clique no cabeçalho para ordenar.</span></p>
+          </div>
+          <button class="botao" type="button" id="csv-estatais">Baixar CSV</button>
+        </div>
+        <div class="controles">
+          <label class="ctl">Mostrar <select id="est-filtro">
+            <option value="todas">Todas as estatais</option>
+            <option value="grupo">Só os grupos</option>
+            <option value="empresa">Empresas que se sustentam</option>
+            <option value="dependente">Dependentes do Tesouro</option>
+          </select></label>
+        </div>
+        <div class="tabela-box">
+          <table id="est-table">
+            <thead><tr id="est-head"></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
     <!-- ONDE VOTAR -->
     <section class="pagina" id="votar" role="tabpanel" aria-labelledby="aba-votar" hidden>
       <article class="card votar">
@@ -450,7 +498,7 @@
 
   <footer class="rodape">
     <div class="wrap rodape-in">
-      <p><strong>Fontes:</strong> Banco Mundial (World Development Indicators e Worldwide Governance Indicators) e PNUD (Índice de Desenvolvimento Humano), via Gapminder/open-numbers, licença CC BY 4.0. Aba Vida do Cidadão: DIEESE, ANP e IBGE (PNAD Contínua), via Ipeadata e SIDRA. Cálculos: Monitora Brasil.</p>
+      <p><strong>Fontes:</strong> Banco Mundial (World Development Indicators e Worldwide Governance Indicators) e PNUD (Índice de Desenvolvimento Humano), via Gapminder/open-numbers, licença CC BY 4.0. Aba Vida do Cidadão: DIEESE, ANP e IBGE (PNAD Contínua), via Ipeadata e SIDRA. Aba Estatais: SEST/Ministério da Gestão (dados abertos das empresas estatais). Cálculos: Monitora Brasil.</p>
       <p>Projeto voluntário e aberto, feito para ajudar qualquer pessoa a entender como o Brasil está se saindo. <a href="https://github.com/ChrisBerenguer/Monitora-Brasil" rel="noopener">Código, dados e documentação no GitHub</a> · <span id="atualizado"></span></p>
     </div>
   </footer>
@@ -460,6 +508,6 @@
 
   <script src="assets/js/d3.v7.9.0.min.js"></script>
   <script src="assets/js/html-to-image.v1.11.11.min.js"></script>
-  <script src="assets/js/app.js?v=1.25"></script>
+  <script src="assets/js/app.js?v=1.26"></script>
 </body>
 </html>
