@@ -20,6 +20,7 @@
     consumo: 'consumo.json',
     economias: 'economias.json',
     estatais: 'estatais.json',
+    industria: 'industria.json',
   };
 
   const TEMAS = [
@@ -43,7 +44,7 @@
   const ORDEM_PAISES = Object.keys(PAIS);
   const PERIODOS = ['1995–1998', '1999–2002', '2003–2006', '2007–2010', '2011–2014', '2015–2018', '2019–2022', '2023–2026'];
   const MANDATO = { '1995–1998': 'FHC 1', '1999–2002': 'FHC 2', '2003–2006': 'Lula 1', '2007–2010': 'Lula 2', '2011–2014': 'Dilma 1', '2015–2018': 'Dilma 2 / Temer', '2019–2022': 'Bolsonaro', '2023–2026': 'Lula 3 (até 2025)' };
-  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'vida', 'estatais', 'votar'];
+  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'vida', 'estatais', 'industria', 'votar'];
   const APELIDOS = { consumo: 'vida' }; // endereços antigos continuam funcionando
   // Mandatos usados na variação dos escores (Visão geral). Os escores começam em 2000,
   // então FHC 2 é medido de 2000 a 2002.
@@ -58,6 +59,7 @@
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
     ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cbMa: '2019–2022', cbMb: '2023–2026', cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
     estFiltro: 'todas', estSort: { key: null, dir: -1 }, estSemVendas: true,
+    indModo: 'indice', indBase: 2002, indFiltro: 'todas', indSort: { key: null, dir: -1 },
   };
   let D = null; // dados carregados e indexados
 
@@ -658,6 +660,17 @@
     return [['No Brasil, agora', f(c).replace(/\.\.$/, '.')]];
   };
   const CARD_INFO = {
+    'ind-cat': { titulo: 'Crescimento de cada categoria da economia', blocos: [
+      ['O que mostra', 'Quanto cada grande parte da economia produz, ano a ano, segundo as Contas Nacionais do IBGE: agropecuária, extração mineral (petróleo, gás e minérios), manufatura (a indústria de transformação), energia e saneamento (eletricidade, gás, água, esgoto e lixo), construção civil e serviços (comércio, transporte, bancos, informação, aluguéis, governo e outros). A linha tracejada é o PIB inteiro.'],
+      ['Como ler', 'Em "Tamanho da produção", cada linha vale 100 no ano escolhido em "Base 100 em": 150 quer dizer que a produção ficou 50% maior que naquele ano; 90, 10% menor. Em "Crescimento em cada ano" aparece quanto cada categoria cresceu ou caiu sobre o ano anterior. As faixas cinzas marcam os mandatos presidenciais.'],
+      ['A tabela', 'O crescimento médio por ano de cada categoria em cada mandato: a taxa composta que, repetida a cada ano do mandato, leva do último ano do governo anterior ao último ano com dado. O mandato atual só conta os anos completos.'],
+      ['Atenção', 'É crescimento em volume (quantidade), já sem a inflação; não diz quanto cada setor pesa no PIB. A agropecuária varia muito com o clima: uma safra ruim derruba um ano e a seguinte o recupera. Crescimento num mandato depende também do ciclo econômico e do mundo, não só do governo.'],
+    ] },
+    'ind-tabela': { titulo: 'Crescimento de cada segmento', blocos: [
+      ['O que mostra', 'O crescimento em volume de cada segmento: no último ano completo, no ano corrente até o último dado publicado (contra o mesmo período do ano anterior) e a média por ano em cada mandato. Passe o mouse no nome do segmento para ver o que é medido e de que pesquisa vem.'],
+      ['De onde vem cada número', 'Manufatura e extração: Pesquisa Industrial Mensal (PIM-PF), produção física. Serviços: Contas Nacionais (comércio, transporte, informação, finanças, imobiliárias, governo) e Pesquisa Mensal de Serviços (os ramos mais finos, desde 2011). Agropecuária: produção de grãos, cana, café e laranja (LSPA), peso das carcaças de bois, porcos e frangos abatidos, leite comprado pelos laticínios, aquicultura e madeira de florestas plantadas.'],
+      ['Atenção', 'O IBGE não separa naval, aeroespacial e ferroviária: as três vêm juntas em "outros equipamentos de transporte". A extração também não tem divisão mensal entre petróleo e minério. Segmentos medidos há menos tempo mostram traço nos mandatos sem dado, e a média com asterisco usa só parte dos anos do mandato. Safras de café e laranja alternam anos bons e ruins, o que faz o crescimento oscilar muito.'],
+    ] },
     'est-filtro': { titulo: 'O que mostra cada opção', blocos: [
       ['Todas as estatais', 'Todas as estatais federais que entregam balanço à SEST: os grupos e as empresas avulsas, dependentes do Tesouro ou não. É a soma que aparece no gráfico acima.'],
       ['Só os grupos', 'Só as estatais que têm subsidiárias e aparecem num balanço consolidado, com as filhas dentro: Petrobras, Banco do Brasil, BNDES, Caixa, Eletrobras (até a privatização em 2022), ENBPar (Eletronuclear e INB) e NAV Brasil. São elas que fazem quase todo o lucro.'],
@@ -900,6 +913,17 @@
     infoEl.replaceChildren(...partes);
   }
   const FONTES_EXTRA = {
+    industria: { t: 'Pesquisas do IBGE, consultadas pela API do SIDRA:', l: [
+      ['Contas Nacionais Trimestrais: índice de volume por setor (tabela 1620)', 'https://sidra.ibge.gov.br/tabela/1620'],
+      ['Pesquisa Industrial Mensal, Produção Física (tabela 8888)', 'https://sidra.ibge.gov.br/tabela/8888'],
+      ['Pesquisa Mensal de Serviços (tabela 8688)', 'https://sidra.ibge.gov.br/tabela/8688'],
+      ['Levantamento Sistemático da Produção Agrícola (tabela 6588)', 'https://sidra.ibge.gov.br/tabela/6588'],
+      ['Pesquisa Trimestral do Abate de Animais (tabelas 1092, 1093 e 1094)', 'https://sidra.ibge.gov.br/pesquisa/abate/tabelas'],
+      ['Pesquisa Trimestral do Leite (tabela 1086)', 'https://sidra.ibge.gov.br/tabela/1086'],
+      ['Produção da Pecuária Municipal: aquicultura (tabela 3940)', 'https://sidra.ibge.gov.br/tabela/3940'],
+      ['Produção da Extração Vegetal e da Silvicultura (tabela 291)', 'https://sidra.ibge.gov.br/tabela/291'],
+      ['API de agregados do IBGE (documentação)', 'https://servicodados.ibge.gov.br/api/docs/agregados?versao=3'],
+    ], data: () => D.raw.industria?.coletado_em },
     estatais: { t: 'Balanços das estatais federais, publicados pelo governo:', l: [
       ['SEST/Ministério da Gestão: dados abertos das empresas estatais (Dados Financeiros e Identificação)', 'https://www.gov.br/gestao/pt-br/assuntos/estatais/transparencia/dados-abertos'],
       ['Relatórios agregados e boletins das estatais federais', 'https://www.gov.br/gestao/pt-br/assuntos/estatais'],
@@ -1026,6 +1050,7 @@
     if (spec === 'fonte:precos') return 'DIEESE (cesta básica) e ANP (combustíveis)';
     if (spec === 'fonte:renda') return 'IBGE (PNAD Contínua) e Ipeadata';
     if (spec === 'fonte:estatais') return 'SEST/Ministério da Gestão (balanços das estatais federais)';
+    if (spec === 'fonte:industria') return 'IBGE (Contas Nacionais, PIM-PF, PMS, LSPA e pesquisas agropecuárias)';
     const alvo = spec === 'ind' ? st.ind : spec === 'tema' ? st.tema : spec === 'cstema' ? st.cstema : spec.startsWith('tema:') ? spec.slice(5) : spec;
     const meta = D.ind.get(alvo);
     if (meta) return meta.fonte;
@@ -1120,7 +1145,7 @@
     posicionarInfo(btn);
   }
   /** Coloca o botão de compartilhar ao lado do título de cada cartão com gráfico ou tabela. */
-  document.querySelectorAll('#visao article.card, #series article.card, #coortes article.card, #vida article.card, #estatais article.card').forEach((card) => {
+  document.querySelectorAll('#visao article.card, #series article.card, #coortes article.card, #vida article.card, #estatais article.card, #industria article.card').forEach((card) => {
     const alvo = card.querySelector('.titulo-info');
     if (!alvo) return;
     const b = el('button', { class: 'info-btn share-btn', type: 'button', 'aria-label': 'Compartilhar este gráfico como imagem', 'aria-haspopup': 'dialog' });
@@ -1805,6 +1830,151 @@
     ]);
   });
 
+  // ---------------------------------------------------------------- indústria
+  const IND_COR = { agro: 3, extracao: 5, manufatura: 0, energia: 4, construcao: 6, servicos: 1 };
+  const pct = (v) => (v == null ? '—' : `${v > 0 ? '+' : v < 0 ? '−' : ''}${f1(Math.abs(v))}%`);
+  const nomeMand = (p) => MANDATO[p].replace(' (até 2025)', '');
+  /** Crescimento médio por ano (taxa composta) de um objeto {ano: %} entre dois anos; n = anos com dado. */
+  function mediaComposta(cresc, de, ate) {
+    let f = 1, n = 0;
+    for (let a = de; a <= ate; a++) { const g = cresc[a]; if (g != null) { f *= 1 + g / 100; n++; } }
+    return n ? { v: 100 * (f ** (1 / n) - 1), n } : null;
+  }
+  /** Mandatos com ao menos um ano de crescimento na série das categorias. */
+  function mandatosIndustria(I) {
+    const anos = Object.keys(I.categorias[0].cresc).map(Number);
+    const ult = Math.max(...anos);
+    return PERIODOS.map((p) => ({ p, de: +p.slice(0, 4), ate: Math.min(+p.slice(0, 4) + 3, ult) }))
+      .filter((m) => m.ate >= m.de && anos.some((a) => a >= m.de && a <= m.ate));
+  }
+  function industriaOrdenada(I, ultAno) {
+    const { key, dir } = st.indSort;
+    const k = key || String(ultAno);
+    const val = (s) => (k === 'nome' ? s.nome : k === 'parcial' ? s.parcial?.cresc : k.startsWith('m:') ? mediaComposta(s.cresc, +k.slice(2, 6), +k.slice(2, 6) + 3)?.v : s.cresc[k]);
+    return I.segmentos.filter((s) => st.indFiltro === 'todas' || s.categoria === st.indFiltro).sort((x, y) => {
+      if (k === 'nome') return dir * x.nome.localeCompare(y.nome, 'pt-BR');
+      const vx = val(x), vy = val(y);
+      if (vx == null && vy == null) return x.nome.localeCompare(y.nome, 'pt-BR');
+      if (vx == null) return 1;
+      if (vy == null) return -1;
+      return dir * (vx - vy);
+    });
+  }
+  function drawIndustria() {
+    const I = D.raw.industria;
+    if (!I || !I.categorias?.length) return vazio($('#ind-chart'), 'Dados da indústria indisponíveis.');
+    const cats = I.categorias.filter((c) => c.id !== 'pib'), pib = I.categorias.find((c) => c.id === 'pib');
+    const nomeCat = Object.fromEntries(cats.map((c) => [c.id, c.nome]));
+    const anos = Object.keys(pib.indice).map(Number).sort((a, b) => a - b);
+    const a0 = anos[0], a1 = anos.at(-1);
+    if (st.indBase < a0 || st.indBase > a1) st.indBase = 2002;
+    fillSelect($('#ind-base'), anos.map((a) => ({ label: String(a), value: String(a) })), String(st.indBase));
+    $('#ind-modo').value = st.indModo;
+    $('#ind-base-ctl').hidden = st.indModo !== 'indice';
+    // nota: o que mais cresceu no último ano e desde 2002
+    const ordUlt = [...cats].sort((a, b) => b.cresc[a1] - a.cresc[a1]);
+    const acum = (c, de) => 100 * (c.indice[a1] / c.indice[de] - 1);
+    const ordAc = [...cats].sort((a, b) => acum(b, 2002) - acum(a, 2002));
+    $('#ind-nota').textContent = `Em ${a1}, o PIB cresceu ${pct(pib.cresc[a1])}. O maior crescimento foi de ${ordUlt[0].nome.toLowerCase()} (${pct(ordUlt[0].cresc[a1])}) e o menor, de ${ordUlt.at(-1).nome.toLowerCase()} (${pct(ordUlt.at(-1).cresc[a1])}).`
+      + ` De 2002 a ${a1}, ${ordAc[0].nome.toLowerCase()} cresceu ${pct(acum(ordAc[0], 2002))} no total, e ${ordAc.at(-1).nome.toLowerCase()}, ${pct(acum(ordAc.at(-1), 2002))}.`
+      + (pib.parcial ? ` No ${pib.parcial.rotulo}, o PIB cresceu ${pct(pib.parcial.cresc)} sobre o mesmo período de ${pib.parcial.ano - 1}.` : '')
+      + ` Dados até o ${pib.ultimo}, coletados em ${fmtData(I.coletado_em)}.`;
+    const box = $('#ind-chart');
+    const indice = st.indModo === 'indice';
+    const pts = (c) => anos.map((a) => ({ x: a, y: indice ? (c.indice[a] != null ? 100 * c.indice[a] / c.indice[st.indBase] : null) : c.cresc[a] ?? null }));
+    const series = cats.map((c) => ({ name: c.nome, color: cor(IND_COR[c.id]), pts: pts(c) }))
+      .concat([{ name: 'PIB', color: css('--fg'), pts: pts(pib), dash: '5 4', width: 1.6 }]);
+    const fmtY = indice ? f0 : (v) => pct(v);
+    lineChart(box, {
+      series, yfmt: indice ? (v) => f1(v) : fmtY, xdomain: [indice ? a0 : a0 + 1, a1], height: 360,
+      faixas: FAIXAS_MANDATO(), endLabels: box.clientWidth > 640, legenda: true, ref: indice ? 100 : 0,
+      tituloTip: (a) => `${a} · ${MANDATO[periodoDoAno(a)]?.replace(' (até 2025)', '') || ''}`,
+    });
+    // tabela por mandato
+    const mands = mandatosIndustria(I);
+    const head = $('#ind-mand-head');
+    head.replaceChildren(el('th', { scope: 'col' }, 'Mandato'), ...cats.map((c) => el('th', { scope: 'col' }, c.nome)), el('th', { scope: 'col' }, 'PIB'));
+    const tb = $('#ind-mand-table tbody'); tb.replaceChildren();
+    for (const m of [...mands].reverse()) {
+      const tr = el('tr'), nome = el('td');
+      nome.append(nomeMand(m.p));
+      const n = d3.range(m.de, m.ate + 1).filter((a) => pib.cresc[a] != null);
+      if (n.length && (n[0] > m.de || n.at(-1) < m.de + 3)) nome.append(el('span', { class: 'cod' }, ` · ${n[0]}${n.length > 1 ? '–' + n.at(-1) : ''}`));
+      tr.append(nome);
+      for (const c of [...cats, pib]) {
+        const r = mediaComposta(c.cresc, m.de, m.ate);
+        tr.append(el('td', { class: r && r.v < 0 ? 'ruim' : '' }, r ? pct(r.v) : '—'));
+      }
+      tb.append(tr);
+    }
+    // tabela por segmento
+    fillSelect($('#ind-filtro'), [{ label: 'Todas', value: 'todas' }, ...cats.map((c) => ({ label: c.nome, value: c.id }))], st.indFiltro);
+    const ultAno = Math.max(...I.segmentos.flatMap((s) => Object.keys(s.cresc).map(Number)));
+    const parciais = I.segmentos.map((s) => s.parcial).filter(Boolean);
+    const anoParc = parciais.length ? Math.max(...parciais.map((p) => p.ano)) : null;
+    const mandsT = mands.filter((m) => m.de >= 2003);
+    const cols = [['nome', 'Segmento', ''], [String(ultAno), String(ultAno), ''],
+      ...(anoParc ? [['parcial', `${anoParc} até agora`, '']] : []),
+      ...mandsT.map((m, i) => [`m:${m.p}`, nomeMand(m.p), i < mandsT.length - 2 ? 'some-p' : ''])];
+    const kAtual = st.indSort.key || String(ultAno);
+    $('#ind-head').replaceChildren(...cols.map(([k, n, c]) => {
+      const th = el('th', { scope: 'col', class: c, 'aria-sort': k === kAtual ? (st.indSort.dir > 0 ? 'ascending' : 'descending') : 'none' });
+      th.dataset.sort = k; th.append(el('button', {}, n));
+      if (k.startsWith('m:')) th.title = `Crescimento médio por ano no mandato ${n}`;
+      if (k === 'parcial') th.title = 'Crescimento do ano corrente até o último mês ou trimestre publicado, contra o mesmo período do ano anterior. Nas lavouras, é a estimativa de safra mais recente.';
+      return th;
+    }));
+    const tbs = $('#ind-table tbody'); tbs.replaceChildren();
+    let asterisco = false;
+    for (const s of industriaOrdenada(I, ultAno)) {
+      const tr = el('tr'), nome = el('td');
+      nome.append(s.nome);
+      nome.title = `Mede: ${s.mede}. Fonte: ${s.fonte}. Dados desde ${s.desde}, até ${s.ultimo}.`;
+      if (st.indFiltro === 'todas') nome.append(el('span', { class: 'cod seg-cat' }, nomeCat[s.categoria] || s.categoria));
+      tr.append(nome);
+      const v = s.cresc[ultAno];
+      tr.append(el('td', { class: v != null && v < 0 ? 'ruim' : '' }, pct(v)));
+      if (anoParc) {
+        const p = s.parcial && s.parcial.ano === anoParc ? s.parcial : null;
+        const td = el('td', { class: p && p.cresc < 0 ? 'ruim' : '' }, p ? pct(p.cresc) : '—');
+        if (p) td.title = p.rotulo; else td.title = 'Pesquisa anual: o dado deste ano ainda não saiu.';
+        tr.append(td);
+      }
+      mandsT.forEach((m, i) => {
+        const r = mediaComposta(s.cresc, m.de, m.ate);
+        const cheio = Math.min(m.de + 3, ultAno) - m.de + 1;
+        const parcialM = r && r.n < cheio;
+        if (parcialM) asterisco = true;
+        const td = el('td', { class: (i < mandsT.length - 2 ? 'some-p ' : '') + (r && r.v < 0 ? 'ruim' : '') }, r ? pct(r.v) + (parcialM ? '*' : '') : '—');
+        if (r) td.title = `${nomeMand(m.p)}: média de ${r.n} ano${r.n > 1 ? 's' : ''} com dado`;
+        tr.append(td);
+      });
+      tbs.append(tr);
+    }
+    $('#ind-limites').textContent = (asterisco ? '* Média só dos anos do mandato que a pesquisa cobre. ' : '')
+      + 'O IBGE publica naval, aeroespacial e ferroviária juntas ("outros equipamentos de transporte") e não separa petróleo de minério na produção mensal. Pesca extrativa não tem pesquisa oficial desde 2011, por isso só a aquicultura aparece.';
+  }
+  $('#ind-table thead').addEventListener('click', (ev) => {
+    const th = ev.target.closest('th[data-sort]'); if (!th) return;
+    const I = D.raw.industria;
+    const ultAno = Math.max(...I.segmentos.flatMap((s) => Object.keys(s.cresc).map(Number)));
+    const key = th.dataset.sort, atual = st.indSort.key || String(ultAno);
+    st.indSort = { key, dir: atual === key ? -st.indSort.dir : key === 'nome' ? 1 : -1 };
+    drawIndustria();
+  });
+  $('#csv-industria').addEventListener('click', () => {
+    const I = D.raw.industria;
+    const anos = [...new Set(I.segmentos.flatMap((s) => Object.keys(s.cresc)))].sort();
+    const nomeCat = Object.fromEntries(I.categorias.map((c) => [c.id, c.nome]));
+    const ultAno = +anos.at(-1);
+    baixarCSV('monitora-brasil-crescimento-por-segmento.csv', industriaOrdenada(I, ultAno), [
+      { titulo: 'segmento', valor: (s) => s.nome }, { titulo: 'categoria', valor: (s) => nomeCat[s.categoria] },
+      { titulo: 'o que mede', valor: (s) => s.mede }, { titulo: 'fonte', valor: (s) => s.fonte },
+      ...anos.map((a) => ({ titulo: `${a} crescimento (%)`, valor: (s) => s.cresc[a] })),
+      { titulo: 'ano corrente até agora (%)', valor: (s) => s.parcial?.cresc }, { titulo: 'período do ano corrente', valor: (s) => s.parcial?.rotulo },
+    ]);
+  });
+
   function show(page, push = true) {
     page = APELIDOS[page] || page;
     if (!PAGINAS.includes(page)) page = 'visao';
@@ -1839,6 +2009,9 @@
   on('#ct-y1', (v) => { st.cy1 = +v; });
   on('#est-filtro', (v) => { st.estFiltro = v; });
   $('#est-sem-vendas').addEventListener('change', (e) => { st.estSemVendas = e.target.checked; render(); });
+  on('#ind-modo', (v) => { st.indModo = v; });
+  on('#ind-base', (v) => { st.indBase = +v; });
+  on('#ind-filtro', (v) => { st.indFiltro = v; });
 
   function render() {
     if (!D) return;
@@ -1852,6 +2025,7 @@
     else if (st.page === 'votar') drawVotar();
     else if (st.page === 'vida') drawVida();
     else if (st.page === 'estatais') drawEstatais();
+    else if (st.page === 'industria') drawIndustria();
     else drawMetodo();
   }
 

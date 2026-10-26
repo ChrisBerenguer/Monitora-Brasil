@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 1.30 — 26/10/2026
+
+### Adicionado
+- **Aba "Indústria"** (`#industria`): quanto cresce cada segmento da economia, em volume (sem a inflação), com dados oficiais do IBGE.
+  - **Crescimento de cada categoria da economia:** série desde 1996 de agropecuária, extração mineral, manufatura, energia e saneamento, construção civil e serviços, com o PIB, em base 100 num ano à escolha ou em crescimento anual, e a média de crescimento por ano em cada mandato.
+  - **Crescimento de cada segmento:** tabela com 56 segmentos (lavouras, pecuária, aquicultura e silvicultura; extrativa; as 24 atividades da manufatura, entre elas automobilística, eletrônica e naval/aeroespacial/ferroviária; energia e saneamento; construção; comércio, transportes, informação, TI, telecomunicações, finanças, imobiliárias e outros serviços), com o último ano, o ano corrente até agora e a média por mandato. Filtro por categoria, ordenação e CSV.
+- `scripts/coletar_industria.py` e o workflow `dados-industria.yml` (toda segunda-feira): Contas Nacionais Trimestrais, PIM-PF, PMS, LSPA, abate e leite trimestrais, PPM (aquicultura) e PEVS (silvicultura), pela API do SIDRA. Gera `industria.json`.
+
 ## 1.29 — 25/10/2026
 
 ### Adicionado

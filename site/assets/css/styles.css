@@ -298,3 +298,7 @@ td.links a { white-space: nowrap; }
   .some-p { display: none; }
   main { padding-block: 20px 36px; }
 }
+/* aba Indústria */
+#ind-table td:first-child{white-space:normal;min-width:11rem}
+#ind-table .seg-cat{display:block;font-size:.78em;margin-top:1px}
+#ind-mand-table td:first-child{white-space:nowrap}

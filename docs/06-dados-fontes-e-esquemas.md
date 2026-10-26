@@ -230,6 +230,34 @@ O dinheiro das privatizações feitas pela própria União (a Eletrobras em 2022
 | `imposto_sobre_ganho` | Alíquota usada para passar o ganho bruto a líquido (0,34) |
 | `ganhos_das_empresas[]` | Os valores tirados dos balanços das empresas: `id`, `ano`, `bruto` (R$ milhões; líquido quando `liquido` é `true`), `o_que` e `fonte` |
 
+## Dados da aba Indústria
+
+Coletados por `scripts/coletar_industria.py` no GitHub Actions (workflow `dados-industria.yml`, toda segunda-feira e quando disparado à mão), da API de agregados do IBGE (`https://servicodados.ibge.gov.br/api/v3/agregados/`). Gera `industria.json`. Tudo é **volume** (quantidade produzida), não valor em reais: o crescimento já desconta os preços.
+
+| Uso | Pesquisa (tabela SIDRA) | Variável |
+|---|---|---|
+| Categorias (gráfico e tabela por mandato) e ramos de serviços, energia e construção | Contas Nacionais Trimestrais (1620) | 583, índice de volume encadeado (média de 1995 = 100), por setor (classificação 11255) |
+| Manufatura (24 atividades) e extração | PIM-PF (8888) | 12606, número-índice sem ajuste sazonal (2022 = 100), classificação 544 |
+| Ramos finos de serviços (desde 2011) e esgoto/resíduos (desde 2022) | PMS (8688) | 7167, índice de volume (classificação 11046 = 56726), atividade na classificação 12355 |
+| Grãos, cana, café e laranja | LSPA (6588) | 35, produção em toneladas: a estimativa de dezembro é a safra do ano; café = arábica + canéfora desde 2012 e "café total" antes |
+| Bovinos, suínos e frangos | Abate trimestral (1092, 1093, 1094) | 285, peso total das carcaças, total do trimestre, todas as inspeções |
+| Leite | Pesquisa Trimestral do Leite (1086) | 282, litros adquiridos pelos laticínios |
+| Peixes de cultivo e camarão | PPM, aquicultura (3940) | 4146, quilos; peixes = soma das espécies (a categoria "Peixes" só existe desde 2025) |
+| Silvicultura | PEVS (291) | 142, madeira em tora (m³) |
+
+**Como se calcula.** Séries mensais e trimestrais viram anuais pela soma dos meses ou trimestres de cada ano completo; o crescimento de um ano é a variação sobre o ano anterior. O ano corrente entra como **acumulado até agora**: os meses ou trimestres já publicados contra os mesmos do ano anterior (nas lavouras, a estimativa de safra mais recente contra a safra do ano anterior). No site, a média de um mandato é a taxa composta dos anos com dado.
+
+**Limites.** O IBGE não separa naval, aeroespacial e ferroviária (vêm juntas em "outros equipamentos de transporte", 3.30 da CNAE) e não divide a produção mensal da indústria extrativa entre petróleo e minérios. Pesca extrativa não tem pesquisa oficial desde 2011.
+
+### `industria.json`
+
+| Campo | Descrição |
+|---|---|
+| `coletado_em` | Data da coleta |
+| `categorias[]` | `id` (`agro`, `extracao`, `manufatura`, `energia`, `construcao`, `servicos`, `pib`), `nome`, `indice` (`{ano: média dos trimestres do índice da CNT}`), `cresc` (`{ano: %}`), `parcial` (`{ano, rotulo, cresc}` ou `null`) e `ultimo` (último trimestre publicado) |
+| `segmentos[]` | `id`, `nome`, `categoria` (id da categoria), `fonte`, `url` (tabela SIDRA), `mede` (o que é medido), `desde` (primeiro ano), `cresc`, `parcial` e `ultimo` |
+| `fontes` | Nome e endereço de cada pesquisa |
+
 ## Cálculos feitos no navegador
 
 Três conjuntos são derivados em `site/assets/js/app.js`:

@@ -1,0 +1,28 @@
+name: Atualizar crescimento por segmento (Indústria)
+# Baixa do IBGE (API do SIDRA) as Contas Nacionais Trimestrais, a PIM-PF, a PMS, o LSPA e as pesquisas
+# agropecuárias, e grava site/data/industria.json.
+# Roda toda semana e pode ser disparado à mão em Actions → "Atualizar crescimento por segmento (Indústria)" → Run workflow.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '37 9 * * 1'   # toda segunda-feira, 06h37 em Brasília (PIM, PMS e CNT saem em datas diferentes)
+permissions:
+  contents: write
+concurrency: dados-industria
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: python scripts/coletar_industria.py
+      - name: Gravar no repositório se algo mudou
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dados/industria.json site/data/industria.json
+          git diff --cached --quiet && echo "Sem mudanças." && exit 0
+          git commit -m "Dados: crescimento por segmento (IBGE/SIDRA), coleta automática"
+          git push

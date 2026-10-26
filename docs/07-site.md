@@ -13,7 +13,7 @@ site/
 │   ├── js/d3.v7.9.0.min.js     biblioteca d3 (cópia local, ISC License)
 │   ├── js/html-to-image.v1.11.11.min.js  gera a imagem de compartilhamento (cópia local, MIT License)
 │   └── favicon.svg
-├── data/                       os JSON de scripts/build_dados.py e dos coletores (consumo, economias, estatais)
+├── data/                       os JSON de scripts/build_dados.py e dos coletores (consumo, economias, estatais, industria)
 ├── _headers                    cabeçalhos de cache e segurança (Netlify, Cloudflare Pages; na Vercel, ver vercel.json na raiz)
 ├── .htaccess                   o mesmo para Apache
 ├── .nojekyll                   impede o GitHub Pages de processar a pasta com Jekyll
@@ -94,6 +94,13 @@ Lucro ou prejuízo das empresas estatais federais, de 2016 ao último balanço p
 
 Dados em `estatais.json` (doc 06); a coleta é automática (doc 09). Funções `drawEstatais`, `valEst`, `somaAnos` e `estatisOrdenadas`; as barras usam `barras` com `negativos: true`.
 
+### Indústria (`#industria`)
+Quanto cresce cada parte da economia, em volume (sem a inflação), com dados do IBGE. Dois cartões:
+- **Crescimento de cada categoria da economia:** linhas das seis categorias (agropecuária, extração mineral, manufatura, energia e saneamento, construção civil e serviços) e do PIB (tracejado), das Contas Nacionais Trimestrais, com as faixas dos mandatos. **Mostrar** alterna entre o tamanho da produção com **base 100** no ano escolhido (padrão 2002, `st.indBase`) e o crescimento em cada ano (`st.indModo`). Abaixo, a tabela **Crescimento médio por ano, em cada mandato** (taxa composta, só anos completos). O texto do topo diz o crescimento do PIB no último ano, a categoria que mais e a que menos cresceu, o acumulado desde 2002 e o acumulado do ano corrente.
+- **Crescimento de cada segmento:** uma linha por segmento (56, das seis categorias), com o crescimento no último ano completo, no ano corrente até agora e a média por ano em cada mandato desde Lula 1. Filtra por categoria, ordena clicando no cabeçalho, mostra no nome (ao passar o mouse) o que é medido e a pesquisa, e tem **Baixar CSV** com o crescimento de todos os anos. Médias com asterisco usam só parte dos anos do mandato. No celular, os mandatos mais antigos somem.
+
+Dados em `industria.json` (doc 06); a coleta é automática (doc 09). Funções `drawIndustria`, `mediaComposta`, `mandatosIndustria` e `industriaOrdenada`.
+
 ### Onde votar (`#votar`)
 Serviço ao eleitor: botão que abre o Autoatendimento Eleitoral do TSE numa nova aba, com o passo a passo para chegar a **Consultas → Onde votar**, as alternativas (aplicativo e-Título e atendimento presencial) e um aviso de data que só aparece até o 2º turno de 2026 (25/10). O site não recebe nenhum dado do eleitor: a consulta é feita no site oficial. O endereço do TSE fica no `index.html`.
 
@@ -149,7 +156,7 @@ A caixa que se abre mostra a prévia e oferece **Compartilhar…** (no celular, 
 
 Como funciona: `gerarImagem` monta fora da tela um quadro com uma cópia do cartão, e a biblioteca html-to-image (servida pelo próprio site) converte esse quadro em PNG. Para que as fontes do Google entrem na imagem, a política de segurança (CSP) libera `fonts.googleapis.com` e `fonts.gstatic.com` em `connect-src`; se forem bloqueadas, a imagem usa as fontes do sistema. Textos que só fazem sentido na tela ("passe o mouse...") ficam em elementos com a classe `so-tela` e não entram na imagem. O atributo `data-ctx` do cartão controla a linha de escolhas (`proprio`: só os controles do cartão; `nenhum`: sem a linha).
 
-**Links diretos:** acrescente `#series`, `#coortes`, `#metodo`, `#vida`, `#estatais` ou `#votar` ao endereço (o antigo `#consumo` continua funcionando).
+**Links diretos:** acrescente `#series`, `#coortes`, `#metodo`, `#vida`, `#estatais`, `#industria` ou `#votar` ao endereço (o antigo `#consumo` continua funcionando).
 
 ## Organização do `app.js`
 
