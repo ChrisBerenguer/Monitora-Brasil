@@ -44,7 +44,7 @@
   const ORDEM_PAISES = Object.keys(PAIS);
   const PERIODOS = ['1995–1998', '1999–2002', '2003–2006', '2007–2010', '2011–2014', '2015–2018', '2019–2022', '2023–2026'];
   const MANDATO = { '1995–1998': 'FHC 1', '1999–2002': 'FHC 2', '2003–2006': 'Lula 1', '2007–2010': 'Lula 2', '2011–2014': 'Dilma 1', '2015–2018': 'Dilma 2 / Temer', '2019–2022': 'Bolsonaro', '2023–2026': 'Lula 3 (até 2025)' };
-  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'vida', 'estatais', 'industria', 'votar'];
+  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'vida', 'estatais', 'industria'];
   const APELIDOS = { consumo: 'vida' }; // endereços antigos continuam funcionando
   // Mandatos usados na variação dos escores (Visão geral). Os escores começam em 2000,
   // então FHC 2 é medido de 2000 a 2002.
@@ -1460,13 +1460,6 @@
   }
 
   // ---------------------------------------------------------------- navegação e render
-  /** Aviso de data na aba Onde votar: só aparece até o dia do 2º turno de 2026. */
-  function drawVotar() {
-    const hoje = new Date(), turno2 = new Date(2026, 9, 25, 23, 59);
-    const av = $('#votar-aviso');
-    av.hidden = hoje > turno2;
-    if (!av.hidden) av.textContent = 'Eleições 2026: o 2º turno é no domingo, 25 de outubro, nos lugares onde houver segundo turno.';
-  }
   // ---------------------------------------------------------------- consumo básico
   const CB_ORDEM = ['cesta', 'gasolina', 'etanol', 'diesel', 'gas'];
   const CB_UNIDADE = { cesta: 'cestas', gasolina: 'litros', etanol: 'litros', diesel: 'litros', gas: 'botijões' };
@@ -2022,7 +2015,6 @@
       drawPosicao(); drawPlacar(); drawCartoes(); drawEvolucao(); drawDecomp(); drawRanking();
     } else if (st.page === 'series') { drawSeries(); drawPeriodos(); }
     else if (st.page === 'coortes') drawCoortes();
-    else if (st.page === 'votar') drawVotar();
     else if (st.page === 'vida') drawVida();
     else if (st.page === 'estatais') drawEstatais();
     else if (st.page === 'industria') drawIndustria();

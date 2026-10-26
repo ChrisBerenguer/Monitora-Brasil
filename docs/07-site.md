@@ -101,11 +101,6 @@ Quanto cresce cada parte da economia, em volume (sem a inflação), com dados do
 
 Dados em `industria.json` (doc 06); a coleta é automática (doc 09). Funções `drawIndustria`, `mediaComposta`, `mandatosIndustria` e `industriaOrdenada`.
 
-### Onde votar (`#votar`)
-Serviço ao eleitor: botão que abre o Autoatendimento Eleitoral do TSE numa nova aba, com o passo a passo para chegar a **Consultas → Onde votar**, as alternativas (aplicativo e-Título e atendimento presencial) e um aviso de data que só aparece até o 2º turno de 2026 (25/10). O site não recebe nenhum dado do eleitor: a consulta é feita no site oficial. O endereço do TSE fica no `index.html`.
-
-O TSE não oferece um endereço que abra a consulta "Onde votar" já selecionada; o parâmetro `id` do link é só um número de controle do site deles. Por isso a aba orienta o caminho no menu.
-
 ### Metodologia (`#metodo`)
 Resumo do cálculo, composição das coortes, limitações e a tabela dos 40 indicadores.
 
@@ -156,7 +151,7 @@ A caixa que se abre mostra a prévia e oferece **Compartilhar…** (no celular, 
 
 Como funciona: `gerarImagem` monta fora da tela um quadro com uma cópia do cartão, e a biblioteca html-to-image (servida pelo próprio site) converte esse quadro em PNG. Para que as fontes do Google entrem na imagem, a política de segurança (CSP) libera `fonts.googleapis.com` e `fonts.gstatic.com` em `connect-src`; se forem bloqueadas, a imagem usa as fontes do sistema. Textos que só fazem sentido na tela ("passe o mouse...") ficam em elementos com a classe `so-tela` e não entram na imagem. O atributo `data-ctx` do cartão controla a linha de escolhas (`proprio`: só os controles do cartão; `nenhum`: sem a linha).
 
-**Links diretos:** acrescente `#series`, `#coortes`, `#metodo`, `#vida`, `#estatais`, `#industria` ou `#votar` ao endereço (o antigo `#consumo` continua funcionando).
+**Links diretos:** acrescente `#series`, `#coortes`, `#metodo`, `#vida`, `#estatais` ou `#industria` ao endereço (o antigo `#consumo` continua funcionando).
 
 ## Organização do `app.js`
 

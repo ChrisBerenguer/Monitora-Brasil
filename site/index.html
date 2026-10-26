@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=1.30">
+  <link rel="stylesheet" href="assets/css/styles.css?v=1.31">
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -57,7 +57,6 @@
       <button class="aba" role="tab" id="aba-vida" aria-controls="vida" data-page="vida" aria-selected="false">Vida do Cidadão</button>
       <button class="aba" role="tab" id="aba-estatais" aria-controls="estatais" data-page="estatais" aria-selected="false">Estatais</button>
       <button class="aba" role="tab" id="aba-industria" aria-controls="industria" data-page="industria" aria-selected="false">Indústria</button>
-      <button class="aba aba-votar" role="tab" id="aba-votar" aria-controls="votar" data-page="votar" aria-selected="false">Onde votar</button>
     </nav>
 
     <div class="erro" id="erro" hidden role="alert"></div>
@@ -443,28 +442,6 @@
       </article>
     </section>
 
-    <!-- ONDE VOTAR -->
-    <section class="pagina" id="votar" role="tabpanel" aria-labelledby="aba-votar" hidden>
-      <article class="card votar">
-        <h2>Onde votar</h2>
-        <p class="votar-aviso" id="votar-aviso" hidden></p>
-        <p>Consulte o seu local de votação (endereço, zona e seção) direto no site oficial do Tribunal Superior Eleitoral (TSE).</p>
-        <a class="votar-botao" href="https://www.tse.jus.br/servicos-eleitorais/autoatendimento-eleitoral#/?id=1792434996064" target="_blank" rel="noopener">Consultar meu local de votação no TSE<span aria-hidden="true"> ↗</span></a>
-        <h3>Como consultar</h3>
-        <ol class="votar-passos">
-          <li>Clique no botão acima. O Autoatendimento Eleitoral do TSE abre numa nova aba.</li>
-          <li>No menu do TSE, abra <b>Consultas</b> e escolha <b>Onde votar</b>.</li>
-          <li>Informe os dados que o sistema pedir (nome, CPF ou número do título, e a confirmação de dados pessoais).</li>
-          <li>O endereço, a zona e a seção aparecem na tela.</li>
-        </ol>
-        <h3>Outras formas</h3>
-        <ul class="votar-passos">
-          <li><b>Pelo celular:</b> no aplicativo oficial e-Título, toque em "Onde votar". O app também mostra o caminho até o local.</li>
-          <li><b>Pessoalmente:</b> num cartório eleitoral ou numa central de atendimento do TRE do seu estado.</li>
-        </ul>
-        <p class="nota">No dia da votação, leve um documento oficial com foto. O Monitora Brasil não tem ligação com o TSE e não recebe nenhum dado seu: a consulta é feita direto no site oficial.</p>
-      </article>
-    </section>
 
     <!-- METODOLOGIA -->
     <section class="pagina" id="metodo" role="tabpanel" aria-labelledby="aba-metodo" hidden>
@@ -559,6 +536,6 @@
 
   <script src="assets/js/d3.v7.9.0.min.js"></script>
   <script src="assets/js/html-to-image.v1.11.11.min.js"></script>
-  <script src="assets/js/app.js?v=1.30"></script>
+  <script src="assets/js/app.js?v=1.31"></script>
 </body>
 </html>

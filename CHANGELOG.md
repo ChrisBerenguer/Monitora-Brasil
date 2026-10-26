@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.31 — 26/10/2026
+
+### Removido
+- **Aba "Onde votar"**, que levava à consulta do local de votação no TSE. As eleições de 2026 terminaram em 25/10. Endereços antigos com `#votar` abrem a Visão geral.
+
 ## 1.30 — 26/10/2026
 
 ### Adicionado
