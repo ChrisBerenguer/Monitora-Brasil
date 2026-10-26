@@ -226,7 +226,13 @@ def main():
             bruto[k] = json.loads((Path(args.cache) / f'{k}.json').read_text(encoding='utf-8'))
         else:
             print('baixando', k)
-            bruto[k] = json.loads(baixar(API + q))
+            try:
+                bruto[k] = json.loads(baixar(API + q, tentativas=3, timeout=90))
+            except RuntimeError as e:
+                # a API do IBGE às vezes recusa conexões vindas de fora do Brasil (como o GitHub Actions):
+                # mantém o industria.json atual e tenta de novo na próxima rodada, em vez de falhar
+                print(f'::warning::{e}. industria.json mantido sem mudança; nova tentativa na próxima rodada.')
+                return
     S = {k: series_da_tabela(v) for k, v in bruto.items()}
     # peixes = soma das espécies, só nos anos em que todas têm dado
     aq = S['aqui']
