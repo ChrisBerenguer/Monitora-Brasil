@@ -13,7 +13,7 @@ site/
 │   ├── js/d3.v7.9.0.min.js     biblioteca d3 (cópia local, ISC License)
 │   ├── js/html-to-image.v1.11.11.min.js  gera a imagem de compartilhamento (cópia local, MIT License)
 │   └── favicon.svg
-├── data/                       os JSON de scripts/build_dados.py e dos coletores (consumo, economias, estatais, industria)
+├── data/                       os JSON de scripts/build_dados.py e dos coletores (consumo, economias, estatais, industria, votacoes e votos/)
 ├── _headers                    cabeçalhos de cache e segurança (Netlify, Cloudflare Pages; na Vercel, ver vercel.json na raiz)
 ├── .htaccess                   o mesmo para Apache
 ├── .nojekyll                   impede o GitHub Pages de processar a pasta com Jekyll
@@ -101,6 +101,14 @@ Quanto cresce cada parte da economia, em volume (sem a inflação), com dados do
 
 Dados em `industria.json` (doc 06); a coleta é automática (doc 09). Funções `drawIndustria`, `mediaComposta`, `mandatosIndustria` e `industriaOrdenada`.
 
+### Leis e votação (`#leis`)
+O que o Plenário da Câmara votou e como votou cada deputado, desde 2019, só nas votações nominais. Os dados (`votacoes.json` e `votos/AAAA.json`, doc 06) são carregados só quando a aba abre, para não pesar nas outras. Três cartões:
+- **Votações nominais no Plenário:** filtros de **ano**, **o que foi votado** (texto dos projetos, o padrão; urgência; outros requerimentos; destaques e emendas; outros; todas), **resultado** e **busca** por projeto ou assunto (sem acento, todas as palavras). Cada linha traz a data, o projeto com a ementa, o que foi votado, o placar em barra (Sim, Não, outros), o resultado e a orientação do Governo. Clicar numa linha (ou Enter) abre o cartão seguinte.
+- **Como votou cada deputado:** o projeto com link para a ficha de tramitação na Câmara, o placar completo, a tabela **por partido** (Sim, Não, abstenção e obstrução, e a parte de votos Sim) e a lista de deputados, com filtros de voto, partido, UF e nome, e **Baixar CSV**.
+- **Como votou um deputado:** escolha o deputado (lista com nome e UF); aparecem os votos dele nas votações do primeiro cartão (mesmos filtros), com o resumo de quantas votou, Sim e Não, e quantas vezes acompanhou a orientação do Governo. **Baixar CSV**.
+
+Funções `drawLeis`, `drawLeisDetalhe`, `drawLeisDeputado`, `leisFiltradas` e `carregarLeis` (objeto `LV` guarda os dados carregados).
+
 ### Metodologia (`#metodo`)
 Resumo do cálculo, composição das coortes, limitações e a tabela dos 40 indicadores.
 
@@ -151,7 +159,7 @@ A caixa que se abre mostra a prévia e oferece **Compartilhar…** (no celular, 
 
 Como funciona: `gerarImagem` monta fora da tela um quadro com uma cópia do cartão, e a biblioteca html-to-image (servida pelo próprio site) converte esse quadro em PNG. Para que as fontes do Google entrem na imagem, a política de segurança (CSP) libera `fonts.googleapis.com` e `fonts.gstatic.com` em `connect-src`; se forem bloqueadas, a imagem usa as fontes do sistema. Textos que só fazem sentido na tela ("passe o mouse...") ficam em elementos com a classe `so-tela` e não entram na imagem. O atributo `data-ctx` do cartão controla a linha de escolhas (`proprio`: só os controles do cartão; `nenhum`: sem a linha).
 
-**Links diretos:** acrescente `#series`, `#coortes`, `#metodo`, `#vida`, `#estatais` ou `#industria` ao endereço (o antigo `#consumo` continua funcionando).
+**Links diretos:** acrescente `#series`, `#coortes`, `#metodo`, `#vida`, `#estatais`, `#industria` ou `#leis` ao endereço (o antigo `#consumo` continua funcionando).
 
 ## Organização do `app.js`
 

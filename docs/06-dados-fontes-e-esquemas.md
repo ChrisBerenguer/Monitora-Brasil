@@ -258,6 +258,35 @@ Coletados por `scripts/coletar_industria.py` no GitHub Actions (workflow `dados-
 | `segmentos[]` | `id`, `nome`, `categoria` (id da categoria), `fonte`, `url` (tabela SIDRA), `mede` (o que é medido), `desde` (primeiro ano), `cresc`, `parcial` e `ultimo` |
 | `fontes` | Nome e endereço de cada pesquisa |
 
+## Dados da aba Leis e votação
+
+Coletados por `scripts/coletar_votacoes.py` no GitHub Actions (workflow `dados-votacoes.yml`, às quartas e aos sábados e quando disparado à mão), dos arquivos anuais dos Dados Abertos da Câmara dos Deputados (`https://dadosabertos.camara.leg.br/arquivos/<arquivo>/json/<arquivo>-AAAA.json`), de 2019 ao ano corrente:
+
+| Arquivo | Uso |
+|---|---|
+| `votacoes` | Todas as votações; ficam só as do Plenário (`siglaOrgao` = `PLEN`) |
+| `votacoesVotos` | O voto de cada deputado; ficam só as votações com voto registrado (nominais) |
+| `votacoesProposicoes` | As proposições afetadas; a escolhida é a citada na descrição da votação ou, sem citação, a primeira de tipo PEC, PLP, PL, MPV, PLV, PDL, PRC ou PLN |
+| `votacoesOrientacoes` | A orientação do Governo (`Governo`, ou `GOV.` antes de 2023) e da Oposição |
+
+**O que foi votado.** A descrição da votação dá o tipo (`tipo`): `principal` (o projeto, o substitutivo, a PEC em cada turno, a medida provisória, o parecer), `urgencia` (requerimento de urgência), `requerimento` (outros requerimentos, como adiamento ou retirada de pauta), `destaque` (destaques, emendas, "mantido o texto", "suprimido o texto") e `outros` (redação final, recursos). A classificação é por expressão regular e pode errar em descrições fora do padrão.
+
+**Votações simbólicas** não têm voto registrado e ficam de fora. De 2019 a 2026, o Plenário teve cerca de 12 mil votações, das quais cerca de 3.100 nominais.
+
+### `votacoes.json`
+
+| Campo | Descrição |
+|---|---|
+| `coletado_em` | Data da última coleta com votação nova |
+| `anos` | Anos com dado |
+| `deputados` | `{id do deputado: [nome, UF]}` |
+| `proposicoes` | `{id da proposição: [título (ex.: PL 1234/2025), ementa até 500 caracteres]}` |
+| `votacoes[]` | `id`, `quando` (`AAAA-MM-DDTHH:MM`), `desc` (descrição sem o placar), `aprovada` (1, 0 ou null), `tipo`, `sim`, `nao`, `abst`, `obstr`, `outros` (artigo 17 e voto em branco), `prop` (id da proposição), `governo` e `oposicao` (orientação: Sim, Não, Liberado, Obstrução ou null) |
+
+### `votos/AAAA.json`
+
+Um arquivo por ano, carregado pelo site só quando o ano é aberto. `deputados` e `partidos` são listas; `votos` é `{id da votação: [código, ...]}`, com um código por deputado que votou: `código = (índice do deputado × 64 + índice do partido) × 8 + voto`, e voto 0 = Sim, 1 = Não, 2 = Abstenção, 3 = Obstrução, 4 = Artigo 17, 5 = outro. O partido é o do deputado no dia da votação.
+
 ## Cálculos feitos no navegador
 
 Três conjuntos são derivados em `site/assets/js/app.js`:

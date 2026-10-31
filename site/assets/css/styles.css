@@ -292,3 +292,26 @@ td.links a { white-space: nowrap; }
 #ind-table td:first-child{white-space:normal;min-width:11rem}
 #ind-table .seg-cat{display:block;font-size:.78em;margin-top:1px}
 #ind-mand-table td:first-child{white-space:nowrap}
+/* aba Leis e votação */
+.ctl-busca input { font: inherit; font-size: var(--t-md); color: var(--fg); background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; width: 17rem; max-width: 100%; }
+.leis-linha { cursor: pointer; }
+.leis-linha:hover td { background: var(--panel-2); }
+.leis-linha.sel td { background: color-mix(in srgb, var(--accent) 10%, var(--panel)); }
+.leis-linha.sel td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+#leis-table td, #leis-p-table td { vertical-align: top; }
+td.leis-proj { white-space: normal; min-width: 16rem; max-width: 46rem; text-align: left; line-height: 1.4; }
+#leis-table th:nth-child(2), #leis-p-table th:nth-child(2) { text-align: left; }
+.leis-o-que { display: block; margin-top: 3px; font-size: var(--t-xs); color: var(--muted); }
+.placar-mini { display: grid; gap: 3px; justify-items: end; min-width: 7rem; }
+.placar-num { font-size: var(--t-xs); color: var(--muted); }
+.placar-barra { display: flex; width: 100%; height: 8px; border-radius: 4px; overflow: hidden; background: var(--grid); }
+.placar-barra.grande-barra { height: 16px; border-radius: 6px; }
+.placar-barra .sim, .waffle-leg .pl-sim { background: var(--ok); }
+.placar-barra .nao, .waffle-leg .pl-nao { background: var(--bad); }
+.placar-barra .abst, .waffle-leg .pl-abst { background: var(--accent-2); }
+.placar-barra .obstr, .waffle-leg .pl-obstr { background: var(--s3); }
+.placar-barra .outro, .waffle-leg .pl-outro { background: var(--chart-muted); }
+.leis-desc { display: grid; gap: 4px; max-width: 90ch; }
+.leis-desc .cod { color: var(--muted); font-size: var(--t-sm); }
+.leis-placar { display: grid; gap: 8px; }
+@media (max-width: 560px) { td.leis-proj { min-width: 13rem; } .ctl-busca input { width: 100%; } }

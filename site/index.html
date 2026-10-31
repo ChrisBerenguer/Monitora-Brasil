@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=1.31">
+  <link rel="stylesheet" href="assets/css/styles.css?v=1.32">
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -57,6 +57,7 @@
       <button class="aba" role="tab" id="aba-vida" aria-controls="vida" data-page="vida" aria-selected="false">Vida do Cidadão</button>
       <button class="aba" role="tab" id="aba-estatais" aria-controls="estatais" data-page="estatais" aria-selected="false">Estatais</button>
       <button class="aba" role="tab" id="aba-industria" aria-controls="industria" data-page="industria" aria-selected="false">Indústria</button>
+      <button class="aba" role="tab" id="aba-leis" aria-controls="leis" data-page="leis" aria-selected="false">Leis e votação</button>
     </nav>
 
     <div class="erro" id="erro" hidden role="alert"></div>
@@ -443,6 +444,102 @@
     </section>
 
 
+    <!-- LEIS E VOTAÇÃO -->
+    <section class="pagina" id="leis" role="tabpanel" aria-labelledby="aba-leis" hidden>
+      <p class="nota">O que o Plenário da Câmara dos Deputados votou e como votou cada deputado, desde 2019. Entram só as votações nominais, feitas no painel eletrônico: nas votações simbólicas a Câmara não registra o voto de cada um.</p>
+      <p class="nota carregando-texto" id="leis-status">Carregando as votações…</p>
+
+      <article class="card" data-ctx="proprio">
+        <div class="card-topo">
+          <div>
+            <div class="titulo-info"><h2>Votações nominais no Plenário</h2><button class="info-btn" type="button" data-info-card="leis-lista" aria-label="Como ler: votações nominais no Plenário"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button><button class="info-btn fonte-btn" type="button" data-fonte="fonte:camara" aria-label="Fonte original dos dados"><svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg></button></div>
+            <p class="nota" id="leis-nota"></p>
+          </div>
+        </div>
+        <div class="controles">
+          <label class="ctl">Ano <select id="leis-ano"></select></label>
+          <label class="ctl">O que foi votado <select id="leis-tipo">
+            <option value="principal">Texto dos projetos</option>
+            <option value="urgencia">Pedidos de urgência</option>
+            <option value="requerimento">Outros requerimentos</option>
+            <option value="destaque">Destaques e emendas</option>
+            <option value="outros">Redação final, recursos e outros</option>
+            <option value="todas">Todas as votações</option>
+          </select></label>
+          <label class="ctl">Resultado <select id="leis-res">
+            <option value="todas">Aprovadas e rejeitadas</option>
+            <option value="1">Só aprovadas</option>
+            <option value="0">Só rejeitadas</option>
+          </select></label>
+          <label class="ctl ctl-busca">Buscar projeto ou assunto <input type="search" id="leis-busca" placeholder="Ex.: PEC 45, imposto, armas" autocomplete="off"></label>
+        </div>
+        <div class="tabela-box">
+          <table id="leis-table">
+            <thead><tr>
+              <th scope="col">Data</th><th scope="col">Projeto e o que foi votado</th>
+              <th scope="col">Placar</th><th scope="col" class="some-p">Resultado</th><th scope="col" class="some-p">Governo orientou</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="nota so-tela">Clique numa votação para ver como votou cada deputado.</p>
+      </article>
+
+      <article class="card" data-ctx="nenhum" id="leis-detalhe">
+        <div class="card-topo">
+          <div>
+            <div class="titulo-info"><h2>Como votou cada deputado</h2><button class="info-btn" type="button" data-info-card="leis-votos" aria-label="Como ler: como votou cada deputado"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button><button class="info-btn fonte-btn" type="button" data-fonte="fonte:camara" aria-label="Fonte original dos dados"><svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg></button></div>
+            <p class="nota" id="leis-d-titulo"></p>
+          </div>
+          <button class="botao" type="button" id="csv-leis-votos">Baixar CSV</button>
+        </div>
+        <div id="leis-d-desc" class="leis-desc"></div>
+        <div class="leis-placar" id="leis-d-placar"></div>
+        <div class="titulo-info sub"><h3>Por partido</h3></div>
+        <div class="tabela-box">
+          <table id="leis-part-table">
+            <thead><tr><th scope="col">Partido</th><th scope="col">Sim</th><th scope="col">Não</th><th scope="col" class="some-p">Abstenção e obstrução</th><th scope="col">Votou Sim</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <div class="titulo-info sub"><h3>Deputados</h3></div>
+        <div class="controles">
+          <label class="ctl">Voto <select id="leis-d-voto">
+            <option value="todos">Todos</option><option value="0">Sim</option><option value="1">Não</option><option value="23">Abstenção ou obstrução</option>
+          </select></label>
+          <label class="ctl">Partido <select id="leis-d-partido"></select></label>
+          <label class="ctl">UF <select id="leis-d-uf"></select></label>
+          <label class="ctl ctl-busca">Buscar deputado <input type="search" id="leis-d-busca" placeholder="Nome" autocomplete="off"></label>
+        </div>
+        <div class="tabela-box">
+          <table id="leis-dep-table">
+            <thead><tr><th scope="col">Deputado</th><th scope="col">Partido</th><th scope="col">UF</th><th scope="col">Voto</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="card" data-ctx="nenhum">
+        <div class="card-topo">
+          <div>
+            <div class="titulo-info"><h2>Como votou um deputado</h2><button class="info-btn" type="button" data-info-card="leis-deputado" aria-label="Como ler: como votou um deputado"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button><button class="info-btn fonte-btn" type="button" data-fonte="fonte:camara" aria-label="Fonte original dos dados"><svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg></button></div>
+            <p class="nota" id="leis-p-nota">Escolha um deputado para ver o voto dele em cada votação do ano, com os mesmos filtros do primeiro quadro.</p>
+          </div>
+          <button class="botao" type="button" id="csv-leis-deputado">Baixar CSV</button>
+        </div>
+        <div class="controles">
+          <label class="ctl ctl-busca">Deputado <input type="search" id="leis-p-dep" list="leis-p-lista" placeholder="Digite o nome" autocomplete="off"></label>
+          <datalist id="leis-p-lista"></datalist>
+        </div>
+        <div class="tabela-box">
+          <table id="leis-p-table">
+            <thead><tr><th scope="col">Data</th><th scope="col">Projeto e o que foi votado</th><th scope="col">Voto</th><th scope="col" class="some-p">Partido do deputado</th><th scope="col" class="some-p">Governo orientou</th><th scope="col" class="some-p">Resultado</th></tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+
     <!-- METODOLOGIA -->
     <section class="pagina" id="metodo" role="tabpanel" aria-labelledby="aba-metodo" hidden>
       <article class="card texto">
@@ -526,7 +623,7 @@
 
   <footer class="rodape">
     <div class="wrap rodape-in">
-      <p><strong>Fontes:</strong> Banco Mundial (World Development Indicators e Worldwide Governance Indicators) e PNUD (Índice de Desenvolvimento Humano), via Gapminder/open-numbers, licença CC BY 4.0. Aba Vida do Cidadão: DIEESE, ANP e IBGE (PNAD Contínua), via Ipeadata e SIDRA. Aba Estatais: SEST/Ministério da Gestão (dados abertos das empresas estatais). Aba Indústria: IBGE (Contas Nacionais Trimestrais, PIM-PF, PMS, LSPA, pesquisas trimestrais do abate e do leite, PPM e PEVS), via SIDRA. Cálculos: Monitora Brasil.</p>
+      <p><strong>Fontes:</strong> Banco Mundial (World Development Indicators e Worldwide Governance Indicators) e PNUD (Índice de Desenvolvimento Humano), via Gapminder/open-numbers, licença CC BY 4.0. Aba Vida do Cidadão: DIEESE, ANP e IBGE (PNAD Contínua), via Ipeadata e SIDRA. Aba Estatais: SEST/Ministério da Gestão (dados abertos das empresas estatais). Aba Leis e votação: Câmara dos Deputados (Dados Abertos). Aba Indústria: IBGE (Contas Nacionais Trimestrais, PIM-PF, PMS, LSPA, pesquisas trimestrais do abate e do leite, PPM e PEVS), via SIDRA. Cálculos: Monitora Brasil.</p>
       <p>Projeto voluntário e aberto, feito para ajudar qualquer pessoa a entender como o Brasil está se saindo. <a href="https://github.com/ChrisBerenguer/Monitora-Brasil" rel="noopener">Código, dados e documentação no GitHub</a> · <span id="atualizado"></span></p>
     </div>
   </footer>
@@ -536,6 +633,6 @@
 
   <script src="assets/js/d3.v7.9.0.min.js"></script>
   <script src="assets/js/html-to-image.v1.11.11.min.js"></script>
-  <script src="assets/js/app.js?v=1.31"></script>
+  <script src="assets/js/app.js?v=1.32"></script>
 </body>
 </html>

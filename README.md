@@ -17,6 +17,7 @@ Painel que acompanha o desenvolvimento do Brasil em comparação com outros paí
 3. **Como o Brasil se compara aos seus pares**: América Latina, BRICS, OCDE e países de renda média-alta?
 4. **Quanto as estatais federais lucram ou perdem**, ano a ano e por mandato (aba Estatais)?
 5. **Quanto cresce cada segmento da economia**, da agropecuária aos serviços, ano a ano e por mandato (aba Indústria)?
+6. **O que a Câmara votou e como votou cada deputado**, desde 2019 (aba Leis e votação)?
 
 ## Resultado de referência (dados de outubro de 2026)
 
@@ -51,6 +52,7 @@ Monitora-Brasil/
 │   ├── baixar_brutos.py       baixa as séries brutas para brutos/ (fora do git)
 │   ├── build_dados.py         calcula percentis, escores e estatísticas → dados/
 │   ├── coletar_industria.py   crescimento por segmento da economia (IBGE/SIDRA) → industria.json
+│   ├── coletar_votacoes.py    votações nominais da Câmara e voto de cada deputado → votacoes.json, votos/
 │   ├── explicacoes.py         textos para leigos de cada indicador (botão "i" do site)
 │   ├── fontes.py              códigos oficiais e links (página e API) de cada indicador
 │   └── gerar_dicionario.py    gera docs/04 a partir dos dados

@@ -44,7 +44,7 @@
   const ORDEM_PAISES = Object.keys(PAIS);
   const PERIODOS = ['1995–1998', '1999–2002', '2003–2006', '2007–2010', '2011–2014', '2015–2018', '2019–2022', '2023–2026'];
   const MANDATO = { '1995–1998': 'FHC 1', '1999–2002': 'FHC 2', '2003–2006': 'Lula 1', '2007–2010': 'Lula 2', '2011–2014': 'Dilma 1', '2015–2018': 'Dilma 2 / Temer', '2019–2022': 'Bolsonaro', '2023–2026': 'Lula 3 (até 2025)' };
-  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'vida', 'estatais', 'industria'];
+  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'vida', 'estatais', 'industria', 'leis'];
   const APELIDOS = { consumo: 'vida' }; // endereços antigos continuam funcionando
   // Mandatos usados na variação dos escores (Visão geral). Os escores começam em 2000,
   // então FHC 2 é medido de 2000 a 2002.
@@ -59,6 +59,7 @@
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
     ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cbMa: '2019–2022', cbMb: '2023–2026', cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
     estFiltro: 'todas', estSort: { key: null, dir: -1 }, estSemVendas: true,
+    leisAno: null, leisTipo: 'principal', leisRes: 'todas', leisBusca: '', leisSel: null, leisDVoto: 'todos', leisDPart: 'todos', leisDUf: 'todos', leisDBusca: '', leisDep: null,
     indModo: 'indice', indBase: 2002, indFiltro: 'todas', indSort: { key: null, dir: -1 },
   };
   let D = null; // dados carregados e indexados
@@ -660,6 +661,19 @@
     return [['No Brasil, agora', f(c).replace(/\.\.$/, '.')]];
   };
   const CARD_INFO = {
+    'leis-lista': { titulo: 'Votações nominais no Plenário', blocos: [
+      ['O que mostra', 'Cada votação nominal do Plenário da Câmara no ano: o projeto, o que foi votado, o placar, se foi aprovado e o que o Governo orientou a sua base a votar. Votação nominal é a feita no painel eletrônico, que registra o voto de cada deputado. Muitas decisões são tomadas em votação simbólica, sem registro de quem votou o quê, e por isso não aparecem aqui.'],
+      ['O que foi votado', 'Um projeto costuma passar por várias votações no mesmo dia. "Texto dos projetos" é a decisão sobre o texto em si: o projeto, o substitutivo do relator, a PEC em cada turno ou a medida provisória. "Pedidos de urgência" aceleram a tramitação. "Destaques e emendas" mudam ou mantêm trechos do texto já aprovado. A separação é feita pela descrição que a Câmara dá a cada votação e pode errar em casos raros.'],
+      ['Como ler o placar', 'Verde é Sim, vermelho é Não, cinza são abstenções, obstruções e o voto do presidente da sessão (artigo 17), que não vota. Votar Sim num destaque ou requerimento nem sempre quer dizer apoiar o projeto: leia o que foi votado.'],
+    ] },
+    'leis-votos': { titulo: 'Como votou cada deputado', blocos: [
+      ['O que mostra', 'O voto de cada deputado na votação escolhida, o placar e a soma por partido. "Votou Sim" é a parte dos votos Sim entre os Sim e os Não do partido. O partido é o do deputado no dia da votação.'],
+      ['Tipos de voto', 'Sim e Não são os votos comuns. Abstenção é a presença sem tomar lado. Obstrução é a estratégia de não votar para tentar derrubar o quórum, e conta como presença. Artigo 17 é o presidente da sessão, que não vota. Quem não aparece na lista não registrou voto: estava ausente, de licença ou em missão.'],
+    ] },
+    'leis-deputado': { titulo: 'Como votou um deputado', blocos: [
+      ['O que mostra', 'O voto do deputado escolhido em cada votação nominal do ano, com os mesmos filtros do primeiro quadro (ano, o que foi votado, resultado e busca). O resumo diz em quantas votações ele votou e quantas vezes acompanhou a orientação do Governo, contando só as votações em que o Governo orientou Sim ou Não.'],
+      ['Atenção', 'Acompanhar ou não o Governo não é, por si só, bom ou ruim: depende do que estava em votação. A ausência numa votação pode ter motivo justificado, como licença ou missão oficial.'],
+    ] },
     'ind-cat': { titulo: 'Crescimento de cada categoria da economia', blocos: [
       ['O que mostra', 'Quanto cada grande parte da economia produz, ano a ano, segundo as Contas Nacionais do IBGE: agropecuária, extração mineral (petróleo, gás e minérios), manufatura (a indústria de transformação), energia e saneamento (eletricidade, gás, água, esgoto e lixo), construção civil e serviços (comércio, transporte, bancos, informação, aluguéis, governo e outros). A linha tracejada é o PIB inteiro.'],
       ['Como ler', 'Em "Tamanho da produção", cada linha vale 100 no ano escolhido em "Base 100 em": 150 quer dizer que a produção ficou 50% maior que naquele ano; 90, 10% menor. Em "Crescimento em cada ano" aparece quanto cada categoria cresceu ou caiu sobre o ano anterior. As faixas cinzas marcam os mandatos presidenciais.'],
@@ -913,6 +927,11 @@
     infoEl.replaceChildren(...partes);
   }
   const FONTES_EXTRA = {
+    camara: { t: 'Dados Abertos da Câmara dos Deputados, arquivos anuais de votações:', l: [
+      ['Portal de Dados Abertos da Câmara dos Deputados', 'https://dadosabertos.camara.leg.br/'],
+      ['API e arquivos (documentação): votações, votos, proposições e orientações', 'https://dadosabertos.camara.leg.br/swagger/api.html'],
+      ['Votações no site da Câmara', 'https://www.camara.leg.br/busca-portal/votacoes'],
+    ], data: () => LV.idx?.coletado_em },
     industria: { t: 'Pesquisas do IBGE, consultadas pela API do SIDRA:', l: [
       ['Contas Nacionais Trimestrais: índice de volume por setor (tabela 1620)', 'https://sidra.ibge.gov.br/tabela/1620'],
       ['Pesquisa Industrial Mensal, Produção Física (tabela 8888)', 'https://sidra.ibge.gov.br/tabela/8888'],
@@ -1050,6 +1069,7 @@
     if (spec === 'fonte:precos') return 'DIEESE (cesta básica) e ANP (combustíveis)';
     if (spec === 'fonte:renda') return 'IBGE (PNAD Contínua) e Ipeadata';
     if (spec === 'fonte:estatais') return 'SEST/Ministério da Gestão (balanços das estatais federais)';
+    if (spec === 'fonte:camara') return 'Câmara dos Deputados (Dados Abertos)';
     if (spec === 'fonte:industria') return 'IBGE (Contas Nacionais, PIM-PF, PMS, LSPA e pesquisas agropecuárias)';
     const alvo = spec === 'ind' ? st.ind : spec === 'tema' ? st.tema : spec === 'cstema' ? st.cstema : spec.startsWith('tema:') ? spec.slice(5) : spec;
     const meta = D.ind.get(alvo);
@@ -1145,7 +1165,7 @@
     posicionarInfo(btn);
   }
   /** Coloca o botão de compartilhar ao lado do título de cada cartão com gráfico ou tabela. */
-  document.querySelectorAll('#visao article.card, #series article.card, #coortes article.card, #vida article.card, #estatais article.card, #industria article.card').forEach((card) => {
+  document.querySelectorAll('#visao article.card, #series article.card, #coortes article.card, #vida article.card, #estatais article.card, #industria article.card, #leis article.card').forEach((card) => {
     const alvo = card.querySelector('.titulo-info');
     if (!alvo) return;
     const b = el('button', { class: 'info-btn share-btn', type: 'button', 'aria-label': 'Compartilhar este gráfico como imagem', 'aria-haspopup': 'dialog' });
@@ -1968,6 +1988,208 @@
     ]);
   });
 
+  // ---------------------------------------------------------------- leis e votação
+  /** Dados carregados só quando a aba abre: a lista (votacoes.json) e os votos de cada ano (votos/AAAA.json). */
+  const LV = { idx: null, anos: {}, erro: null, pend: null };
+  const VOTO_NOME = ['Sim', 'Não', 'Abstenção', 'Obstrução', 'Artigo 17', 'Outro'];
+  const TIPO_NOME = { principal: 'Texto do projeto', urgencia: 'Urgência', requerimento: 'Requerimento', destaque: 'Destaque ou emenda', outros: 'Outros' };
+  const semAcento = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  const dataBR = (q) => `${q.slice(8, 10)}/${q.slice(5, 7)}/${q.slice(0, 4)}`;
+  const urlFicha = (id) => `https://www.camara.leg.br/proposicoesWeb/fichadetramitacao?idProposicao=${id}`;
+  async function carregarLeis(ano) {
+    if (!LV.idx) LV.idx = await fetch(DATA_DIR + 'votacoes.json', { cache: 'no-cache' }).then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); });
+    if (ano && !LV.anos[ano]) {
+      const A = await fetch(`${DATA_DIR}votos/${ano}.json`, { cache: 'no-cache' }).then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); });
+      // decodifica: código = (índice do deputado × 64 + índice do partido) × 8 + voto
+      const porVot = {};
+      for (const [id, cods] of Object.entries(A.votos)) {
+        porVot[id] = cods.map((c) => ({ dep: A.deputados[Math.floor(c / 512)], part: A.partidos[Math.floor(c / 8) % 64], v: c % 8 }));
+      }
+      LV.anos[ano] = { porVot, deps: [...new Set(A.deputados)] };
+    }
+  }
+  const nomeDep = (id) => LV.idx.deputados[id]?.[0] || String(id);
+  const ufDep = (id) => LV.idx.deputados[id]?.[1] || '';
+  const propDe = (v) => (v.prop != null ? LV.idx.proposicoes[v.prop] : null);
+  function leisFiltradas() {
+    const q = semAcento(st.leisBusca).replace(/\s+/g, ' ').trim();
+    return LV.idx.votacoes.filter((v) => +v.quando.slice(0, 4) === st.leisAno
+      && (st.leisTipo === 'todas' || v.tipo === st.leisTipo)
+      && (st.leisRes === 'todas' || String(v.aprovada) === st.leisRes)
+      && (!q || q.split(' ').every((w) => semAcento(`${propDe(v)?.[0] || ''} ${propDe(v)?.[1] || ''} ${v.desc}`).replace(/\//g, ' / ').includes(w))))
+      .sort((a, b) => b.quando.localeCompare(a.quando));
+  }
+  function placarMini(v) {
+    const tot = v.sim + v.nao + v.abst + v.obstr + v.outros || 1;
+    const box = el('div', { class: 'placar-mini' });
+    const bar = el('div', { class: 'placar-barra' });
+    for (const [n, c] of [[v.sim, 'sim'], [v.nao, 'nao'], [v.abst + v.obstr + v.outros, 'outro']]) {
+      const s = el('span', { class: c }); s.style.width = `${(100 * n) / tot}%`; bar.append(s);
+    }
+    box.append(bar, el('span', { class: 'placar-num' }, `${v.sim} × ${v.nao}`));
+    box.title = `Sim ${v.sim} · Não ${v.nao} · Abstenção ${v.abst} · Obstrução ${v.obstr} · Outros ${v.outros}`;
+    return box;
+  }
+  function celulaProjeto(v) {
+    const td = el('td', { class: 'leis-proj' });
+    const p = propDe(v);
+    if (p) {
+      const t = el('b', {}, p[0]);
+      td.append(t, ` — ${p[1].length > 150 ? p[1].slice(0, 147) + '…' : p[1]}`);
+      td.title = p[1];
+    }
+    td.append(el('span', { class: 'cod leis-o-que' }, `${TIPO_NOME[v.tipo]}: ${v.desc}`));
+    return td;
+  }
+  const resTxt = (v) => (v.aprovada === 1 ? 'Aprovada' : v.aprovada === 0 ? 'Rejeitada' : '—');
+  function drawLeis() {
+    if (LV.erro) { $('#leis-status').textContent = `Não foi possível carregar as votações (${LV.erro}).`; return; }
+    if (!LV.idx || (st.leisAno && !LV.anos[st.leisAno])) {
+      $('#leis-status').hidden = false;
+      if (!LV.pend) LV.pend = carregarLeis(st.leisAno).then(() => { LV.pend = null; if (!st.leisAno) st.leisAno = LV.idx.anos.at(-1); if (st.page === 'leis') drawLeis(); }).catch((e) => { LV.pend = null; LV.erro = e.message; drawLeis(); });
+      return;
+    }
+    if (!st.leisAno) { st.leisAno = LV.idx.anos.at(-1); return drawLeis(); }
+    $('#leis-status').hidden = true;
+    fillSelect($('#leis-ano'), [...LV.idx.anos].reverse().map((a) => ({ label: String(a), value: String(a) })), String(st.leisAno));
+    $('#leis-tipo').value = st.leisTipo; $('#leis-res').value = st.leisRes;
+    if ($('#leis-busca').value !== st.leisBusca) $('#leis-busca').value = st.leisBusca;
+    const doAno = LV.idx.votacoes.filter((v) => +v.quando.slice(0, 4) === st.leisAno);
+    const lista = leisFiltradas();
+    const nPrinc = doAno.filter((v) => v.tipo === 'principal');
+    const ult = doAno.map((v) => v.quando).sort().at(-1);
+    $('#leis-nota').textContent = `Em ${st.leisAno}, o Plenário fez ${f0(doAno.length)} votações nominais, ${f0(nPrinc.length)} delas sobre o texto de um projeto`
+      + ` (${f0(nPrinc.filter((v) => v.aprovada === 1).length)} aprovados). Com os filtros, ${f0(lista.length)} votaç${lista.length === 1 ? 'ão' : 'ões'}.`
+      + (ult ? ` Última votação: ${dataBR(ult)}. Dados coletados em ${fmtData(LV.idx.coletado_em)}.` : '');
+    if (!lista.some((v) => v.id === st.leisSel)) st.leisSel = lista[0]?.id ?? null;
+    const tb = $('#leis-table tbody'); tb.replaceChildren();
+    for (const v of lista) {
+      const tr = el('tr', { class: 'leis-linha' + (v.id === st.leisSel ? ' sel' : ''), tabindex: '0', 'data-id': v.id });
+      tr.append(el('td', {}, dataBR(v.quando)), celulaProjeto(v));
+      const tdp = el('td'); tdp.append(placarMini(v)); tr.append(tdp);
+      tr.append(el('td', { class: 'some-p ' + (v.aprovada === 1 ? 'bom' : v.aprovada === 0 ? 'ruim' : '') }, resTxt(v)), el('td', { class: 'some-p' }, v.governo || '—'));
+      tb.append(tr);
+    }
+    if (!lista.length) { const tr = el('tr'); tr.append(el('td', { colspan: '5', class: 'neutro' }, 'Nenhuma votação com esses filtros.')); tb.append(tr); }
+    drawLeisDetalhe();
+    drawLeisDeputado(lista);
+  }
+  function votosFiltradosDetalhe(vs) {
+    const q = semAcento(st.leisDBusca).trim();
+    return vs.filter((x) => (st.leisDVoto === 'todos' || (st.leisDVoto === '23' ? x.v === 2 || x.v === 3 : x.v === +st.leisDVoto))
+      && (st.leisDPart === 'todos' || x.part === st.leisDPart) && (st.leisDUf === 'todos' || ufDep(x.dep) === st.leisDUf)
+      && (!q || semAcento(nomeDep(x.dep)).includes(q)))
+      .sort((a, b) => nomeDep(a.dep).localeCompare(nomeDep(b.dep), 'pt-BR'));
+  }
+  function drawLeisDetalhe() {
+    const card = $('#leis-detalhe');
+    const v = LV.idx.votacoes.find((x) => x.id === st.leisSel);
+    card.hidden = !v;
+    if (!v) return;
+    const vs = LV.anos[st.leisAno].porVot[v.id] || [];
+    const p = propDe(v);
+    const tit = $('#leis-d-titulo'); tit.replaceChildren();
+    if (p) { tit.append(linkExt(p[0], urlFicha(v.prop)), ' · '); }
+    tit.append(`${dataBR(v.quando)} às ${v.quando.slice(11, 16)} · `, el('b', { class: v.aprovada === 1 ? 'bom' : v.aprovada === 0 ? 'ruim' : '' }, resTxt(v)));
+    if (v.governo) tit.append(` · Governo orientou ${v.governo}`);
+    if (v.oposicao) tit.append(` · Oposição orientou ${v.oposicao}`);
+    const desc = $('#leis-d-desc'); desc.replaceChildren();
+    if (p) desc.append(el('p', {}, p[1]));
+    desc.append(el('p', { class: 'cod' }, `${TIPO_NOME[v.tipo]}: ${v.desc}`));
+    // placar
+    const tot = vs.length || 1, cont = [0, 0, 0, 0, 0, 0];
+    vs.forEach((x) => cont[x.v]++);
+    const pl = $('#leis-d-placar'); pl.replaceChildren();
+    const bar = el('div', { class: 'placar-barra grande-barra' });
+    const leg = el('div', { class: 'waffle-leg' });
+    [[0, 'sim'], [1, 'nao'], [2, 'abst'], [3, 'obstr'], [4, 'outro'], [5, 'outro']].forEach(([i, c]) => {
+      if (!cont[i]) return;
+      const s = el('span', { class: c }); s.style.width = `${(100 * cont[i]) / tot}%`; bar.append(s);
+      const it = el('span'); it.append(el('i', { class: `pl-${c}` }), `${VOTO_NOME[i]}: `, el('b', {}, f0(cont[i]))); leg.append(it);
+    });
+    pl.append(bar, leg);
+    // por partido
+    const P = new Map();
+    for (const x of vs) { const r = P.get(x.part) || { s: 0, n: 0, o: 0 }; if (x.v === 0) r.s++; else if (x.v === 1) r.n++; else if (x.v === 2 || x.v === 3) r.o++; P.set(x.part, r); }
+    const tp = $('#leis-part-table tbody'); tp.replaceChildren();
+    for (const [part, r] of [...P].sort((a, b) => (b[1].s + b[1].n + b[1].o) - (a[1].s + a[1].n + a[1].o))) {
+      const tr = el('tr'), ps = r.s + r.n ? (100 * r.s) / (r.s + r.n) : null;
+      tr.append(el('td', {}, part || '—'), el('td', {}, f0(r.s)), el('td', {}, f0(r.n)), el('td', { class: 'some-p' }, f0(r.o)), el('td', {}, ps == null ? '—' : `${f0(ps)}%`));
+      tp.append(tr);
+    }
+    // deputados
+    fillSelect($('#leis-d-partido'), [{ label: 'Todos', value: 'todos' }, ...[...P.keys()].filter(Boolean).sort().map((k) => ({ label: k, value: k }))], st.leisDPart);
+    if (![...P.keys()].includes(st.leisDPart)) { st.leisDPart = 'todos'; $('#leis-d-partido').value = 'todos'; }
+    const ufs = [...new Set(vs.map((x) => ufDep(x.dep)))].filter(Boolean).sort();
+    fillSelect($('#leis-d-uf'), [{ label: 'Todas', value: 'todos' }, ...ufs.map((u) => ({ label: u, value: u }))], st.leisDUf);
+    $('#leis-d-voto').value = st.leisDVoto;
+    if ($('#leis-d-busca').value !== st.leisDBusca) $('#leis-d-busca').value = st.leisDBusca;
+    const td = $('#leis-dep-table tbody'); td.replaceChildren();
+    for (const x of votosFiltradosDetalhe(vs)) {
+      const tr = el('tr');
+      tr.append(el('td', {}, nomeDep(x.dep)), el('td', {}, x.part || '—'), el('td', {}, ufDep(x.dep)),
+        el('td', { class: x.v === 0 ? 'bom' : x.v === 1 ? 'ruim' : 'neutro' }, VOTO_NOME[x.v]));
+      td.append(tr);
+    }
+  }
+  function drawLeisDeputado(lista) {
+    const A = LV.anos[st.leisAno];
+    LV.depPorRotulo = new Map();
+    const opts = A.deps.map((id) => [`${nomeDep(id)} (${ufDep(id)})`, id]).sort((a, b) => a[0].localeCompare(b[0], 'pt-BR'));
+    const dl = $('#leis-p-lista');
+    if (dl.dataset.ano !== String(st.leisAno)) { dl.replaceChildren(...opts.map(([r]) => el('option', { value: r }))); dl.dataset.ano = String(st.leisAno); }
+    opts.forEach(([r, id]) => LV.depPorRotulo.set(r, id));
+    const tb = $('#leis-p-table tbody'); tb.replaceChildren();
+    const nota = $('#leis-p-nota');
+    if (st.leisDep == null) { nota.textContent = 'Escolha um deputado para ver o voto dele em cada votação do ano, com os mesmos filtros do primeiro quadro.'; return; }
+    const rot = opts.find(([, id]) => id === st.leisDep)?.[0];
+    if ($('#leis-p-dep').value !== rot) $('#leis-p-dep').value = rot || '';
+    let votou = 0, comGov = 0, govN = 0; const cont = [0, 0, 0, 0, 0, 0];
+    for (const v of lista) {
+      const x = (A.porVot[v.id] || []).find((y) => y.dep === st.leisDep);
+      if (!x) continue;
+      votou++; cont[x.v]++;
+      if ((v.governo === 'Sim' || v.governo === 'Não') && x.v <= 1) { govN++; if (VOTO_NOME[x.v] === v.governo) comGov++; }
+      const tr = el('tr');
+      tr.append(el('td', {}, dataBR(v.quando)), celulaProjeto(v), el('td', { class: x.v === 0 ? 'bom' : x.v === 1 ? 'ruim' : 'neutro' }, VOTO_NOME[x.v]),
+        el('td', { class: 'some-p' }, x.part || '—'), el('td', { class: 'some-p' }, v.governo || '—'),
+        el('td', { class: 'some-p ' + (v.aprovada === 1 ? 'bom' : v.aprovada === 0 ? 'ruim' : '') }, resTxt(v)));
+      tb.append(tr);
+    }
+    nota.textContent = !rot ? `Esse deputado não votou em nenhuma votação nominal de ${st.leisAno}.`
+      : `${nomeDep(st.leisDep)} votou em ${f0(votou)} das ${f0(lista.length)} votações da lista: Sim em ${f0(cont[0])} e Não em ${f0(cont[1])}`
+        + (cont[2] + cont[3] ? `, com ${f0(cont[2] + cont[3])} abstenções ou obstruções` : '') + '.'
+        + (govN ? ` Votou como o Governo orientou em ${f0((100 * comGov) / govN)}% das ${f0(govN)} votações em que o Governo pediu Sim ou Não e ele votou Sim ou Não.` : '');
+  }
+  const abrirVotacao = (tr) => {
+    st.leisSel = tr.dataset.id;
+    document.querySelectorAll('#leis-table tr.sel').forEach((t) => t.classList.remove('sel'));
+    tr.classList.add('sel');
+    drawLeisDetalhe();
+    $('#leis-detalhe').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  };
+  $('#leis-table tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-id]'); if (tr && !ev.target.closest('a')) abrirVotacao(tr); });
+  $('#leis-table tbody').addEventListener('keydown', (ev) => { const tr = ev.target.closest('tr[data-id]'); if (tr && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); abrirVotacao(tr); } });
+  $('#csv-leis-votos').addEventListener('click', () => {
+    const v = LV.idx.votacoes.find((x) => x.id === st.leisSel); if (!v) return;
+    const p = propDe(v);
+    baixarCSV(`monitora-brasil-votacao-${v.id}.csv`, votosFiltradosDetalhe(LV.anos[st.leisAno].porVot[v.id] || []), [
+      { titulo: 'deputado', valor: (x) => nomeDep(x.dep) }, { titulo: 'partido', valor: (x) => x.part }, { titulo: 'UF', valor: (x) => ufDep(x.dep) },
+      { titulo: 'voto', valor: (x) => VOTO_NOME[x.v] }, { titulo: 'votação', valor: () => v.id }, { titulo: 'data', valor: () => v.quando },
+      { titulo: 'proposição', valor: () => p?.[0] || '' }, { titulo: 'o que foi votado', valor: () => v.desc },
+    ]);
+  });
+  $('#csv-leis-deputado').addEventListener('click', () => {
+    if (st.leisDep == null) return;
+    const A = LV.anos[st.leisAno];
+    const linhas = leisFiltradas().map((v) => ({ v, x: (A.porVot[v.id] || []).find((y) => y.dep === st.leisDep) })).filter((r) => r.x);
+    baixarCSV(`monitora-brasil-votos-${semAcento(nomeDep(st.leisDep)).replace(/\W+/g, '-')}-${st.leisAno}.csv`, linhas, [
+      { titulo: 'data', valor: (r) => r.v.quando }, { titulo: 'proposição', valor: (r) => propDe(r.v)?.[0] || '' },
+      { titulo: 'o que foi votado', valor: (r) => r.v.desc }, { titulo: 'voto', valor: (r) => VOTO_NOME[r.x.v] }, { titulo: 'partido', valor: (r) => r.x.part },
+      { titulo: 'orientação do Governo', valor: (r) => r.v.governo || '' }, { titulo: 'resultado', valor: (r) => resTxt(r.v) }, { titulo: 'votação', valor: (r) => r.v.id },
+    ]);
+  });
+
   function show(page, push = true) {
     page = APELIDOS[page] || page;
     if (!PAGINAS.includes(page)) page = 'visao';
@@ -2003,6 +2225,17 @@
   on('#est-filtro', (v) => { st.estFiltro = v; });
   $('#est-sem-vendas').addEventListener('change', (e) => { st.estSemVendas = e.target.checked; render(); });
   on('#ind-modo', (v) => { st.indModo = v; });
+  on('#leis-ano', (v) => { st.leisAno = +v; st.leisSel = null; });
+  on('#leis-tipo', (v) => { st.leisTipo = v; st.leisSel = null; });
+  on('#leis-res', (v) => { st.leisRes = v; st.leisSel = null; });
+  on('#leis-d-voto', (v) => { st.leisDVoto = v; });
+  on('#leis-d-partido', (v) => { st.leisDPart = v; });
+  on('#leis-d-uf', (v) => { st.leisDUf = v; });
+  let leisT;
+  const aoDigitar = (sel, fn) => $(sel).addEventListener('input', (e) => { fn(e.target.value); clearTimeout(leisT); leisT = setTimeout(render, 220); });
+  aoDigitar('#leis-busca', (v) => { st.leisBusca = v; st.leisSel = null; });
+  aoDigitar('#leis-d-busca', (v) => { st.leisDBusca = v; });
+  $('#leis-p-dep').addEventListener('change', (e) => { st.leisDep = LV.depPorRotulo?.get(e.target.value) ?? null; render(); });
   on('#ind-base', (v) => { st.indBase = +v; });
   on('#ind-filtro', (v) => { st.indFiltro = v; });
 
@@ -2018,6 +2251,7 @@
     else if (st.page === 'vida') drawVida();
     else if (st.page === 'estatais') drawEstatais();
     else if (st.page === 'industria') drawIndustria();
+    else if (st.page === 'leis') drawLeis();
     else drawMetodo();
   }
 

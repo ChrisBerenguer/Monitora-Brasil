@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 1.32 — 30/10/2026
+
+### Adicionado
+- **Aba "Leis e votação"** (`#leis`): as votações nominais do Plenário da Câmara dos Deputados desde 2019 (cerca de 3.100) e o voto de cada deputado.
+  - **Votações nominais no Plenário:** lista por ano com o projeto, o que foi votado, o placar, o resultado e a orientação do Governo; filtros por tipo de votação (texto dos projetos, urgência, requerimentos, destaques e emendas), resultado e busca por projeto ou assunto.
+  - **Como votou cada deputado:** placar, votos por partido e a lista de deputados com filtros de voto, partido, UF e nome, link para a ficha de tramitação e CSV.
+  - **Como votou um deputado:** os votos de um deputado no ano, com quantas vezes acompanhou a orientação do Governo, e CSV.
+- `scripts/coletar_votacoes.py` e o workflow `dados-votacoes.yml` (quartas e sábados): arquivos anuais de votações, votos, proposições e orientações da Câmara. Gera `votacoes.json` e `votos/AAAA.json`, carregados só quando a aba abre.
+
 ## 1.31 — 26/10/2026
 
 ### Removido

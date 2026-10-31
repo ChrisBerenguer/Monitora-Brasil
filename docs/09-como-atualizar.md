@@ -41,6 +41,10 @@ A API do IBGE às vezes recusa conexões vindas de fora do Brasil, como as do Gi
 
 Confira: o crescimento do PIB e das categorias no último ano deve bater com o comunicado das Contas Nacionais do IBGE (2025: PIB +2,3%, agropecuária +11,7%).
 
+### Dados da aba Leis e votação
+
+O workflow **Atualizar votações da Câmara (Leis e votação)** (`.github/workflows/dados-votacoes.yml`) roda às quartas e aos sábados, baixa os arquivos anuais da Câmara de 2019 em diante e grava `votacoes.json` e `votos/AAAA.json` quando há votação nova. Para rodar na hora: GitHub → **Actions** → esse workflow → **Run workflow**. No próprio computador: `python scripts/coletar_votacoes.py` (só a biblioteca padrão do Python). Se a Câmara recusar a conexão, o script avisa e mantém os dados atuais.
+
 ## 2. Publicar
 
 `build_dados.py` grava os JSON em `dados/` e uma cópia em `site/data/`. Para publicar:
