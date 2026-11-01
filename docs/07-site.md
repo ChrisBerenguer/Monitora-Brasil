@@ -113,7 +113,7 @@ Três cartões:
 - **Como votou cada deputado:** o projeto com link para a ficha de tramitação na Câmara, o placar completo, a tabela **por partido** (Sim, Não, abstenção e obstrução, e a parte de votos Sim) e a lista de deputados, com filtros de voto, partido, UF e nome, e **Baixar CSV**.
 - **Como votou um deputado:** escolha o deputado (lista com nome e UF); aparecem os votos dele nas votações do primeiro cartão (mesmos filtros), com o resumo de quantas votou, Sim e Não, e quantas vezes acompanhou a orientação do Governo. **Baixar CSV**.
 
-Funções `drawLeis`, `drawLeisDetalhe`, `drawLeisDeputado`, `leisFiltradas`, `carregarLeis`, `buscarVivo` e `abrirProjeto` (objeto `LV` guarda os dados carregados). Votações simbólicas mostram "Simbólica" no lugar do placar e, no cartão de votos, um aviso no lugar das tabelas.
+Funções `drawLeis`, `drawLeisDetalhe`, `drawLeisDeputado`, `leisFiltradas`, `carregarLeis`, `buscarVivo` e `abrirProjeto` (objeto `LV` guarda os dados carregados). Votações simbólicas mostram "Simbólica" no lugar do placar; clicar numa delas abre os detalhes do projeto (`abrirProjeto` com aviso e as votações nominais do projeto), sem mexer no cartão de votos.
 
 ### Metodologia (`#metodo`)
 Resumo do cálculo, composição das coortes, limitações e a tabela dos 40 indicadores.
