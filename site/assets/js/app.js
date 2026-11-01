@@ -2225,7 +2225,12 @@
     let P;
     try {
       if (!LV.props[id]) {
-        LV.props[id] = await json(`/api/projeto?id=${id}`);
+        // primeiro os dados do projeto, depois o resto: a API da Câmara fica lenta com muitas chamadas juntas
+        const api = (c) => json(`/api/camara?p=${encodeURIComponent(c)}`).then((j) => j.dados);
+        const dados = await api(`proposicoes/${id}`);
+        const [autores, temas, tram] = await Promise.all([api(`proposicoes/${id}/autores`).catch(() => []),
+          api(`proposicoes/${id}/temas`).catch(() => []), api(`proposicoes/${id}/tramitacoes`).catch(() => [])]);
+        LV.props[id] = { dados, autores, temas, tram };
       }
       P = LV.props[id];
     } catch (e) { P = null; }
