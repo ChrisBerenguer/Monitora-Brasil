@@ -2204,7 +2204,6 @@
 
   // ---- quadro de detalhes do projeto (dados ao vivo da Câmara, via /api/camara)
   const dlg = $('#prop-dlg');
-  const api = (caminho) => json(`/api/camara?p=${encodeURIComponent(caminho)}`).then((j) => j.dados);
   const dataHoraBR = (s) => (s ? `${s.slice(8, 10)}/${s.slice(5, 7)}/${s.slice(0, 4)}` : '—');
   function linhaFato(dl, rotulo, valor) {
     if (valor == null || valor === '') return;
@@ -2219,20 +2218,18 @@
     const local = LV.idx?.proposicoes[id];
     $('#prop-dlg-titulo').textContent = local ? local[0] : 'Projeto';
     corpo.replaceChildren(el('p', { class: 'nota' }, 'Consultando a Câmara dos Deputados…'));
+    dlg.dataset.prop = String(id);
     if (!dlg.open) dlg.showModal();
     // votações do projeto que estão no painel (as nominais e as simbólicas sobre o texto)
     const vots = (LV.idx?.votacoes || []).filter((v) => v.prop === id).sort((a, b) => b.quando.localeCompare(a.quando));
     let P;
     try {
       if (!LV.props[id]) {
-        const [dados, autores, temas, tram] = await Promise.all([api(`proposicoes/${id}`), api(`proposicoes/${id}/autores`).catch(() => []),
-          api(`proposicoes/${id}/temas`).catch(() => []), api(`proposicoes/${id}/tramitacoes`).catch(() => [])]);
-        LV.props[id] = { dados, autores, temas, tram };
+        LV.props[id] = await json(`/api/projeto?id=${id}`);
       }
       P = LV.props[id];
     } catch (e) { P = null; }
-    if (+dlg.dataset.prop !== id && dlg.dataset.prop) { /* outro projeto foi aberto enquanto carregava */ }
-    dlg.dataset.prop = String(id);
+    if (dlg.dataset.prop !== String(id)) return; // outro projeto foi aberto enquanto este carregava
     const partes = [];
     if (P) {
       const d = P.dados, s = d.statusProposicao || {};
@@ -2245,9 +2242,9 @@
       linhaFato(fatos, 'Situação atual', sit);
       linhaFato(fatos, 'Último andamento', [s.descricaoTramitacao, s.despacho].filter(Boolean).join(': '));
       linhaFato(fatos, 'Apresentado em', dataHoraBR(d.dataApresentacao));
-      const aut = P.autores.map((a) => a.nome);
+      const aut = (P.autores || []).map((a) => a.nome);
       linhaFato(fatos, aut.length > 1 ? 'Autores' : 'Autor', aut.length > 6 ? `${aut.slice(0, 6).join(', ')} e mais ${aut.length - 6}` : aut.join(', '));
-      linhaFato(fatos, 'Temas', P.temas.map((t) => t.tema).join(', '));
+      linhaFato(fatos, 'Temas', (P.temas || []).map((t) => t.tema).join(', '));
       linhaFato(fatos, 'Regime', s.regime);
       linhaFato(fatos, 'Como é votado', s.apreciacao);
       linhaFato(fatos, 'Palavras-chave', d.keywords);
