@@ -271,7 +271,9 @@ Coletados por `scripts/coletar_votacoes.py` no GitHub Actions (workflow `dados-v
 
 **O que foi votado.** A descrição da votação dá o tipo (`tipo`): `principal` (o projeto, o substitutivo, a PEC em cada turno, a medida provisória, o parecer), `urgencia` (requerimento de urgência), `requerimento` (outros requerimentos, como adiamento ou retirada de pauta), `destaque` (destaques, emendas, "mantido o texto", "suprimido o texto") e `outros` (redação final, recursos). A classificação é por expressão regular e pode errar em descrições fora do padrão.
 
-**Votações simbólicas** não têm voto registrado e ficam de fora. De 2019 a 2026, o Plenário teve cerca de 12 mil votações, das quais cerca de 3.100 nominais.
+**Votações simbólicas** não têm voto registrado. Entram só as que decidem o texto (`tipo` `principal` ou `outros`), com `nominal: false`; as de requerimentos e destaques simbólicos, que são milhares, ficam de fora. De 2019 a 2026, o Plenário teve cerca de 12 mil votações, das quais cerca de 3.100 nominais.
+
+**Tempo real.** O site completa o arquivo com `/api/votacoes-recentes?desde=AAAA-MM-DD` (função em `api/`, na Vercel), que consulta a API da Câmara (`/votacoes?idOrgao=180`, `/votacoes/{id}`, `/votos` e `/orientacoes`) e devolve as votações no mesmo formato de `votacoes[]`, com `deputados`, `proposicoes` e `votos` (`{id: [[id do deputado, partido, voto], ...]}`). A classificação de `tipo` é a mesma do script, copiada em `api/_camara.js`: mudou uma, mude a outra.
 
 ### `votacoes.json`
 
@@ -281,7 +283,7 @@ Coletados por `scripts/coletar_votacoes.py` no GitHub Actions (workflow `dados-v
 | `anos` | Anos com dado |
 | `deputados` | `{id do deputado: [nome, UF]}` |
 | `proposicoes` | `{id da proposição: [título (ex.: PL 1234/2025), ementa até 500 caracteres]}` |
-| `votacoes[]` | `id`, `quando` (`AAAA-MM-DDTHH:MM`), `desc` (descrição sem o placar), `aprovada` (1, 0 ou null), `tipo`, `sim`, `nao`, `abst`, `obstr`, `outros` (artigo 17 e voto em branco), `prop` (id da proposição), `governo` e `oposicao` (orientação: Sim, Não, Liberado, Obstrução ou null) |
+| `votacoes[]` | `id`, `quando` (`AAAA-MM-DDTHH:MM`), `nominal` (há voto de cada deputado), `desc` (descrição sem o placar), `aprovada` (1, 0 ou null), `tipo`, `sim`, `nao`, `abst`, `obstr`, `outros` (artigo 17 e voto em branco), `prop` (id da proposição), `governo` e `oposicao` (orientação: Sim, Não, Liberado, Obstrução ou null) |
 
 ### `votos/AAAA.json`
 

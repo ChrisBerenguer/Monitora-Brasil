@@ -43,7 +43,7 @@ Confira: o crescimento do PIB e das categorias no último ano deve bater com o c
 
 ### Dados da aba Leis e votação
 
-O workflow **Atualizar votações da Câmara (Leis e votação)** (`.github/workflows/dados-votacoes.yml`) roda às quartas e aos sábados, baixa os arquivos anuais da Câmara de 2019 em diante e grava `votacoes.json` e `votos/AAAA.json` quando há votação nova. Para rodar na hora: GitHub → **Actions** → esse workflow → **Run workflow**. No próprio computador: `python scripts/coletar_votacoes.py` (só a biblioteca padrão do Python). Se a Câmara recusar a conexão, o script avisa e mantém os dados atuais.
+O workflow **Atualizar votações da Câmara (Leis e votação)** (`.github/workflows/dados-votacoes.yml`) roda todo dia, baixa os arquivos anuais da Câmara de 2019 em diante e grava `votacoes.json` e `votos/AAAA.json` quando há votação nova. Para rodar na hora: GitHub → **Actions** → esse workflow → **Run workflow**. No próprio computador: `python scripts/coletar_votacoes.py` (só a biblioteca padrão do Python). Se a Câmara recusar a conexão, o script avisa e mantém os dados atuais. Entre uma coleta e outra, o site busca as votações novas em tempo real pela função `/api/votacoes-recentes` (doc 07); ela só funciona na Vercel.
 
 ## 2. Publicar
 

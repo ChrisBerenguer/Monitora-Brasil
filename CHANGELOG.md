@@ -1,5 +1,15 @@
 # Histórico de versões
 
+## 1.33 — 01/11/2026
+
+### Adicionado
+- **Leis e votação, detalhes do projeto:** o nome do projeto, nas tabelas e no cartão de votos, abre um quadro com os dados consultados na hora na Câmara: ementa, situação atual e último andamento, autores, temas, regime, data de apresentação, links para o texto e a ficha de tramitação, as votações do projeto no Plenário e a tramitação recente.
+- **Leis e votação em tempo real:** ao abrir a aba, o site busca na API da Câmara as votações do Plenário feitas depois da última coleta e as junta à lista, com a hora da consulta. Funções `api/votacoes-recentes.js` e `api/camara.js` na Vercel (a API da Câmara não libera chamadas direto do navegador).
+- **Votações simbólicas sobre o texto dos projetos** passam a aparecer, marcadas como "Simbólica" e sem lista de votos, com o filtro **Forma de votação**.
+
+### Alterado
+- A coleta das votações passa a ser diária.
+
 ## 1.32 — 30/10/2026
 
 ### Adicionado

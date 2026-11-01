@@ -59,7 +59,7 @@
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
     ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cbMa: '2019–2022', cbMb: '2023–2026', cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
     estFiltro: 'todas', estSort: { key: null, dir: -1 }, estSemVendas: true,
-    leisAno: null, leisTipo: 'principal', leisRes: 'todas', leisBusca: '', leisSel: null, leisDVoto: 'todos', leisDPart: 'todos', leisDUf: 'todos', leisDBusca: '', leisDep: null,
+    leisAno: null, leisTipo: 'principal', leisRes: 'todas', leisForma: 'todas', leisBusca: '', leisSel: null, leisDVoto: 'todos', leisDPart: 'todos', leisDUf: 'todos', leisDBusca: '', leisDep: null,
     indModo: 'indice', indBase: 2002, indFiltro: 'todas', indSort: { key: null, dir: -1 },
   };
   let D = null; // dados carregados e indexados
@@ -1989,17 +1989,25 @@
   });
 
   // ---------------------------------------------------------------- leis e votação
-  /** Dados carregados só quando a aba abre: a lista (votacoes.json) e os votos de cada ano (votos/AAAA.json). */
-  const LV = { idx: null, anos: {}, erro: null, pend: null };
+  /** Dados carregados só quando a aba abre: a lista (votacoes.json), os votos de cada ano (votos/AAAA.json)
+   *  e, em tempo real, as votações mais novas que a coleta diária, pela função /api/votacoes-recentes. */
+  const LV = { idx: null, anos: {}, erro: null, pend: null, anosArquivo: [], vivo: null, vivoErro: null, props: {} };
   const VOTO_NOME = ['Sim', 'Não', 'Abstenção', 'Obstrução', 'Artigo 17', 'Outro'];
   const TIPO_NOME = { principal: 'Texto do projeto', urgencia: 'Urgência', requerimento: 'Requerimento', destaque: 'Destaque ou emenda', outros: 'Outros' };
   const semAcento = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   const dataBR = (q) => `${q.slice(8, 10)}/${q.slice(5, 7)}/${q.slice(0, 4)}`;
   const urlFicha = (id) => `https://www.camara.leg.br/proposicoesWeb/fichadetramitacao?idProposicao=${id}`;
+  const ehNominal = (v) => v.nominal !== false;
+  const json = (u) => fetch(u, { cache: 'no-cache' }).then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); });
   async function carregarLeis(ano) {
-    if (!LV.idx) LV.idx = await fetch(DATA_DIR + 'votacoes.json', { cache: 'no-cache' }).then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); });
+    if (!LV.idx) {
+      LV.idx = await json(DATA_DIR + 'votacoes.json');
+      LV.anosArquivo = [...LV.idx.anos];
+      buscarVivo();
+    }
     if (ano && !LV.anos[ano]) {
-      const A = await fetch(`${DATA_DIR}votos/${ano}.json`, { cache: 'no-cache' }).then((r) => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); });
+      if (!LV.anosArquivo.includes(ano)) { LV.anos[ano] = { porVot: {}, deps: [] }; return; }
+      const A = await json(`${DATA_DIR}votos/${ano}.json`);
       // decodifica: código = (índice do deputado × 64 + índice do partido) × 8 + voto
       const porVot = {};
       for (const [id, cods] of Object.entries(A.votos)) {
@@ -2008,6 +2016,22 @@
       LV.anos[ano] = { porVot, deps: [...new Set(A.deputados)] };
     }
   }
+  /** Votações feitas depois da última coleta: vêm da API da Câmara, via função do próprio site. */
+  function buscarVivo() {
+    const ult = LV.idx.votacoes.reduce((m, v) => (v.quando > m ? v.quando : m), '').slice(0, 10);
+    json(`/api/votacoes-recentes?desde=${ult || ''}`).then((R) => {
+      const ids = new Set(LV.idx.votacoes.map((v) => v.id));
+      const novas = R.votacoes.filter((v) => !ids.has(v.id));
+      Object.assign(LV.idx.deputados, R.deputados);
+      Object.assign(LV.idx.proposicoes, R.proposicoes);
+      LV.idx.votacoes.push(...novas);
+      for (const v of novas) { const a = +v.quando.slice(0, 4); if (!LV.idx.anos.includes(a)) LV.idx.anos.push(a); }
+      LV.vivo = { votos: {}, consultado: R.consultado_em, novas: novas.length };
+      for (const [id, vs] of Object.entries(R.votos)) LV.vivo.votos[id] = vs.map(([dep, part, v]) => ({ dep: +dep, part, v }));
+      if (st.page === 'leis') drawLeis();
+    }).catch((e) => { LV.vivoErro = e.message; if (st.page === 'leis') drawLeis(); });
+  }
+  const votosDe = (v) => LV.vivo?.votos[v.id] || LV.anos[+v.quando.slice(0, 4)]?.porVot[v.id] || [];
   const nomeDep = (id) => LV.idx.deputados[id]?.[0] || String(id);
   const ufDep = (id) => LV.idx.deputados[id]?.[1] || '';
   const propDe = (v) => (v.prop != null ? LV.idx.proposicoes[v.prop] : null);
@@ -2016,10 +2040,12 @@
     return LV.idx.votacoes.filter((v) => +v.quando.slice(0, 4) === st.leisAno
       && (st.leisTipo === 'todas' || v.tipo === st.leisTipo)
       && (st.leisRes === 'todas' || String(v.aprovada) === st.leisRes)
+      && (st.leisForma === 'todas' || (st.leisForma === 'nominal') === ehNominal(v))
       && (!q || q.split(' ').every((w) => semAcento(`${propDe(v)?.[0] || ''} ${propDe(v)?.[1] || ''} ${v.desc}`).replace(/\//g, ' / ').includes(w))))
       .sort((a, b) => b.quando.localeCompare(a.quando));
   }
   function placarMini(v) {
+    if (!ehNominal(v)) { const s = el('span', { class: 'placar-simb' }, 'Simbólica'); s.title = 'Votação simbólica: a Câmara não registra o voto de cada deputado.'; return s; }
     const tot = v.sim + v.nao + v.abst + v.obstr + v.outros || 1;
     const box = el('div', { class: 'placar-mini' });
     const bar = el('div', { class: 'placar-barra' });
@@ -2030,44 +2056,47 @@
     box.title = `Sim ${v.sim} · Não ${v.nao} · Abstenção ${v.abst} · Obstrução ${v.obstr} · Outros ${v.outros}`;
     return box;
   }
+  /** Botão com o nome do projeto, que abre o quadro de detalhes. */
+  const botaoProjeto = (id, titulo) => el('button', { type: 'button', class: 'prop-link', 'data-prop': String(id), title: 'Ver os detalhes do projeto' }, titulo);
   function celulaProjeto(v) {
     const td = el('td', { class: 'leis-proj' });
     const p = propDe(v);
-    if (p) {
-      const t = el('b', {}, p[0]);
-      td.append(t, ` — ${p[1].length > 150 ? p[1].slice(0, 147) + '…' : p[1]}`);
-      td.title = p[1];
-    }
+    if (p) td.append(botaoProjeto(v.prop, p[0]), ` — ${p[1].length > 150 ? p[1].slice(0, 147) + '…' : p[1]}`);
     td.append(el('span', { class: 'cod leis-o-que' }, `${TIPO_NOME[v.tipo]}: ${v.desc}`));
     return td;
   }
   const resTxt = (v) => (v.aprovada === 1 ? 'Aprovada' : v.aprovada === 0 ? 'Rejeitada' : '—');
+  const resCls = (v) => (v.aprovada === 1 ? 'bom' : v.aprovada === 0 ? 'ruim' : '');
   function drawLeis() {
     if (LV.erro) { $('#leis-status').textContent = `Não foi possível carregar as votações (${LV.erro}).`; return; }
     if (!LV.idx || (st.leisAno && !LV.anos[st.leisAno])) {
       $('#leis-status').hidden = false;
-      if (!LV.pend) LV.pend = carregarLeis(st.leisAno).then(() => { LV.pend = null; if (!st.leisAno) st.leisAno = LV.idx.anos.at(-1); if (st.page === 'leis') drawLeis(); }).catch((e) => { LV.pend = null; LV.erro = e.message; drawLeis(); });
+      if (!LV.pend) LV.pend = carregarLeis(st.leisAno).then(() => { LV.pend = null; if (!st.leisAno) st.leisAno = Math.max(...LV.idx.anos); if (st.page === 'leis') drawLeis(); }).catch((e) => { LV.pend = null; LV.erro = e.message; drawLeis(); });
       return;
     }
-    if (!st.leisAno) { st.leisAno = LV.idx.anos.at(-1); return drawLeis(); }
+    if (!st.leisAno) { st.leisAno = Math.max(...LV.idx.anos); return drawLeis(); }
     $('#leis-status').hidden = true;
-    fillSelect($('#leis-ano'), [...LV.idx.anos].reverse().map((a) => ({ label: String(a), value: String(a) })), String(st.leisAno));
-    $('#leis-tipo').value = st.leisTipo; $('#leis-res').value = st.leisRes;
+    fillSelect($('#leis-ano'), [...LV.idx.anos].sort((a, b) => b - a).map((a) => ({ label: String(a), value: String(a) })), String(st.leisAno));
+    $('#leis-tipo').value = st.leisTipo; $('#leis-res').value = st.leisRes; $('#leis-forma').value = st.leisForma;
     if ($('#leis-busca').value !== st.leisBusca) $('#leis-busca').value = st.leisBusca;
     const doAno = LV.idx.votacoes.filter((v) => +v.quando.slice(0, 4) === st.leisAno);
     const lista = leisFiltradas();
-    const nPrinc = doAno.filter((v) => v.tipo === 'principal');
+    const nomin = doAno.filter(ehNominal);
+    const princ = doAno.filter((v) => v.tipo === 'principal');
     const ult = doAno.map((v) => v.quando).sort().at(-1);
-    $('#leis-nota').textContent = `Em ${st.leisAno}, o Plenário fez ${f0(doAno.length)} votações nominais, ${f0(nPrinc.length)} delas sobre o texto de um projeto`
-      + ` (${f0(nPrinc.filter((v) => v.aprovada === 1).length)} aprovados). Com os filtros, ${f0(lista.length)} votaç${lista.length === 1 ? 'ão' : 'ões'}.`
-      + (ult ? ` Última votação: ${dataBR(ult)}. Dados coletados em ${fmtData(LV.idx.coletado_em)}.` : '');
+    const hora = LV.vivo ? new Date(LV.vivo.consultado).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : null;
+    $('#leis-nota').textContent = `Em ${st.leisAno}, o Plenário fez ${f0(nomin.length)} votações nominais, e ${f0(princ.length)} votações (nominais ou simbólicas) sobre o texto de um projeto, ${f0(princ.filter((v) => v.aprovada === 1).length)} delas aprovando o texto.`
+      + ` Com os filtros, ${f0(lista.length)} votaç${lista.length === 1 ? 'ão' : 'ões'}.`
+      + (ult ? ` Última votação: ${dataBR(ult)}.` : '')
+      + (LV.vivo ? ` Atualizado em tempo real com a API da Câmara (consulta às ${hora}).`
+        : LV.vivoErro ? ` A API da Câmara não respondeu agora; dados da coleta de ${fmtData(LV.idx.coletado_em)}.` : ' Consultando a Câmara…');
     if (!lista.some((v) => v.id === st.leisSel)) st.leisSel = lista[0]?.id ?? null;
     const tb = $('#leis-table tbody'); tb.replaceChildren();
     for (const v of lista) {
       const tr = el('tr', { class: 'leis-linha' + (v.id === st.leisSel ? ' sel' : ''), tabindex: '0', 'data-id': v.id });
       tr.append(el('td', {}, dataBR(v.quando)), celulaProjeto(v));
       const tdp = el('td'); tdp.append(placarMini(v)); tr.append(tdp);
-      tr.append(el('td', { class: 'some-p ' + (v.aprovada === 1 ? 'bom' : v.aprovada === 0 ? 'ruim' : '') }, resTxt(v)), el('td', { class: 'some-p' }, v.governo || '—'));
+      tr.append(el('td', { class: 'some-p ' + resCls(v) }, resTxt(v)), el('td', { class: 'some-p' }, v.governo || '—'));
       tb.append(tr);
     }
     if (!lista.length) { const tr = el('tr'); tr.append(el('td', { colspan: '5', class: 'neutro' }, 'Nenhuma votação com esses filtros.')); tb.append(tr); }
@@ -2086,20 +2115,27 @@
     const v = LV.idx.votacoes.find((x) => x.id === st.leisSel);
     card.hidden = !v;
     if (!v) return;
-    const vs = LV.anos[st.leisAno].porVot[v.id] || [];
+    const vs = votosDe(v);
+    const nominal = ehNominal(v) && vs.length > 0;
     const p = propDe(v);
     const tit = $('#leis-d-titulo'); tit.replaceChildren();
-    if (p) { tit.append(linkExt(p[0], urlFicha(v.prop)), ' · '); }
-    tit.append(`${dataBR(v.quando)} às ${v.quando.slice(11, 16)} · `, el('b', { class: v.aprovada === 1 ? 'bom' : v.aprovada === 0 ? 'ruim' : '' }, resTxt(v)));
+    if (p) tit.append(botaoProjeto(v.prop, p[0]), ' · ');
+    tit.append(`${dataBR(v.quando)} às ${v.quando.slice(11, 16)} · `, el('b', { class: resCls(v) }, resTxt(v)));
     if (v.governo) tit.append(` · Governo orientou ${v.governo}`);
     if (v.oposicao) tit.append(` · Oposição orientou ${v.oposicao}`);
     const desc = $('#leis-d-desc'); desc.replaceChildren();
     if (p) desc.append(el('p', {}, p[1]));
     desc.append(el('p', { class: 'cod' }, `${TIPO_NOME[v.tipo]}: ${v.desc}`));
+    card.querySelectorAll('.so-nominal').forEach((n) => { n.hidden = !nominal; });
+    $('#csv-leis-votos').hidden = !nominal;
+    const pl = $('#leis-d-placar'); pl.replaceChildren();
+    if (!nominal) {
+      pl.append(el('p', { class: 'nota' }, ehNominal(v) ? 'Os votos desta votação ainda não estão disponíveis.' : 'Votação simbólica: o presidente da sessão anuncia o resultado sem registrar o voto de cada deputado. Por isso não há lista de votos.'));
+      return;
+    }
     // placar
     const tot = vs.length || 1, cont = [0, 0, 0, 0, 0, 0];
     vs.forEach((x) => cont[x.v]++);
-    const pl = $('#leis-d-placar'); pl.replaceChildren();
     const bar = el('div', { class: 'placar-barra grande-barra' });
     const leg = el('div', { class: 'waffle-leg' });
     [[0, 'sim'], [1, 'nao'], [2, 'abst'], [3, 'obstr'], [4, 'outro'], [5, 'outro']].forEach(([i, c]) => {
@@ -2119,7 +2155,7 @@
     }
     // deputados
     fillSelect($('#leis-d-partido'), [{ label: 'Todos', value: 'todos' }, ...[...P.keys()].filter(Boolean).sort().map((k) => ({ label: k, value: k }))], st.leisDPart);
-    if (![...P.keys()].includes(st.leisDPart)) { st.leisDPart = 'todos'; $('#leis-d-partido').value = 'todos'; }
+    if (st.leisDPart !== 'todos' && !P.has(st.leisDPart)) { st.leisDPart = 'todos'; $('#leis-d-partido').value = 'todos'; }
     const ufs = [...new Set(vs.map((x) => ufDep(x.dep)))].filter(Boolean).sort();
     fillSelect($('#leis-d-uf'), [{ label: 'Todas', value: 'todos' }, ...ufs.map((u) => ({ label: u, value: u }))], st.leisDUf);
     $('#leis-d-voto').value = st.leisDVoto;
@@ -2134,33 +2170,142 @@
   }
   function drawLeisDeputado(lista) {
     const A = LV.anos[st.leisAno];
+    const depsAno = new Set(A.deps);
+    for (const v of LV.idx.votacoes) if (+v.quando.slice(0, 4) === st.leisAno && LV.vivo?.votos[v.id]) LV.vivo.votos[v.id].forEach((x) => depsAno.add(x.dep));
     LV.depPorRotulo = new Map();
-    const opts = A.deps.map((id) => [`${nomeDep(id)} (${ufDep(id)})`, id]).sort((a, b) => a[0].localeCompare(b[0], 'pt-BR'));
+    const opts = [...depsAno].map((id) => [`${nomeDep(id)} (${ufDep(id)})`, id]).sort((a, b) => a[0].localeCompare(b[0], 'pt-BR'));
     const dl = $('#leis-p-lista');
-    if (dl.dataset.ano !== String(st.leisAno)) { dl.replaceChildren(...opts.map(([r]) => el('option', { value: r }))); dl.dataset.ano = String(st.leisAno); }
+    const chave = `${st.leisAno}-${opts.length}`;
+    if (dl.dataset.chave !== chave) { dl.replaceChildren(...opts.map(([r]) => el('option', { value: r }))); dl.dataset.chave = chave; }
     opts.forEach(([r, id]) => LV.depPorRotulo.set(r, id));
     const tb = $('#leis-p-table tbody'); tb.replaceChildren();
     const nota = $('#leis-p-nota');
-    if (st.leisDep == null) { nota.textContent = 'Escolha um deputado para ver o voto dele em cada votação do ano, com os mesmos filtros do primeiro quadro.'; return; }
+    if (st.leisDep == null) { nota.textContent = 'Escolha um deputado para ver o voto dele em cada votação nominal do ano, com os mesmos filtros do primeiro quadro.'; return; }
     const rot = opts.find(([, id]) => id === st.leisDep)?.[0];
     if ($('#leis-p-dep').value !== rot) $('#leis-p-dep').value = rot || '';
+    const nominais = lista.filter(ehNominal);
     let votou = 0, comGov = 0, govN = 0; const cont = [0, 0, 0, 0, 0, 0];
-    for (const v of lista) {
-      const x = (A.porVot[v.id] || []).find((y) => y.dep === st.leisDep);
+    for (const v of nominais) {
+      const x = votosDe(v).find((y) => y.dep === st.leisDep);
       if (!x) continue;
       votou++; cont[x.v]++;
       if ((v.governo === 'Sim' || v.governo === 'Não') && x.v <= 1) { govN++; if (VOTO_NOME[x.v] === v.governo) comGov++; }
       const tr = el('tr');
       tr.append(el('td', {}, dataBR(v.quando)), celulaProjeto(v), el('td', { class: x.v === 0 ? 'bom' : x.v === 1 ? 'ruim' : 'neutro' }, VOTO_NOME[x.v]),
         el('td', { class: 'some-p' }, x.part || '—'), el('td', { class: 'some-p' }, v.governo || '—'),
-        el('td', { class: 'some-p ' + (v.aprovada === 1 ? 'bom' : v.aprovada === 0 ? 'ruim' : '') }, resTxt(v)));
+        el('td', { class: 'some-p ' + resCls(v) }, resTxt(v)));
       tb.append(tr);
     }
     nota.textContent = !rot ? `Esse deputado não votou em nenhuma votação nominal de ${st.leisAno}.`
-      : `${nomeDep(st.leisDep)} votou em ${f0(votou)} das ${f0(lista.length)} votações da lista: Sim em ${f0(cont[0])} e Não em ${f0(cont[1])}`
+      : `${nomeDep(st.leisDep)} votou em ${f0(votou)} das ${f0(nominais.length)} votações nominais da lista: Sim em ${f0(cont[0])} e Não em ${f0(cont[1])}`
         + (cont[2] + cont[3] ? `, com ${f0(cont[2] + cont[3])} abstenções ou obstruções` : '') + '.'
         + (govN ? ` Votou como o Governo orientou em ${f0((100 * comGov) / govN)}% das ${f0(govN)} votações em que o Governo pediu Sim ou Não e ele votou Sim ou Não.` : '');
   }
+
+  // ---- quadro de detalhes do projeto (dados ao vivo da Câmara, via /api/camara)
+  const dlg = $('#prop-dlg');
+  const api = (caminho) => json(`/api/camara?p=${encodeURIComponent(caminho)}`).then((j) => j.dados);
+  const dataHoraBR = (s) => (s ? `${s.slice(8, 10)}/${s.slice(5, 7)}/${s.slice(0, 4)}` : '—');
+  function linhaFato(dl, rotulo, valor) {
+    if (valor == null || valor === '') return;
+    dl.append(el('dt', {}, rotulo));
+    const dd = el('dd');
+    if (valor instanceof Node) dd.append(valor); else dd.textContent = valor;
+    dl.append(dd);
+  }
+  async function abrirProjeto(id) {
+    id = +id;
+    const corpo = $('#prop-dlg-corpo');
+    const local = LV.idx?.proposicoes[id];
+    $('#prop-dlg-titulo').textContent = local ? local[0] : 'Projeto';
+    corpo.replaceChildren(el('p', { class: 'nota' }, 'Consultando a Câmara dos Deputados…'));
+    if (!dlg.open) dlg.showModal();
+    // votações do projeto que estão no painel (as nominais e as simbólicas sobre o texto)
+    const vots = (LV.idx?.votacoes || []).filter((v) => v.prop === id).sort((a, b) => b.quando.localeCompare(a.quando));
+    let P;
+    try {
+      if (!LV.props[id]) {
+        const [dados, autores, temas, tram] = await Promise.all([api(`proposicoes/${id}`), api(`proposicoes/${id}/autores`).catch(() => []),
+          api(`proposicoes/${id}/temas`).catch(() => []), api(`proposicoes/${id}/tramitacoes`).catch(() => [])]);
+        LV.props[id] = { dados, autores, temas, tram };
+      }
+      P = LV.props[id];
+    } catch (e) { P = null; }
+    if (+dlg.dataset.prop !== id && dlg.dataset.prop) { /* outro projeto foi aberto enquanto carregava */ }
+    dlg.dataset.prop = String(id);
+    const partes = [];
+    if (P) {
+      const d = P.dados, s = d.statusProposicao || {};
+      $('#prop-dlg-titulo').textContent = `${d.siglaTipo} ${d.numero}/${d.ano}`;
+      partes.push(el('p', { class: 'prop-tipo' }, d.descricaoTipo || ''));
+      partes.push(el('p', { class: 'prop-ementa' }, d.ementa || local?.[1] || ''));
+      if (d.ementaDetalhada) partes.push(el('p', { class: 'nota' }, d.ementaDetalhada));
+      const fatos = el('dl', { class: 'prop-fatos' });
+      const sit = el('span'); sit.append(el('b', {}, s.descricaoSituacao || '—'), s.dataHora ? ` · desde ${dataHoraBR(s.dataHora)}` : '', s.siglaOrgao ? ` · ${s.siglaOrgao}` : '');
+      linhaFato(fatos, 'Situação atual', sit);
+      linhaFato(fatos, 'Último andamento', [s.descricaoTramitacao, s.despacho].filter(Boolean).join(': '));
+      linhaFato(fatos, 'Apresentado em', dataHoraBR(d.dataApresentacao));
+      const aut = P.autores.map((a) => a.nome);
+      linhaFato(fatos, aut.length > 1 ? 'Autores' : 'Autor', aut.length > 6 ? `${aut.slice(0, 6).join(', ')} e mais ${aut.length - 6}` : aut.join(', '));
+      linhaFato(fatos, 'Temas', P.temas.map((t) => t.tema).join(', '));
+      linhaFato(fatos, 'Regime', s.regime);
+      linhaFato(fatos, 'Como é votado', s.apreciacao);
+      linhaFato(fatos, 'Palavras-chave', d.keywords);
+      partes.push(fatos);
+      const links = el('p', { class: 'prop-links' });
+      if (d.urlInteiroTeor) links.append(linkExt('Texto original (PDF)', d.urlInteiroTeor), ' · ');
+      if (s.url && s.url !== d.urlInteiroTeor) links.append(linkExt('Último documento', s.url), ' · ');
+      links.append(linkExt('Ficha de tramitação na Câmara', urlFicha(id)));
+      partes.push(links);
+    } else {
+      if (local) partes.push(el('p', { class: 'prop-ementa' }, local[1]));
+      const av = el('p', { class: 'nota' }); av.append('Não foi possível consultar a Câmara agora. Veja a ', linkExt('ficha de tramitação no site da Câmara', urlFicha(id)), '.');
+      partes.push(av);
+    }
+    if (vots.length) {
+      partes.push(el('h3', {}, `Votações no Plenário (${vots.length})`));
+      const ul = el('ul', { class: 'prop-vots' });
+      for (const v of vots) {
+        const li = el('li');
+        const b = el('button', { type: 'button', class: 'prop-vot', 'data-vot': v.id });
+        b.append(el('span', { class: 'cod' }, dataBR(v.quando)), ` ${TIPO_NOME[v.tipo]}: ${v.desc} `, el('b', { class: resCls(v) }, resTxt(v)),
+          ehNominal(v) ? ` · ${v.sim} × ${v.nao}` : ' · simbólica');
+        li.append(b); ul.append(li);
+      }
+      partes.push(ul);
+    }
+    if (P?.tram?.length) {
+      partes.push(el('h3', {}, 'Tramitação recente'));
+      const ol = el('ol', { class: 'prop-tram' });
+      for (const t of [...P.tram].sort((a, b) => (b.sequencia ?? 0) - (a.sequencia ?? 0)).slice(0, 10)) {
+        const li = el('li');
+        li.append(el('span', { class: 'cod' }, `${dataHoraBR(t.dataHora)} · ${t.siglaOrgao}`), el('br'), el('b', {}, t.descricaoTramitacao || ''), t.despacho ? `: ${t.despacho}` : '');
+        ol.append(li);
+      }
+      partes.push(ol);
+      if (P.tram.length > 10) { const m = el('p', { class: 'nota' }); m.append(`Mais ${P.tram.length - 10} passos na `, linkExt('ficha de tramitação', urlFicha(id)), '.'); partes.push(m); }
+    }
+    corpo.replaceChildren(...partes);
+  }
+  $('#prop-dlg-fechar').addEventListener('click', () => dlg.close());
+  dlg.addEventListener('click', (ev) => {
+    if (ev.target === dlg) { dlg.close(); return; } // clique fora do quadro
+    const b = ev.target.closest('.prop-vot');
+    if (!b) return;
+    const v = LV.idx.votacoes.find((x) => x.id === b.dataset.vot);
+    dlg.close();
+    if (!v) return;
+    st.leisAno = +v.quando.slice(0, 4); st.leisTipo = 'todas'; st.leisRes = 'todas'; st.leisForma = 'todas'; st.leisBusca = ''; st.leisSel = v.id;
+    drawLeis();
+    setTimeout(() => $('#leis-detalhe').scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+  });
+  document.querySelector('#leis').addEventListener('click', (ev) => {
+    const b = ev.target.closest('.prop-link');
+    if (!b) return;
+    ev.stopPropagation();
+    abrirProjeto(b.dataset.prop);
+  }, true);
+
   const abrirVotacao = (tr) => {
     st.leisSel = tr.dataset.id;
     document.querySelectorAll('#leis-table tr.sel').forEach((t) => t.classList.remove('sel'));
@@ -2168,12 +2313,12 @@
     drawLeisDetalhe();
     $('#leis-detalhe').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
   };
-  $('#leis-table tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-id]'); if (tr && !ev.target.closest('a')) abrirVotacao(tr); });
-  $('#leis-table tbody').addEventListener('keydown', (ev) => { const tr = ev.target.closest('tr[data-id]'); if (tr && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); abrirVotacao(tr); } });
+  $('#leis-table tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-id]'); if (tr && !ev.target.closest('a, button')) abrirVotacao(tr); });
+  $('#leis-table tbody').addEventListener('keydown', (ev) => { const tr = ev.target.closest('tr[data-id]'); if (tr && ev.target === tr && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); abrirVotacao(tr); } });
   $('#csv-leis-votos').addEventListener('click', () => {
     const v = LV.idx.votacoes.find((x) => x.id === st.leisSel); if (!v) return;
     const p = propDe(v);
-    baixarCSV(`monitora-brasil-votacao-${v.id}.csv`, votosFiltradosDetalhe(LV.anos[st.leisAno].porVot[v.id] || []), [
+    baixarCSV(`monitora-brasil-votacao-${v.id}.csv`, votosFiltradosDetalhe(votosDe(v)), [
       { titulo: 'deputado', valor: (x) => nomeDep(x.dep) }, { titulo: 'partido', valor: (x) => x.part }, { titulo: 'UF', valor: (x) => ufDep(x.dep) },
       { titulo: 'voto', valor: (x) => VOTO_NOME[x.v] }, { titulo: 'votação', valor: () => v.id }, { titulo: 'data', valor: () => v.quando },
       { titulo: 'proposição', valor: () => p?.[0] || '' }, { titulo: 'o que foi votado', valor: () => v.desc },
@@ -2181,8 +2326,7 @@
   });
   $('#csv-leis-deputado').addEventListener('click', () => {
     if (st.leisDep == null) return;
-    const A = LV.anos[st.leisAno];
-    const linhas = leisFiltradas().map((v) => ({ v, x: (A.porVot[v.id] || []).find((y) => y.dep === st.leisDep) })).filter((r) => r.x);
+    const linhas = leisFiltradas().filter(ehNominal).map((v) => ({ v, x: votosDe(v).find((y) => y.dep === st.leisDep) })).filter((r) => r.x);
     baixarCSV(`monitora-brasil-votos-${semAcento(nomeDep(st.leisDep)).replace(/\W+/g, '-')}-${st.leisAno}.csv`, linhas, [
       { titulo: 'data', valor: (r) => r.v.quando }, { titulo: 'proposição', valor: (r) => propDe(r.v)?.[0] || '' },
       { titulo: 'o que foi votado', valor: (r) => r.v.desc }, { titulo: 'voto', valor: (r) => VOTO_NOME[r.x.v] }, { titulo: 'partido', valor: (r) => r.x.part },
@@ -2228,6 +2372,7 @@
   on('#leis-ano', (v) => { st.leisAno = +v; st.leisSel = null; });
   on('#leis-tipo', (v) => { st.leisTipo = v; st.leisSel = null; });
   on('#leis-res', (v) => { st.leisRes = v; st.leisSel = null; });
+  on('#leis-forma', (v) => { st.leisForma = v; st.leisSel = null; });
   on('#leis-d-voto', (v) => { st.leisDVoto = v; });
   on('#leis-d-partido', (v) => { st.leisDPart = v; });
   on('#leis-d-uf', (v) => { st.leisDUf = v; });

@@ -315,3 +315,26 @@ td.leis-proj { white-space: normal; min-width: 16rem; max-width: 46rem; text-ali
 .leis-desc .cod { color: var(--muted); font-size: var(--t-sm); }
 .leis-placar { display: grid; gap: 8px; }
 @media (max-width: 560px) { td.leis-proj { min-width: 13rem; } .ctl-busca input { width: 100%; } }
+/* Leis e votação: projeto clicável, votação simbólica e quadro de detalhes */
+.prop-link { all: unset; cursor: pointer; font-weight: 600; color: var(--accent); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 2px; }
+.prop-link:hover { text-decoration-thickness: 2px; }
+.prop-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 2px; }
+.placar-simb { font-size: var(--t-xs); color: var(--muted); border: 1px dashed var(--line); border-radius: 999px; padding: 2px 8px; white-space: nowrap; }
+.dlg { width: min(760px, calc(100vw - 24px)); max-height: calc(100vh - 32px); border: 1px solid var(--line); border-radius: var(--r); padding: 0; background: var(--panel); color: var(--fg); box-shadow: var(--shadow); }
+.dlg::backdrop { background: rgba(10, 20, 15, .45); }
+.dlg-topo { position: sticky; top: 0; display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 16px 20px 12px; background: var(--panel); border-bottom: 1px solid var(--line); z-index: 1; }
+.dlg-topo h2 { font-size: var(--t-lg); font-weight: 600; }
+.dlg-corpo { padding: 14px 20px 4px; display: grid; gap: 10px; }
+.dlg-corpo h3 { font-size: var(--t-md); font-weight: 600; margin-top: 8px; }
+.dlg-fonte { padding: 4px 20px 16px; }
+.prop-tipo { color: var(--muted); font-size: var(--t-sm); }
+.prop-ementa { font-size: var(--t-md); line-height: 1.55; }
+.prop-fatos { display: grid; grid-template-columns: max-content 1fr; gap: 6px 14px; margin: 4px 0 0; font-size: var(--t-sm); }
+.prop-fatos dt { color: var(--muted); }
+.prop-fatos dd { margin: 0; }
+@media (max-width: 560px) { .prop-fatos { grid-template-columns: 1fr; gap: 2px; } .prop-fatos dd { margin-bottom: 6px; } }
+.prop-links { font-size: var(--t-sm); }
+.prop-vots, .prop-tram { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; font-size: var(--t-sm); }
+.prop-vot { all: unset; cursor: pointer; line-height: 1.45; }
+.prop-vot:hover { color: var(--accent); }
+.prop-vot:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }

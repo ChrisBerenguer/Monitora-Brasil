@@ -42,7 +42,8 @@ def baixar(url, tentativas=3, timeout=300):
 
 
 def reduzir(ano):
-    """Baixa os quatro arquivos do ano e guarda só o Plenário com votos nominais."""
+    """Baixa os quatro arquivos do ano e guarda o Plenário: as votações nominais, com o voto de cada
+    deputado, e as simbólicas sobre o texto dos projetos (sem votos individuais)."""
     J = lambda f: json.loads(baixar(ARQ.format(f=f, ano=ano)))['dados']  # noqa: E731
     plen = [v for v in J('votacoes') if v.get('siglaOrgao') == 'PLEN']
     ids = {v['id'] for v in plen}
@@ -63,10 +64,16 @@ def reduzir(ano):
         if x['idVotacao'] in ids:
             orient.setdefault(x['idVotacao'], {})[x['siglaBancada']] = x['orientacao']
     vot = [{k: v.get(k) for k in ('id', 'dataHoraRegistro', 'descricao', 'aprovacao', 'votosSim', 'votosNao', 'votosOutros')}
-           for v in plen if v['id'] in votos]
+           for v in plen if v['id'] in votos or entra_simbolica(v.get('descricao'))]
     return {'votacoes': vot, 'votos': votos, 'deputados': deps,
             'proposicoes': {v['id']: props.get(v['id'], []) for v in vot},
             'orientacoes': {v['id']: orient.get(v['id'], {}) for v in vot}}
+
+
+def entra_simbolica(desc):
+    """Das votações simbólicas, só interessam as que decidem o texto (projeto, redação final, recurso):
+    requerimentos e destaques simbólicos são milhares e não dizem nada sem o voto de cada um."""
+    return tipo_votacao(desc or '') in ('principal', 'outros')
 
 
 def tipo_votacao(desc):
@@ -136,7 +143,7 @@ def main():
         partidos, deps_idx, votos_ano = [], [], {}
         pi, di = {}, {}
         for v in sorted(R['votacoes'], key=lambda v: v['dataHoraRegistro']):
-            vs = R['votos'][v['id']]
+            vs = R['votos'].get(v['id'], [])
             cont = Counter(VOTO.get(x[2], 5) for x in vs)
             cod = []
             for dep, part, voto in vs:
@@ -145,13 +152,14 @@ def main():
                 if dep not in di:
                     di[dep] = len(deps_idx); deps_idx.append(dep)
                 cod.append((di[dep] * 64 + pi[part]) * 8 + VOTO.get(voto, 5))  # deputado, partido e voto num número só
-            votos_ano[v['id']] = cod
+            if vs:
+                votos_ano[v['id']] = cod
             p = proposicao_principal(v.get('descricao') or '', R['proposicoes'].get(v['id'], []))
             if p:
                 proposicoes[str(p['id'])] = [p['titulo'], (p.get('ementa') or '')[:500]]
             org = R['orientacoes'].get(v['id'], {})
             lista.append({
-                'id': v['id'], 'quando': v['dataHoraRegistro'][:16], 'desc': limpar_desc(v['descricao']),
+                'id': v['id'], 'quando': v['dataHoraRegistro'][:16], 'desc': limpar_desc(v['descricao']), 'nominal': bool(vs),
                 'aprovada': v.get('aprovacao'), 'tipo': tipo_votacao(v.get('descricao') or ''),
                 'sim': cont[0], 'nao': cont[1], 'abst': cont[2], 'obstr': cont[3], 'outros': cont[4] + cont[5],
                 'prop': p['id'] if p else None,
@@ -159,7 +167,7 @@ def main():
             })
         assert len(partidos) <= 64, 'mais de 64 partidos num ano: aumentar o espaço do código'
         gravar(f'votos/{ano}.json', {'ano': ano, 'deputados': deps_idx, 'partidos': partidos, 'votos': votos_ano})
-        print(f'  {ano}: {len(votos_ano)} votações nominais, {len(deps_idx)} deputados, {len(partidos)} partidos')
+        print(f'  {ano}: {len(votos_ano)} votações nominais e {sum(1 for v in R["votacoes"] if v["id"] not in votos_ano)} simbólicas, {len(deps_idx)} deputados, {len(partidos)} partidos')
     novo = {
         'coletado_em': date.today().isoformat(),
         'anos': sorted(reduzidos),

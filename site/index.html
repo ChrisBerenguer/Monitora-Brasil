@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=1.32">
+  <link rel="stylesheet" href="assets/css/styles.css?v=1.33">
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -446,7 +446,7 @@
 
     <!-- LEIS E VOTAÇÃO -->
     <section class="pagina" id="leis" role="tabpanel" aria-labelledby="aba-leis" hidden>
-      <p class="nota">O que o Plenário da Câmara dos Deputados votou e como votou cada deputado, desde 2019. Entram só as votações nominais, feitas no painel eletrônico: nas votações simbólicas a Câmara não registra o voto de cada um.</p>
+      <p class="nota">O que o Plenário da Câmara dos Deputados votou e como votou cada deputado, desde 2019, atualizado em tempo real com a API da Câmara. As votações nominais, feitas no painel eletrônico, trazem o voto de cada deputado. As simbólicas sobre o texto dos projetos também aparecem, mas sem votos individuais, que a Câmara não registra. Clique no nome de um projeto para ver os detalhes dele.</p>
       <p class="nota carregando-texto" id="leis-status">Carregando as votações…</p>
 
       <article class="card" data-ctx="proprio">
@@ -471,6 +471,11 @@
             <option value="1">Só aprovadas</option>
             <option value="0">Só rejeitadas</option>
           </select></label>
+          <label class="ctl">Forma de votação <select id="leis-forma">
+            <option value="todas">Nominais e simbólicas</option>
+            <option value="nominal">Só nominais (com o voto de cada um)</option>
+            <option value="simbolica">Só simbólicas</option>
+          </select></label>
           <label class="ctl ctl-busca">Buscar projeto ou assunto <input type="search" id="leis-busca" placeholder="Ex.: PEC 45, imposto, armas" autocomplete="off"></label>
         </div>
         <div class="tabela-box">
@@ -482,7 +487,7 @@
             <tbody></tbody>
           </table>
         </div>
-        <p class="nota so-tela">Clique numa votação para ver como votou cada deputado.</p>
+        <p class="nota so-tela">Clique no nome do projeto para ver os detalhes dele, ou em outro ponto da linha para ver como votou cada deputado.</p>
       </article>
 
       <article class="card" data-ctx="nenhum" id="leis-detalhe">
@@ -495,15 +500,15 @@
         </div>
         <div id="leis-d-desc" class="leis-desc"></div>
         <div class="leis-placar" id="leis-d-placar"></div>
-        <div class="titulo-info sub"><h3>Por partido</h3></div>
-        <div class="tabela-box">
+        <div class="titulo-info sub so-nominal"><h3>Por partido</h3></div>
+        <div class="tabela-box so-nominal">
           <table id="leis-part-table">
             <thead><tr><th scope="col">Partido</th><th scope="col">Sim</th><th scope="col">Não</th><th scope="col" class="some-p">Abstenção e obstrução</th><th scope="col">Votou Sim</th></tr></thead>
             <tbody></tbody>
           </table>
         </div>
-        <div class="titulo-info sub"><h3>Deputados</h3></div>
-        <div class="controles">
+        <div class="titulo-info sub so-nominal"><h3>Deputados</h3></div>
+        <div class="controles so-nominal">
           <label class="ctl">Voto <select id="leis-d-voto">
             <option value="todos">Todos</option><option value="0">Sim</option><option value="1">Não</option><option value="23">Abstenção ou obstrução</option>
           </select></label>
@@ -511,7 +516,7 @@
           <label class="ctl">UF <select id="leis-d-uf"></select></label>
           <label class="ctl ctl-busca">Buscar deputado <input type="search" id="leis-d-busca" placeholder="Nome" autocomplete="off"></label>
         </div>
-        <div class="tabela-box">
+        <div class="tabela-box so-nominal">
           <table id="leis-dep-table">
             <thead><tr><th scope="col">Deputado</th><th scope="col">Partido</th><th scope="col">UF</th><th scope="col">Voto</th></tr></thead>
             <tbody></tbody>
@@ -538,6 +543,15 @@
           </table>
         </div>
       </article>
+
+      <dialog id="prop-dlg" class="dlg" aria-labelledby="prop-dlg-titulo">
+        <div class="dlg-topo">
+          <h2 id="prop-dlg-titulo">Projeto</h2>
+          <button type="button" class="botao" id="prop-dlg-fechar" aria-label="Fechar">Fechar</button>
+        </div>
+        <div id="prop-dlg-corpo" class="dlg-corpo"></div>
+        <p class="nota dlg-fonte">Fonte: Câmara dos Deputados (Dados Abertos), consultada agora.</p>
+      </dialog>
     </section>
 
     <!-- METODOLOGIA -->
@@ -633,6 +647,6 @@
 
   <script src="assets/js/d3.v7.9.0.min.js"></script>
   <script src="assets/js/html-to-image.v1.11.11.min.js"></script>
-  <script src="assets/js/app.js?v=1.32"></script>
+  <script src="assets/js/app.js?v=1.33"></script>
 </body>
 </html>

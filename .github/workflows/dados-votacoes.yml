@@ -1,11 +1,11 @@
 name: Atualizar votações da Câmara (Leis e votação)
 # Baixa os arquivos anuais de votações da Câmara dos Deputados (Dados Abertos) e grava
 # site/data/votacoes.json e site/data/votos/AAAA.json.
-# Roda duas vezes por semana e pode ser disparado à mão em Actions → "Atualizar votações da Câmara (Leis e votação)" → Run workflow.
+# Roda todo dia e pode ser disparado à mão em Actions → "Atualizar votações da Câmara (Leis e votação)" → Run workflow.
 on:
   workflow_dispatch:
   schedule:
-    - cron: '47 8 * * 3,6'   # quarta e sábado, 05h47 em Brasília: pega as sessões de terça e de quarta a sexta
+    - cron: '47 8 * * *'   # todo dia, 05h47 em Brasília (o site completa com a API da Câmara em tempo real)
 permissions:
   contents: write
 concurrency: dados-votacoes

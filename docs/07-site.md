@@ -102,12 +102,18 @@ Quanto cresce cada parte da economia, em volume (sem a inflação), com dados do
 Dados em `industria.json` (doc 06); a coleta é automática (doc 09). Funções `drawIndustria`, `mediaComposta`, `mandatosIndustria` e `industriaOrdenada`.
 
 ### Leis e votação (`#leis`)
-O que o Plenário da Câmara votou e como votou cada deputado, desde 2019, só nas votações nominais. Os dados (`votacoes.json` e `votos/AAAA.json`, doc 06) são carregados só quando a aba abre, para não pesar nas outras. Três cartões:
-- **Votações nominais no Plenário:** filtros de **ano**, **o que foi votado** (texto dos projetos, o padrão; urgência; outros requerimentos; destaques e emendas; outros; todas), **resultado** e **busca** por projeto ou assunto (sem acento, todas as palavras). Cada linha traz a data, o projeto com a ementa, o que foi votado, o placar em barra (Sim, Não, outros), o resultado e a orientação do Governo. Clicar numa linha (ou Enter) abre o cartão seguinte.
+O que o Plenário da Câmara votou e como votou cada deputado, desde 2019. Os dados (`votacoes.json` e `votos/AAAA.json`, doc 06) são carregados só quando a aba abre, para não pesar nas outras.
+
+**Tempo real.** Ao abrir a aba, o site pede à função `/api/votacoes-recentes` (pasta `api/`, roda na Vercel) as votações do Plenário desde a data da última votação do arquivo e as junta à lista; o texto do primeiro cartão diz a hora da consulta. Se a função não responder (fora da Vercel, por exemplo), ficam os dados da coleta diária. A função `/api/camara` repassa ao site consultas de leitura à API da Câmara (proposições e votações, só caminhos da lista `PERMITIDOS`): o navegador não pode chamar a API direto, porque ela não libera CORS e a política de segurança do site só permite conexões ao próprio domínio. As respostas ficam 10 a 15 minutos no cache da Vercel.
+
+**Detalhes do projeto.** O nome do projeto, nas tabelas e no cartão de votos, é um botão que abre um quadro (`<dialog id="prop-dlg">`) com dados consultados na hora: tipo, ementa, situação atual e último andamento, data de apresentação, autores, temas, regime, forma de apreciação, palavras-chave, links para o texto original e a ficha de tramitação, as votações do projeto no Plenário (clicáveis) e os dez últimos passos da tramitação.
+
+Três cartões:
+- **Votações nominais no Plenário:** filtros de **ano**, **o que foi votado** (texto dos projetos, o padrão; urgência; outros requerimentos; destaques e emendas; outros; todas), **resultado**, **forma de votação** (nominais, com o voto de cada um, ou simbólicas) e **busca** por projeto ou assunto (sem acento, todas as palavras). Cada linha traz a data, o projeto com a ementa, o que foi votado, o placar em barra (Sim, Não, outros), o resultado e a orientação do Governo. Clicar numa linha (ou Enter) abre o cartão seguinte.
 - **Como votou cada deputado:** o projeto com link para a ficha de tramitação na Câmara, o placar completo, a tabela **por partido** (Sim, Não, abstenção e obstrução, e a parte de votos Sim) e a lista de deputados, com filtros de voto, partido, UF e nome, e **Baixar CSV**.
 - **Como votou um deputado:** escolha o deputado (lista com nome e UF); aparecem os votos dele nas votações do primeiro cartão (mesmos filtros), com o resumo de quantas votou, Sim e Não, e quantas vezes acompanhou a orientação do Governo. **Baixar CSV**.
 
-Funções `drawLeis`, `drawLeisDetalhe`, `drawLeisDeputado`, `leisFiltradas` e `carregarLeis` (objeto `LV` guarda os dados carregados).
+Funções `drawLeis`, `drawLeisDetalhe`, `drawLeisDeputado`, `leisFiltradas`, `carregarLeis`, `buscarVivo` e `abrirProjeto` (objeto `LV` guarda os dados carregados). Votações simbólicas mostram "Simbólica" no lugar do placar e, no cartão de votos, um aviso no lugar das tabelas.
 
 ### Metodologia (`#metodo`)
 Resumo do cálculo, composição das coortes, limitações e a tabela dos 40 indicadores.
