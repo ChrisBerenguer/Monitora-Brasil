@@ -11,6 +11,7 @@
 - A coleta das votações passa a ser diária.
 - O cartão "Como votou cada deputado" abre com a votação nominal mais recente da lista, e não com uma simbólica, que não tem votos. Numa votação simbólica, o cartão mostra atalhos para as votações nominais do mesmo projeto.
 - A lista de votações abre com **Só nominais** (as que têm o voto de cada deputado); as simbólicas aparecem ao escolher "Nominais e simbólicas". Clicar numa votação simbólica abre os detalhes do projeto, com um aviso e as votações nominais dele, em vez de esvaziar o cartão de votos.
+- O painel só redesenha os gráficos quando a largura da tela muda. Antes, abrir uma votação mudava a altura da página, redesenhava tudo e a lista de votações voltava ao topo.
 
 ## 1.32 — 30/10/2026
 

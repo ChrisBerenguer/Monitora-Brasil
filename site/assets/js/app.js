@@ -2432,7 +2432,14 @@
   }
 
   let rz;
-  new ResizeObserver(() => { clearTimeout(rz); rz = setTimeout(render, 120); }).observe($('main'));
+  // redesenha só quando a largura muda: mudar a altura (abrir um cartão, filtrar uma tabela) não pede novo desenho,
+  // e redesenhar à toa recriava as tabelas e perdia a rolagem da lista
+  let larguraMain = 0;
+  new ResizeObserver(([e]) => {
+    const w = Math.round(e.contentRect.width);
+    if (w === larguraMain) return;
+    larguraMain = w; clearTimeout(rz); rz = setTimeout(render, 120);
+  }).observe($('main'));
 
   // ---------------------------------------------------------------- início
   document.querySelectorAll('.grafico').forEach((g) => g.classList.add('carregando'));
