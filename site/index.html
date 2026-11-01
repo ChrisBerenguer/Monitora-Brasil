@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=1.33.3">
+  <link rel="stylesheet" href="assets/css/styles.css?v=1.33.4">
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -472,8 +472,8 @@
             <option value="0">Só rejeitadas</option>
           </select></label>
           <label class="ctl">Forma de votação <select id="leis-forma">
-            <option value="todas">Nominais e simbólicas</option>
             <option value="nominal">Só nominais (com o voto de cada um)</option>
+            <option value="todas">Nominais e simbólicas</option>
             <option value="simbolica">Só simbólicas</option>
           </select></label>
           <label class="ctl ctl-busca">Buscar projeto ou assunto <input type="search" id="leis-busca" placeholder="Ex.: PEC 45, imposto, armas" autocomplete="off"></label>
@@ -487,7 +487,7 @@
             <tbody></tbody>
           </table>
         </div>
-        <p class="nota so-tela">Clique no nome do projeto para ver os detalhes dele, ou em outro ponto da linha para ver como votou cada deputado.</p>
+        <p class="nota so-tela">Clique no nome do projeto para ver os detalhes dele, ou em outro ponto da linha para ver como votou cada deputado. Nas votações simbólicas, a linha abre os detalhes do projeto.</p>
       </article>
 
       <article class="card" data-ctx="nenhum" id="leis-detalhe">
@@ -647,6 +647,6 @@
 
   <script src="assets/js/d3.v7.9.0.min.js"></script>
   <script src="assets/js/html-to-image.v1.11.11.min.js"></script>
-  <script src="assets/js/app.js?v=1.33.3"></script>
+  <script src="assets/js/app.js?v=1.33.4"></script>
 </body>
 </html>

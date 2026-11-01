@@ -59,7 +59,7 @@
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
     ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cbMa: '2019–2022', cbMb: '2023–2026', cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
     estFiltro: 'todas', estSort: { key: null, dir: -1 }, estSemVendas: true,
-    leisAno: null, leisTipo: 'principal', leisRes: 'todas', leisForma: 'todas', leisBusca: '', leisSel: null, leisDVoto: 'todos', leisDPart: 'todos', leisDUf: 'todos', leisDBusca: '', leisDep: null,
+    leisAno: null, leisTipo: 'principal', leisRes: 'todas', leisForma: 'nominal', leisBusca: '', leisSel: null, leisDVoto: 'todos', leisDPart: 'todos', leisDUf: 'todos', leisDBusca: '', leisDep: null,
     indModo: 'indice', indBase: 2002, indFiltro: 'todas', indSort: { key: null, dir: -1 },
   };
   let D = null; // dados carregados e indexados
@@ -2087,6 +2087,7 @@
     const hora = LV.vivo ? new Date(LV.vivo.consultado).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) : null;
     $('#leis-nota').textContent = `Em ${st.leisAno}, o Plenário fez ${f0(nomin.length)} votações nominais, e ${f0(princ.length)} votações (nominais ou simbólicas) sobre o texto de um projeto, ${f0(princ.filter((v) => v.aprovada === 1).length)} delas aprovando o texto.`
       + ` Com os filtros, ${f0(lista.length)} votaç${lista.length === 1 ? 'ão' : 'ões'}.`
+      + (st.leisForma === 'nominal' && doAno.length > nomin.length ? ` Há ainda ${f0(doAno.length - nomin.length)} votações simbólicas, sem o voto de cada deputado: escolha "Nominais e simbólicas" em Forma de votação para vê-las.` : '')
       + (ult ? ` Última votação: ${dataBR(ult)}.` : '')
       + (LV.vivo ? ` Atualizado em tempo real com a API da Câmara (consulta às ${hora}).`
         : LV.vivoErro ? ` A API da Câmara não respondeu agora; dados da coleta de ${fmtData(LV.idx.coletado_em)}.` : ' Consultando a Câmara…');
@@ -2225,7 +2226,7 @@
     if (valor instanceof Node) dd.append(valor); else dd.textContent = valor;
     dl.append(dd);
   }
-  async function abrirProjeto(id) {
+  async function abrirProjeto(id, simbolica = null) {
     id = +id;
     const corpo = $('#prop-dlg-corpo');
     const local = LV.idx?.proposicoes[id];
@@ -2249,6 +2250,13 @@
     } catch (e) { P = null; }
     if (dlg.dataset.prop !== String(id)) return; // outro projeto foi aberto enquanto este carregava
     const partes = [];
+    if (simbolica) {
+      const av = el('p', { class: 'prop-aviso' });
+      av.append(el('b', {}, 'Votação simbólica. '), `Em ${dataBR(simbolica.quando)}, o Plenário decidiu "${simbolica.desc}" sem registrar o voto de cada deputado, por isso não há lista de votos.`);
+      const nominais = vots.filter(ehNominal);
+      av.append(nominais.length ? ' As votações nominais deste projeto estão na lista abaixo: clique numa delas para ver como votou cada deputado.' : ' Este projeto não teve votação nominal no Plenário.');
+      partes.push(av);
+    }
     if (P) {
       const d = P.dados, s = d.statusProposicao || {};
       $('#prop-dlg-titulo').textContent = `${d.siglaTipo} ${d.numero}/${d.ano}`;
@@ -2328,6 +2336,8 @@
   }, true);
 
   const abrirVotacao = (tr) => {
+    const v = LV.idx.votacoes.find((x) => x.id === tr.dataset.id);
+    if (v && !ehNominal(v) && v.prop != null) { abrirProjeto(v.prop, v); return; }
     st.leisSel = tr.dataset.id;
     document.querySelectorAll('#leis-table tr.sel').forEach((t) => t.classList.remove('sel'));
     tr.classList.add('sel');
