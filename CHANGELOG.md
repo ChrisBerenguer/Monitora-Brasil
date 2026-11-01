@@ -9,6 +9,7 @@
 
 ### Alterado
 - A coleta das votações passa a ser diária.
+- O cartão "Como votou cada deputado" abre com a votação nominal mais recente da lista, e não com uma simbólica, que não tem votos. Numa votação simbólica, o cartão mostra atalhos para as votações nominais do mesmo projeto.
 
 ## 1.32 — 30/10/2026
 

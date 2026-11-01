@@ -2090,7 +2090,8 @@
       + (ult ? ` Última votação: ${dataBR(ult)}.` : '')
       + (LV.vivo ? ` Atualizado em tempo real com a API da Câmara (consulta às ${hora}).`
         : LV.vivoErro ? ` A API da Câmara não respondeu agora; dados da coleta de ${fmtData(LV.idx.coletado_em)}.` : ' Consultando a Câmara…');
-    if (!lista.some((v) => v.id === st.leisSel)) st.leisSel = lista[0]?.id ?? null;
+    // abre de início a votação nominal mais recente: as simbólicas não têm voto de cada deputado
+    if (!lista.some((v) => v.id === st.leisSel)) st.leisSel = (lista.find(ehNominal) || lista[0])?.id ?? null;
     const tb = $('#leis-table tbody'); tb.replaceChildren();
     for (const v of lista) {
       const tr = el('tr', { class: 'leis-linha' + (v.id === st.leisSel ? ' sel' : ''), tabindex: '0', 'data-id': v.id });
@@ -2131,6 +2132,18 @@
     const pl = $('#leis-d-placar'); pl.replaceChildren();
     if (!nominal) {
       pl.append(el('p', { class: 'nota' }, ehNominal(v) ? 'Os votos desta votação ainda não estão disponíveis.' : 'Votação simbólica: o presidente da sessão anuncia o resultado sem registrar o voto de cada deputado. Por isso não há lista de votos.'));
+      // atalho para as votações nominais do mesmo projeto, que têm o voto de cada um
+      const irmas = v.prop != null ? LV.idx.votacoes.filter((x) => x.prop === v.prop && ehNominal(x) && x.id !== v.id).sort((a, b) => b.quando.localeCompare(a.quando)) : [];
+      if (irmas.length) {
+        pl.append(el('p', { class: 'nota' }, `Este projeto teve ${irmas.length} votaç${irmas.length > 1 ? 'ões nominais' : 'ão nominal'}. Veja como cada deputado votou:`));
+        const ul = el('ul', { class: 'prop-vots' });
+        for (const x of irmas.slice(0, 8)) {
+          const b = el('button', { type: 'button', class: 'prop-vot', 'data-vot': x.id });
+          b.append(el('span', { class: 'cod' }, dataBR(x.quando)), ` ${TIPO_NOME[x.tipo]}: ${x.desc} `, el('b', { class: resCls(x) }, resTxt(x)), ` · ${x.sim} × ${x.nao}`);
+          const li = el('li'); li.append(b); ul.append(li);
+        }
+        pl.append(ul);
+      }
       return;
     }
     // placar
@@ -2290,6 +2303,12 @@
     corpo.replaceChildren(...partes);
   }
   $('#prop-dlg-fechar').addEventListener('click', () => dlg.close());
+  $('#leis-d-placar').addEventListener('click', (ev) => {
+    const b = ev.target.closest('.prop-vot'); if (!b) return;
+    const v = LV.idx.votacoes.find((x) => x.id === b.dataset.vot); if (!v) return;
+    st.leisAno = +v.quando.slice(0, 4); st.leisTipo = 'todas'; st.leisRes = 'todas'; st.leisForma = 'todas'; st.leisBusca = ''; st.leisSel = v.id;
+    drawLeis();
+  });
   dlg.addEventListener('click', (ev) => {
     if (ev.target === dlg) { dlg.close(); return; } // clique fora do quadro
     const b = ev.target.closest('.prop-vot');
