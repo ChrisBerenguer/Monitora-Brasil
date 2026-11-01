@@ -1,7 +1,20 @@
 // Funções comuns às rotas /api da Câmara (arquivos com "_" não viram rota na Vercel).
 const BASE = 'https://dadosabertos.camara.leg.br/api/v2/';
 
-async function camara(caminho, { tentativas = 2, timeout = 9000 } = {}) {
+// cache na memória da função: enquanto a instância segue viva, repete a resposta por 10 minutos
+const MEMO = new Map();
+const MEMO_MS = 10 * 60 * 1000;
+
+async function camara(caminho, opts) {
+  const m = MEMO.get(caminho);
+  if (m && Date.now() - m.t < MEMO_MS) return m.j;
+  const j = await camaraDireto(caminho, opts);
+  if (MEMO.size > 500) MEMO.clear();
+  MEMO.set(caminho, { t: Date.now(), j });
+  return j;
+}
+
+async function camaraDireto(caminho, { tentativas = 2, timeout = 9000 } = {}) {
   let erro;
   for (let t = 0; t < tentativas; t++) {
     const ctl = new AbortController();

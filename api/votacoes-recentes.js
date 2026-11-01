@@ -49,6 +49,7 @@ module.exports = async (req, res) => {
       };
     })).filter(Boolean);
     res.setHeader('Cache-Control', 'public, s-maxage=600, stale-while-revalidate=1800');
+    res.setHeader('Vercel-CDN-Cache-Control', 'max-age=600, stale-while-revalidate=1800');
     res.status(200).json({ consultado_em: new Date().toISOString(), desde, votacoes, deputados, proposicoes, votos });
   } catch (e) {
     res.status(502).json({ erro: `a API da Câmara não respondeu (${e.message})` });

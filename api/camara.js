@@ -22,6 +22,7 @@ module.exports = async (req, res) => {
   try {
     const j = await camara(caminho + (q.toString() ? `?${q}` : ''));
     res.setHeader('Cache-Control', 'public, s-maxage=900, stale-while-revalidate=3600');
+    res.setHeader('Vercel-CDN-Cache-Control', 'max-age=900, stale-while-revalidate=3600');
     res.status(200).json(j);
   } catch (e) {
     res.status(502).json({ erro: `a API da Câmara não respondeu (${e.message})` });

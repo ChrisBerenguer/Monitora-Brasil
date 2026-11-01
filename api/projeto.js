@@ -13,6 +13,7 @@ module.exports = async (req, res) => {
       camara(`proposicoes/${id}/tramitacoes`).catch(() => ({ dados: [] })),
     ]);
     res.setHeader('Cache-Control', 'public, s-maxage=900, stale-while-revalidate=3600');
+    res.setHeader('Vercel-CDN-Cache-Control', 'max-age=900, stale-while-revalidate=3600');
     res.status(200).json({ dados: dados.dados, autores: autores.dados, temas: temas.dados, tram: tram.dados });
   } catch (e) {
     res.status(502).json({ erro: `a API da Câmara não respondeu (${e.message})` });
