@@ -66,14 +66,16 @@ THEMES = [
  ('bem','Bem-Estar e Sustentabilidade'),
 ]
 COHORTS = {
- 'latam': ('América Latina', ['arg','chl','col','mex','per','ury']),
+ # América do Sul inteira (menos o Brasil, que é comparado contra o grupo) e o México
+ 'latam': ('América Latina', ['arg','bol','chl','col','ecu','guy','mex','pry','per','sur','ury','ven']),
  'brics': ('BRICS', ['chn','ind','rus','zaf']),
  'ocde':  ('OCDE (referência)', ['usa','deu','fra','gbr','jpn','kor','can','esp','ita','aus','prt','pol']),
 }
 NAMES = {'bra':'Brasil','arg':'Argentina','chl':'Chile','col':'Colômbia','mex':'México','per':'Peru','ury':'Uruguai',
  'chn':'China','ind':'Índia','rus':'Rússia','zaf':'África do Sul','usa':'Estados Unidos','deu':'Alemanha','fra':'França',
  'gbr':'Reino Unido','jpn':'Japão','kor':'Coreia do Sul','can':'Canadá','esp':'Espanha','ita':'Itália','aus':'Austrália',
- 'prt':'Portugal','pol':'Polônia'}
+ 'prt':'Portugal','pol':'Polônia',
+ 'bol':'Bolívia','ecu':'Equador','guy':'Guiana','pry':'Paraguai','sur':'Suriname','ven':'Venezuela'}
 FOCUS = ['bra'] + [c for k in COHORTS for c in COHORTS[k][1]]
 
 # países reais

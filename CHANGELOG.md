@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## 1.34 — 06/11/2026
+
+### Alterado
+- **Coorte América Latina ampliada para a América do Sul inteira:** além de Argentina, Chile, Colômbia, México, Peru e Uruguai, passam a entrar Bolívia, Equador, Guiana, Paraguai, Suriname e Venezuela (12 países). Os seis novos também podem ser escolhidos nas Séries temporais. Com isso mudam as médias, medianas e faixas da América Latina e a posição do Brasil contra o grupo em todos os anos. Exemplo: no escore geral de 2025, a média do grupo passa de 50,1 para 48,0 e o Brasil supera 4 de 11 países, contra 1 de 6 antes.
+- Dados brutos do Banco Mundial baixados de novo: pequenas revisões da fonte mudam alguns escores (o Brasil, por exemplo, passa da 80ª para a 78ª posição em 2013). A posição de 2025 (100ª entre 176) não muda.
+- Nas Séries temporais, a cor de cada país passa a seguir a ordem de escolha (o Brasil fica sempre com a primeira), para não repetir cores com 29 países e 8 cores.
+
 ## 1.33 — 01/11/2026
 
 ### Adicionado

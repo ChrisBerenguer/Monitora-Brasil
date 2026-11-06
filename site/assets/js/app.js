@@ -33,15 +33,16 @@
   ];
   const TNOME = Object.fromEntries(TEMAS.map((t) => [t.id, t.nome]));
   const COORTES = [
-    { id: 'latam', nome: 'América Latina', curto: 'Am. Latina', membros: ['arg', 'chl', 'col', 'mex', 'per', 'ury'] },
+    { id: 'latam', nome: 'América Latina', curto: 'Am. Latina', membros: ['arg', 'bol', 'chl', 'col', 'ecu', 'guy', 'mex', 'pry', 'per', 'sur', 'ury', 'ven'] },
     { id: 'brics', nome: 'BRICS', curto: 'BRICS', membros: ['chn', 'ind', 'rus', 'zaf'] },
     { id: 'ocde', nome: 'OCDE (referência)', curto: 'OCDE', membros: ['usa', 'deu', 'fra', 'gbr', 'jpn', 'kor', 'can', 'esp', 'ita', 'aus', 'prt', 'pol'] },
     { id: 'umic', nome: 'Renda média-alta (Banco Mundial)', curto: 'Renda média-alta', membros: null },
     { id: 'mundo', nome: 'Mundo (todos os países)', curto: 'Mundo', membros: null },
   ];
   const CNOME = Object.fromEntries(COORTES.map((c) => [c.id, c.nome]));
-  const PAIS = { bra: 'Brasil', arg: 'Argentina', chl: 'Chile', col: 'Colômbia', mex: 'México', per: 'Peru', ury: 'Uruguai', chn: 'China', ind: 'Índia', rus: 'Rússia', zaf: 'África do Sul', usa: 'Estados Unidos', deu: 'Alemanha', fra: 'França', gbr: 'Reino Unido', jpn: 'Japão', kor: 'Coreia do Sul', can: 'Canadá', esp: 'Espanha', ita: 'Itália', aus: 'Austrália', prt: 'Portugal', pol: 'Polônia' };
-  const ORDEM_PAISES = Object.keys(PAIS);
+  const PAIS = { bra: 'Brasil', arg: 'Argentina', chl: 'Chile', col: 'Colômbia', mex: 'México', per: 'Peru', ury: 'Uruguai', chn: 'China', ind: 'Índia', rus: 'Rússia', zaf: 'África do Sul', usa: 'Estados Unidos', deu: 'Alemanha', fra: 'França', gbr: 'Reino Unido', jpn: 'Japão', kor: 'Coreia do Sul', can: 'Canadá', esp: 'Espanha', ita: 'Itália', aus: 'Austrália', prt: 'Portugal', pol: 'Polônia', bol: 'Bolívia', ecu: 'Equador', guy: 'Guiana', pry: 'Paraguai', sur: 'Suriname', ven: 'Venezuela' };
+  // ordem dos botões de países: Brasil, depois os membros de cada grupo
+  const ORDEM_PAISES = ['bra', ...COORTES.filter((c) => c.membros).flatMap((c) => c.membros)];
   const PERIODOS = ['1995–1998', '1999–2002', '2003–2006', '2007–2010', '2011–2014', '2015–2018', '2019–2022', '2023–2026'];
   const MANDATO = { '1995–1998': 'FHC 1', '1999–2002': 'FHC 2', '2003–2006': 'Lula 1', '2007–2010': 'Lula 2', '2011–2014': 'Dilma 1', '2015–2018': 'Dilma 2 / Temer', '2019–2022': 'Bolsonaro', '2023–2026': 'Lula 3 (até 2025)' };
   const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'vida', 'estatais', 'industria', 'leis'];
@@ -78,7 +79,14 @@
   const sgn = (v, f) => v == null || Number.isNaN(v) ? '—' : (v > 0 ? '+' : v < 0 ? '−' : '') + f(Math.abs(v));
   const css = (name) => getComputedStyle(document.documentElement).getPropertyValue(name).trim();
   const cor = (i) => css(`--s${i % 8}`);
-  const corPais = (p) => cor(ORDEM_PAISES.indexOf(p));
+  /** Cor de cada país no gráfico de séries: o Brasil fica sempre com a primeira cor; os outros recebem as demais
+   *  na ordem em que foram escolhidos (com 29 países e 8 cores, uma cor fixa por país repetiria cores na tela).
+   *  Países não escolhidos ficam cinza no botão. */
+  const corPais = (p) => {
+    if (p === 'bra') return cor(0);
+    const i = st.paises.filter((q) => q !== 'bra').indexOf(p);
+    return i < 0 ? css('--chart-muted') : cor(1 + (i % 7));
+  };
   const largura = (box) => Math.max(280, box.clientWidth);
   /** Formato dos rótulos de eixo pelo passo entre marcas (evita "0,00" ao lado de "80.000"). */
   const tickFmt = (ticks) => { const step = ticks.length > 1 ? Math.abs(ticks[1] - ticks[0]) : 1; return step >= 1 ? f0 : step >= 0.1 ? f1 : f2; };

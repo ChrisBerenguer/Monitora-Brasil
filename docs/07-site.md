@@ -62,7 +62,7 @@ Todos os outros números exibidos vêm diretamente dos JSON. Nenhum número est�
 - **Países comparados:** tabela ordenável dos 23 países, com cor de calor e botão **Baixar CSV**.
 
 ### Séries temporais (`#series`)
-- Indicador, faixa da coorte, ano inicial e final, e botões de países (vários ao mesmo tempo).
+- Indicador, faixa da coorte, ano inicial e final, e botões de países (vários ao mesmo tempo), agrupados por coorte. O Brasil tem sempre a primeira cor; os outros países recebem as demais cores na ordem em que foram escolhidos (`corPais`), para não repetir cor na tela até oito países.
 - Gráfico de linhas com rótulo no fim de cada série e tooltip por ano. Botão **Baixar CSV** com as séries exibidas.
 - **Botão "i"** à direita do rótulo "Indicador" e do título do gráfico (ver "Explicações para leigos" abaixo).
 - **Comparar dois mandatos:** tabela com médias, variação absoluta e percentual (colorida pelo sentido do indicador), mediana e desvio do mandato B e tendências anuais. Cada coluna tem um "i" que explica o que ela mede e como ler, com um exemplo calculado na hora com os números do Brasil para o indicador e os mandatos escolhidos. Quando o indicador já é uma porcentagem, a coluna se chama **Variação (p.p.)**, de pontos percentuais.

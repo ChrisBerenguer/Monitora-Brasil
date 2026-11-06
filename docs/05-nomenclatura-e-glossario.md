@@ -131,11 +131,17 @@ Os códigos WDI seguem o padrão `TÓPICO.ASSUNTO.MEDIDA.UNIDADE`:
 |---|---|---|
 | `bra` | Brasil | (foco) |
 | `arg` | Argentina | América Latina |
+| `bol` | Bolívia | América Latina |
 | `chl` | Chile | América Latina |
 | `col` | Colômbia | América Latina |
+| `ecu` | Equador | América Latina |
+| `guy` | Guiana | América Latina |
 | `mex` | México | América Latina |
+| `pry` | Paraguai | América Latina |
 | `per` | Peru | América Latina |
+| `sur` | Suriname | América Latina |
 | `ury` | Uruguai | América Latina |
+| `ven` | Venezuela | América Latina |
 | `chn` | China | BRICS |
 | `ind` | Índia | BRICS |
 | `rus` | Rússia | BRICS |

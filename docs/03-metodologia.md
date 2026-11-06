@@ -67,11 +67,13 @@ O Brasil **não** é incluído nas coortes América Latina, BRICS e OCDE (é com
 
 | Id | Nome | Membros |
 |---|---|---|
-| `latam` | América Latina | Argentina, Chile, Colômbia, México, Peru, Uruguai |
+| `latam` | América Latina | Toda a América do Sul (Argentina, Bolívia, Chile, Colômbia, Equador, Guiana, Paraguai, Peru, Suriname, Uruguai e Venezuela) e o México. Até a versão 1.33 eram só Argentina, Chile, Colômbia, México, Peru e Uruguai |
 | `brics` | BRICS | China, Índia, Rússia, África do Sul (Brasil à parte) |
 | `ocde` | OCDE (referência) | EUA, Alemanha, França, Reino Unido, Japão, Coreia do Sul, Canadá, Espanha, Itália, Austrália, Portugal, Polônia |
 | `umic` | Renda média-alta | Todos os países classificados pelo Banco Mundial como *upper middle income* no arquivo de entidades |
 | `mundo` | Mundo | Todos os Estados-membros da ONU com dado |
+
+Na América Latina, a Venezuela deixou de publicar boa parte dos dados ao Banco Mundial depois de meados da década de 2010; nos anos sem dado ela simplesmente não entra na média do grupo (o campo `n` de cada estatística mostra quantos países entraram).
 
 A coorte BRICS usa os membros originais (até 2023). A expansão de 2024–2025 (Egito, Etiópia, Irã, Emirados, Indonésia) não foi incluída para manter a comparabilidade histórica.
 
