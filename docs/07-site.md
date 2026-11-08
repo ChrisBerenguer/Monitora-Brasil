@@ -103,7 +103,7 @@ Dados em `industria.json` (doc 06); a coleta é automática (doc 09). Funções 
 
 ### Contas públicas (`#fiscal`)
 As contas do governo segundo o Banco Central (`contas_publicas.json`, doc 06). Dois cartões:
-- **Resultado primário:** barras por ano em % do PIB (para cima, superávit; para baixo, déficit), coloridas por mandato, com a linha tracejada da média por ano de cada governo e, por último, uma barra clara com o acumulado em 12 meses do ano corrente. **Esfera** troca entre setor público consolidado (padrão), governo central, estados e municípios e estatais. Abaixo, a tabela da média por ano em cada mandato para todas as esferas, os juros e o resultado nominal.
+- **Resultado primário:** barras por ano em % do PIB (para cima, superávit; para baixo, déficit), coloridas por mandato, com a linha tracejada da média por ano de cada governo e, por último, uma barra clara com o acumulado em 12 meses do ano corrente. **Esfera** troca entre setor público consolidado (padrão), governo central, estados e municípios e estatais. Na esfera estatais, o texto avisa que o número não é o lucro da aba Estatais: o Banco Central exclui Petrobras, Eletrobras e bancos públicos, inclui as estatais de estados e municípios e mede o caixa (investimento conta como gasto; dividendo pago ao governo sai da conta da estatal). Abaixo, a tabela da média por ano em cada mandato para todas as esferas, os juros e o resultado nominal.
 - **Primário, juros e resultado nominal:** linhas do setor público consolidado desde 2002, com as faixas dos mandatos, e **Baixar CSV** com todas as séries anuais.
 
 O texto do topo da aba leva às Séries temporais já com o saldo primário do FMI, que compara o Brasil com os outros países. Funções `drawFiscal` e `mediaMandato`.

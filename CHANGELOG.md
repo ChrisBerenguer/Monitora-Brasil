@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.35.1 — 08/11/2026
+
+### Alterado
+- Contas públicas: a esfera "Estatais" passa a se chamar "Estatais (sem Petrobras, Eletrobras e bancos)" e ganha um aviso, no texto e no "i", explicando por que o resultado primário delas no Banco Central não é o lucro mostrado na aba Estatais.
+
 ## 1.35 — 08/11/2026
 
 ### Adicionado

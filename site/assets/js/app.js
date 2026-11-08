@@ -671,7 +671,8 @@
   };
   const CARD_INFO = {
     'fis-primario': { titulo: 'Resultado primário do setor público', blocos: [
-      ['O que mostra', 'Quanto sobrou (superávit, barra para cima) ou faltou (déficit, barra para baixo) nas contas públicas em cada ano, sem contar os juros da dívida, em % do PIB. É o número das metas fiscais. O setor público consolidado soma o governo central (União, Previdência e Banco Central), os estados e municípios e as empresas estatais, menos Petrobras e bancos públicos.'],
+      ['O que mostra', 'Quanto sobrou (superávit, barra para cima) ou faltou (déficit, barra para baixo) nas contas públicas em cada ano, sem contar os juros da dívida, em % do PIB. É o número das metas fiscais. O setor público consolidado soma o governo central (União, Previdência e Banco Central), os estados e municípios e as empresas estatais, menos Petrobras, Eletrobras e bancos públicos.'],
+      ['Estatais aqui e na aba Estatais', 'São medidas diferentes. A aba Estatais mostra o lucro líquido contábil das estatais federais, incluindo Petrobras, Banco do Brasil, Caixa e BNDES, que concentram quase todo o lucro. Aqui, o Banco Central exclui essas empresas (Petrobras desde 2009, Eletrobras desde 2010, e nunca incluiu os bancos), soma as estatais de estados e municípios e mede o caixa: receitas menos despesas não financeiras. Investimentos contam inteiros como gasto no ano em que são feitos, e os dividendos que a estatal paga ao governo saem da conta dela e entram na do governo central. Por isso as estatais podem dar lucro e ainda assim aparecer com pequeno déficit primário.'],
       ['Como ler', 'Cada barra é um ano; a cor marca o governo, e a linha tracejada é a média por ano daquele governo. A última barra, mais clara, é o acumulado em 12 meses até o último mês publicado. A tabela traz a média por ano em cada mandato, para cada esfera, e também os juros e o resultado nominal.'],
       ['Atenção', 'O Banco Central mede pelo financiamento (quanto a dívida variou), e não pelas receitas e despesas como o Tesouro; os números do governo central podem diferir um pouco dos do Tesouro. Anos de crise e eleição pesam: 2020 teve o maior déficit por causa dos gastos da pandemia. A série do setor público consolidado começa em 2002; a do governo central e a dos estados e municípios, antes.'],
     ] },
@@ -2036,7 +2037,9 @@
     const txt = (v) => (v >= 0 ? `superávit primário de ${f2(v)}% do PIB` : `déficit primário de ${f2(-v)}% do PIB`);
     $('#fis-nota').textContent = `Em ${ua}, ${nomeEsfera} teve ${txt(s.anual[ua])}.`
       + (u.mes.slice(0, 4) > String(ua) ? ` Nos ${u.rotulo}, ${txt(u.valor)}.` : '')
-      + ` Positivo é superávit (sobrou dinheiro antes dos juros); negativo é déficit. Dados do Banco Central coletados em ${fmtData(F.coletado_em)}.`;
+      + ` Positivo é superávit (sobrou dinheiro antes dos juros); negativo é déficit.`
+      + (st.fisEsfera === 'estatais' ? ' Atenção: não é o lucro das estatais. O Banco Central deixa de fora Petrobras, Eletrobras e os bancos públicos (Banco do Brasil, Caixa, BNDES), que respondem pela maior parte do lucro mostrado na aba Estatais, e mede o caixa: investimentos contam como gasto e dividendos pagos ao governo saem da conta da empresa. Entram também as estatais de estados e municípios.' : '')
+      + ` Dados do Banco Central coletados em ${fmtData(F.coletado_em)}.`;
     // barras: anos completos e, por último, o acumulado em 12 meses do ano corrente
     const rows = anos.map((a) => ({ label: String(a), v: s.anual[a], a }));
     if (u.mes.slice(0, 4) > String(ua)) rows.push({ label: `12m ${u.mes.slice(5)}/${u.mes.slice(2, 4)}`, v: u.valor, a: +u.mes.slice(0, 4), fraco: true });
