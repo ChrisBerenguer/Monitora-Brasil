@@ -1,5 +1,6 @@
 """Baixa as séries brutas usadas pelo painel para a pasta brutos/.
-Fonte: espelho do World Development Indicators (Banco Mundial) e do Gapminder mantido em github.com/open-numbers.
+Fonte: espelho do World Development Indicators (Banco Mundial) e do Gapminder mantido em github.com/open-numbers,
+e a API do DataMapper do FMI (saldo primário do governo geral).
 Uso: python baixar_brutos.py && python build_dados.py
 """
 import os, urllib.request
@@ -18,3 +19,18 @@ jobs += [(f'{WDI}/ddf--entities--geo--country.csv', 'countries.csv'),
          (f'{SG}/ddf--datapoints--hdi_human_development_index--by--geo--time.csv', 'hdi.csv')]
 for url, name in jobs:
     print('baixando', name); urllib.request.urlretrieve(url, os.path.join(DST, name))
+
+# Saldo primário do governo geral (% do PIB), do Fiscal Monitor do FMI, pela API do DataMapper.
+# Gravado no mesmo formato das outras séries (geo,time,valor), com o código do país em minúsculas.
+# Os anos à frente do último dado observado são projeções do FMI; build_dados.py só usa até Y1.
+import json
+FMI = 'GGXONLB_G01_GDP_PT'
+print('baixando', FMI.lower() + '.csv (FMI)')
+req = urllib.request.Request(f'https://www.imf.org/external/datamapper/api/v1/{FMI}', headers={'User-Agent': 'MonitoraBrasil/1.0'})
+valores = json.load(urllib.request.urlopen(req, timeout=120))['values'][FMI]
+with open(os.path.join(DST, FMI.lower() + '.csv'), 'w') as f:
+    f.write(f'geo,time,{FMI.lower()}\n')
+    for pais in sorted(p for p in valores if len(p) == 3 and p.isalpha()):  # fora os agregados (ADVEC, EURO...)
+        for ano, v in sorted(valores[pais].items()):
+            if v is not None:
+                f.write(f'{pais.lower()},{ano},{round(float(v), 4)}\n')

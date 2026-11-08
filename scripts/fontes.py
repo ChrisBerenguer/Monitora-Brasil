@@ -19,6 +19,7 @@ CODIGO_OFICIAL = {
     'sp_dyn_le00_in': 'SP.DYN.LE00.IN', 'sh_h2o_smdw_zs': 'SH.H2O.SMDW.ZS', 'sh_sta_smss_zs': 'SH.STA.SMSS.ZS',
     'eg_elc_accs_zs': 'EG.ELC.ACCS.ZS', 'se_xpd_totl_gd_zs': 'SE.XPD.TOTL.GD.ZS', 'sh_xpd_chex_gd_zs': 'SH.XPD.CHEX.GD.ZS',
     'en_ghg_co2_pc_ce_ar5': 'EN.GHG.CO2.PC.CE.AR5', 'ag_lnd_frst_zs': 'AG.LND.FRST.ZS', 'sp_pop_dpnd_ol': 'SP.POP.DPND.OL',
+    'ggxonlb_g01_gdp_pt': 'GGXONLB_G01_GDP_PT (FMI)',
 }
 
 API_BM = 'https://api.worldbank.org/v2/country/BRA/indicator/{}?format=json&per_page=100'
@@ -29,9 +30,12 @@ HDR_API = 'https://prism.hdrdata.org/docs'
 
 
 def links(ind_id):
-    """Devolve (url_fonte, url_api) do indicador. A API do Banco Mundial já vem filtrada para o Brasil."""
+    """Devolve (url_fonte, url_api) do indicador. As APIs já vêm filtradas para o Brasil."""
     if ind_id == 'hdi':
         return HDR_DADOS, HDR_API
+    if ind_id == 'ggxonlb_g01_gdp_pt':
+        return ('https://www.imf.org/external/datamapper/GGXONLB_G01_GDP_PT@FM/BRA',
+                'https://www.imf.org/external/datamapper/api/v1/GGXONLB_G01_GDP_PT/BRA')
     code = 'IP.PAT.RESD' if ind_id == 'pat_pm' else CODIGO_OFICIAL[ind_id]
     if code.startswith('GOV_WGI'):
         return WGI, API_BM.format(code) + '&source=3'

@@ -1,6 +1,6 @@
 # Monitora Brasil
 
-Painel que acompanha o desenvolvimento do Brasil em comparação com outros países. Ele cruza 40 indicadores econômicos, sociais, institucionais e ambientais, de 1995 a 2025, e os resume em **escores de 0 a 100** para cinco macrotemas.
+Painel que acompanha o desenvolvimento do Brasil em comparação com outros países. Ele cruza 41 indicadores econômicos, sociais, institucionais e ambientais, de 1995 a 2025, e os resume em **escores de 0 a 100** para cinco macrotemas.
 
 É um **trabalho voluntário e aberto ao público**. O objetivo é ajudar qualquer pessoa a entender, com dados oficiais e método transparente, como o Brasil está se saindo: em que avança, em que fica para trás e como se compara a outros países. Código, dados e cálculos estão todos neste repositório, para que qualquer um possa conferir, reproduzir e melhorar.
 
@@ -18,6 +18,7 @@ Painel que acompanha o desenvolvimento do Brasil em comparação com outros paí
 4. **Quanto as estatais federais lucram ou perdem**, ano a ano e por mandato (aba Estatais)?
 5. **Quanto cresce cada segmento da economia**, da agropecuária aos serviços, ano a ano e por mandato (aba Indústria)?
 6. **O que a Câmara votou e como votou cada deputado**, desde 2019 (aba Leis e votação)?
+7. **Como estão as contas do governo**: superávit ou déficit primário, juros e resultado nominal, por ano e por mandato (aba Contas públicas)?
 
 ## Resultado de referência (dados de outubro de 2026)
 
@@ -30,7 +31,7 @@ Painel que acompanha o desenvolvimento do Brasil em comparação com outros paí
 | Bem-estar e sustentabilidade | 60,0 | 63,4 |
 | **Geral** | **48,4** | **47,0** |
 
-Em 2025 o Brasil fica na 100ª posição entre 176 países no escore geral. Em 2010 estava na 68ª posição entre 175. O escore é **relativo**: 50 significa estar no meio da distribuição mundial (ver [docs/03-metodologia.md](docs/03-metodologia.md)).
+Em 2025 o Brasil fica na 97ª posição entre 176 países no escore geral. Em 2010 estava na 69ª posição entre 174. O escore é **relativo**: 50 significa estar no meio da distribuição mundial (ver [docs/03-metodologia.md](docs/03-metodologia.md)).
 
 ## Estrutura do repositório
 
@@ -53,6 +54,7 @@ Monitora-Brasil/
 │   ├── build_dados.py         calcula percentis, escores e estatísticas → dados/
 │   ├── coletar_industria.py   crescimento por segmento da economia (IBGE/SIDRA) → industria.json
 │   ├── coletar_votacoes.py    votações nominais da Câmara e voto de cada deputado → votacoes.json, votos/
+│   ├── coletar_fiscal.py      resultado primário, juros e nominal do setor público (Banco Central) → contas_publicas.json
 │   ├── explicacoes.py         textos para leigos de cada indicador (botão "i" do site)
 │   ├── fontes.py              códigos oficiais e links (página e API) de cada indicador
 │   └── gerar_dicionario.py    gera docs/04 a partir dos dados

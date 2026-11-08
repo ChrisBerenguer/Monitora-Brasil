@@ -4,7 +4,7 @@
 
 O Monitora Brasil responde a uma pergunta simples de fazer e difícil de responder: **o Brasil está indo bem?** A resposta depende do que se mede, de com quem se compara e de qual período se olha. O projeto deixa essas três escolhas explícitas e ajustáveis:
 
-- **O que se mede:** 40 indicadores organizados em 5 macrotemas. Cada indicador tem um sentido declarado: se é melhor quando sobe, quando cai ou quando fica perto de um alvo.
+- **O que se mede:** 41 indicadores organizados em 5 macrotemas. Cada indicador tem um sentido declarado: se é melhor quando sobe, quando cai ou quando fica perto de um alvo.
 - **Com quem se compara:** cinco coortes de países, mais um ranking contra o mundo todo.
 - **Em que período:** séries anuais de 1995 a 2025 e comparação entre mandatos presidenciais de quatro anos.
 
@@ -36,7 +36,7 @@ Todo o conteúdo (código, dados derivados e documentação) fica em um reposit�
 | Países no cálculo dos percentis e escores | Todos os Estados-membros da ONU com dado (cerca de 190) |
 | Período das séries | 1995–2025 (anual) |
 | Período dos escores | 2000–2025 (anual) |
-| Indicadores | 40 (37 entram no escore e 3 são de contexto) |
+| Indicadores | 41 (38 entram no escore e 3 são de contexto) |
 | Macrotemas | 5, mais um escore geral |
 | Coortes | América Latina, BRICS, OCDE (referência), renda média-alta (Banco Mundial) e mundo |
 | Períodos de comparação | 8 mandatos presidenciais brasileiros, de 1995–1998 a 2023–2026 |
@@ -47,7 +47,7 @@ Os macrotemas vêm do Dossiê de Indicadores, que reuniu 21 categorias da litera
 
 | # | Macrotema | Pergunta que responde | Categorias do Dossiê que agrega |
 |---|---|---|---|
-| I | **Estabilidade macroeconômica** | A economia é previsível e solvente? | Inflação, juros, dívida interna, dívida externa, balança/conta corrente |
+| I | **Estabilidade macroeconômica** | A economia é previsível e solvente? | Inflação, juros, dívida interna, saldo primário do governo, dívida externa, balança/conta corrente |
 | II | **Estrutura produtiva e inovação** | O país produz muito, de forma sofisticada e com capacidade de inovar? | PIB, industrialização, complexidade, P&D, balança comercial |
 | III | **Coesão social e distribuição** | Os frutos são repartidos? Quem fica para trás? | Desigualdade, concentração de renda, pobreza, gênero, poder de consumo |
 | IV | **Estado, instituições e segurança** | As regras funcionam e as pessoas estão seguras? | Democracia, segurança pública, carga tributária |

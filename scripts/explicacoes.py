@@ -47,6 +47,18 @@ EXPLICACOES = {
         'atencao': "Cobre só o governo central. O número mais usado no Brasil é a Dívida Bruta do Governo Geral, do Banco "
                    "Central, que inclui estados e municípios e tem metodologia diferente.",
     },
+    'ggxonlb_g01_gdp_pt': {
+        'o_que_e': "A diferença entre o que o governo arrecada e o que gasta, sem contar os juros da dívida, comparada com "
+                   "tudo o que o país produz em um ano (o PIB). Positivo é superávit: sobrou dinheiro para pagar juros. "
+                   "Negativo é déficit: faltou dinheiro até antes dos juros.",
+        'como_ler': "Maior é melhor. Um superávit ajuda a segurar o crescimento da dívida; um déficit seguido faz a dívida "
+                    "crescer. Em crises, como a pandemia de 2020, quase todos os países fazem déficit de propósito.",
+        'por_que_importa': "É o termômetro das contas do governo usado nas metas fiscais do Brasil. Mostra se o governo vive "
+                           "dentro do que arrecada, sem precisar se endividar para pagar despesas do dia a dia.",
+        'atencao': "Vem do FMI e cobre o governo geral (União, estados e municípios), com regras iguais para todos os países. "
+                   "O número oficial do Brasil, do Banco Central, cobre também as estatais e sai um pouco diferente: ele "
+                   "aparece na aba Vida do Cidadão. O último ano pode ser estimativa do FMI.",
+    },
     'dt_dod_dect_gn_zs': {
         'o_que_e': "Quanto o país (governo e empresas) deve a credores de fora, comparado com a renda do país em um ano.",
         'como_ler': "Menor é melhor. Uma dívida externa alta deixa o país exposto a crises lá fora.",

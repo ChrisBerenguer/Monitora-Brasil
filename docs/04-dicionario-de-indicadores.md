@@ -112,6 +112,24 @@ Gerado por `scripts/gerar_dicionario.py`. Para cada indicador: código interno (
 - *Por que importa:* Déficits grandes e persistentes deixam o país dependente do humor dos investidores estrangeiros.
 - *Atenção:* Um déficit pequeno não é problema se for financiado por investimento produtivo. Um superávit muito alto nem sempre é bom sinal: pode refletir uma economia que consome e investe pouco.
 
+### Saldo primário do governo
+
+- **Código interno:** `ggxonlb_g01_gdp_pt`
+- **Código oficial:** `GGXONLB_G01_GDP_PT (FMI)`
+- **Definição:** Saldo primário do governo geral (receitas menos despesas, sem os juros da dívida), em % do PIB, segundo o Fiscal Monitor do FMI. Positivo é superávit. Os anos mais recentes podem ser estimativas do FMI.
+- **Unidade:** % PIB
+- **Sentido no escore:** maior é melhor
+- **Fonte:** FMI (Fiscal Monitor) · [página oficial](https://www.imf.org/external/datamapper/GGXONLB_G01_GDP_PT@FM/BRA) · [API](https://www.imf.org/external/datamapper/api/v1/GGXONLB_G01_GDP_PT/BRA)
+- **Último ano na base (qualquer país):** 2025
+- **Brasil:** 25 anos com dado (2001–2025). Primeiro valor: 3,13 em 2001. Último valor: -0,13 em 2025.
+
+**Em linguagem simples**
+
+- *O que é:* A diferença entre o que o governo arrecada e o que gasta, sem contar os juros da dívida, comparada com tudo o que o país produz em um ano (o PIB). Positivo é superávit: sobrou dinheiro para pagar juros. Negativo é déficit: faltou dinheiro até antes dos juros.
+- *Como ler:* Maior é melhor. Um superávit ajuda a segurar o crescimento da dívida; um déficit seguido faz a dívida crescer. Em crises, como a pandemia de 2020, quase todos os países fazem déficit de propósito.
+- *Por que importa:* É o termômetro das contas do governo usado nas metas fiscais do Brasil. Mostra se o governo vive dentro do que arrecada, sem precisar se endividar para pagar despesas do dia a dia.
+- *Atenção:* Vem do FMI e cobre o governo geral (União, estados e municípios), com regras iguais para todos os países. O número oficial do Brasil, do Banco Central, cobre também as estatais e sai um pouco diferente: ele aparece na aba Vida do Cidadão. O último ano pode ser estimativa do FMI.
+
 ### Crescimento real do PIB
 
 - **Código interno:** `ny_gdp_mktp_kd_zg`

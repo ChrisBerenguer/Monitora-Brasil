@@ -19,6 +19,7 @@ IND = [
  ('dt_dod_dect_gn_zs','Dívida externa','% RNB','macro',-1,'Banco Mundial (IDS)'),
  ('fi_res_totl_mo','Reservas internacionais','meses de importação','macro',1,'Banco Mundial (FMI)'),
  ('bn_cab_xoka_gd_zs','Saldo em conta corrente','% PIB','macro',1,'Banco Mundial (FMI)'),
+ ('ggxonlb_g01_gdp_pt','Saldo primário do governo','% PIB','macro',1,'FMI (Fiscal Monitor)'),
  ('ny_gdp_mktp_kd_zg','Crescimento real do PIB','% a.a.','macro',1,'Banco Mundial'),
  ('sl_uem_totl_zs','Desemprego','% força de trabalho','macro',-1,'Banco Mundial (OIT)'),
  # II Estrutura produtiva

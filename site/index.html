@@ -13,9 +13,9 @@
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Monitora Brasil</title>
-  <meta name="description" content="O Brasil comparado com o mundo em 40 indicadores econômicos, sociais, institucionais e ambientais, de 1995 a 2025, com escores por tema, coortes de países e comparação entre mandatos.">
+  <meta name="description" content="O Brasil comparado com o mundo em 41 indicadores econômicos, sociais, institucionais e ambientais, de 1995 a 2025, com escores por tema, coortes de países e comparação entre mandatos.">
   <meta property="og:title" content="Monitora Brasil">
-  <meta property="og:description" content="O Brasil comparado com o mundo em 40 indicadores, de 1995 a 2025.">
+  <meta property="og:description" content="O Brasil comparado com o mundo em 41 indicadores, de 1995 a 2025.">
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#f3f5f2" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101614" media="(prefers-color-scheme: dark)">
@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=1.34">
+  <link rel="stylesheet" href="assets/css/styles.css?v=1.35">
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -57,6 +57,7 @@
       <button class="aba" role="tab" id="aba-vida" aria-controls="vida" data-page="vida" aria-selected="false">Vida do Cidadão</button>
       <button class="aba" role="tab" id="aba-estatais" aria-controls="estatais" data-page="estatais" aria-selected="false">Estatais</button>
       <button class="aba" role="tab" id="aba-industria" aria-controls="industria" data-page="industria" aria-selected="false">Indústria</button>
+      <button class="aba" role="tab" id="aba-fiscal" aria-controls="fiscal" data-page="fiscal" aria-selected="false">Contas públicas</button>
       <button class="aba" role="tab" id="aba-leis" aria-controls="leis" data-page="leis" aria-selected="false">Leis e votação</button>
     </nav>
 
@@ -85,7 +86,7 @@
         <div class="card-topo">
           <div>
             <div class="titulo-info"><h2 id="pl-titulo">Placar entre mandatos</h2><button class="info-btn" type="button" data-info-card="placar" aria-label="Como ler: placar entre mandatos"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button><button class="info-btn fonte-btn" type="button" data-fonte="bases" aria-label="Fonte original dos dados"><svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg></button></div>
-            <p class="nota" id="pl-sub">Em quantos dos 40 indicadores cada mandato teve média melhor, levando em conta se é melhor ter valor alto ou baixo.</p>
+            <p class="nota" id="pl-sub">Em quantos dos 41 indicadores cada mandato teve média melhor, levando em conta se é melhor ter valor alto ou baixo.</p>
           </div>
           <div class="controles">
             <label class="ctl">Mandato A <select id="pl-a"></select></label>
@@ -94,7 +95,7 @@
         </div>
         <p class="nota" id="pl-msg" hidden></p>
         <div class="placar-num" id="pl-num"></div>
-        <div class="waffle" id="pl-waffle" role="list" aria-label="Os 40 indicadores, um quadrado para cada"></div>
+        <div class="waffle" id="pl-waffle" role="list" aria-label="Os 41 indicadores, um quadrado para cada"></div>
         <div class="waffle-leg" id="pl-leg"></div>
         <p class="nota" id="pl-rodape"></p>
       </article>
@@ -444,6 +445,53 @@
     </section>
 
 
+    <!-- CONTAS PÚBLICAS -->
+    <section class="pagina" id="fiscal" role="tabpanel" aria-labelledby="aba-fiscal" hidden>
+      <p class="nota">As contas do governo segundo o Banco Central: quanto sobrou ou faltou de dinheiro a cada ano, antes e depois dos juros da dívida, em % do PIB. A comparação com outros países, pelo saldo primário do FMI, está nas <a href="#series" id="fis-ir-series">Séries temporais</a> e entra no escore de Estabilidade macroeconômica.</p>
+
+      <article class="card" data-ctx="proprio">
+        <div class="card-topo">
+          <div>
+            <div class="titulo-info"><h2 id="fis-titulo">Resultado primário do setor público</h2><button class="info-btn" type="button" data-info-card="fis-primario" aria-label="Como ler: resultado primário"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button><button class="info-btn fonte-btn" type="button" data-fonte="fonte:fiscal" aria-label="Fonte original dos dados"><svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg></button></div>
+            <p class="nota" id="fis-nota"></p>
+          </div>
+          <div class="controles">
+            <label class="ctl">Esfera <select id="fis-esfera">
+              <option value="primario">Setor público consolidado</option>
+              <option value="central">Governo central (União)</option>
+              <option value="regionais">Estados e municípios</option>
+              <option value="estatais">Empresas estatais</option>
+            </select></label>
+          </div>
+        </div>
+        <div class="grafico" id="fis-chart"></div>
+        <div class="waffle-leg" id="fis-leg"></div>
+        <div class="titulo-info sub"><h3>Média por ano em cada mandato, em % do PIB</h3></div>
+        <div class="tabela-box">
+          <table id="fis-mand-table">
+            <thead><tr>
+              <th scope="col">Mandato</th><th scope="col">Primário do setor público</th><th scope="col" class="some-p">Governo central</th>
+              <th scope="col" class="some-p">Estados e municípios</th><th scope="col" class="some-p">Estatais</th>
+              <th scope="col">Juros pagos</th><th scope="col">Resultado nominal</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="nota" id="fis-t-nota"></p>
+      </article>
+
+      <article class="card" data-ctx="proprio">
+        <div class="card-topo">
+          <div>
+            <div class="titulo-info"><h2>Primário, juros e resultado nominal</h2><button class="info-btn" type="button" data-info-card="fis-nominal" aria-label="Como ler: primário, juros e resultado nominal"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button><button class="info-btn fonte-btn" type="button" data-fonte="fonte:fiscal" aria-label="Fonte original dos dados"><svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg></button></div>
+            <p class="nota" id="fis-n-nota"></p>
+          </div>
+          <button class="botao" type="button" id="csv-fiscal">Baixar CSV</button>
+        </div>
+        <div class="grafico" id="fis-n-chart"></div>
+      </article>
+    </section>
+
     <!-- LEIS E VOTAÇÃO -->
     <section class="pagina" id="leis" role="tabpanel" aria-labelledby="aba-leis" hidden>
       <p class="nota">O que o Plenário da Câmara dos Deputados votou e como votou cada deputado, desde 2019, atualizado em tempo real com a API da Câmara. As votações nominais, feitas no painel eletrônico, trazem o voto de cada deputado. As simbólicas sobre o texto dos projetos também aparecem, mas sem votos individuais, que a Câmara não registra. Clique no nome de um projeto para ver os detalhes dele.</p>
@@ -583,7 +631,8 @@
         <h3>APIs e bases oficiais</h3>
         <ul class="fontes">
           <li><a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation" target="_blank" rel="noopener">API de Indicadores do Banco Mundial</a>: documentação. Endereço base: <code>https://api.worldbank.org/v2/</code>. Exemplo: <a href="https://api.worldbank.org/v2/country/BRA/indicator/NY.GDP.PCAP.PP.KD?format=json&amp;per_page=100" target="_blank" rel="noopener">PIB per capita do Brasil em JSON</a>.</li>
-          <li><a href="https://databank.worldbank.org/source/world-development-indicators" target="_blank" rel="noopener">World Development Indicators (DataBank)</a>: a base de 33 dos 40 indicadores. Os outros são os 6 de governança (WGI) e o IDH (PNUD).</li>
+          <li><a href="https://databank.worldbank.org/source/world-development-indicators" target="_blank" rel="noopener">World Development Indicators (DataBank)</a>: a base de 33 dos 41 indicadores. Os outros são os 6 de governança (WGI), o IDH (PNUD) e o saldo primário do governo (FMI).</li>
+          <li><a href="https://www.imf.org/external/datamapper/GGXONLB_G01_GDP_PT@FM" target="_blank" rel="noopener">Fiscal Monitor do FMI (DataMapper)</a>: saldo primário do governo geral, com <a href="https://www.imf.org/external/datamapper/api/help" target="_blank" rel="noopener">API</a>.</li>
           <li><a href="https://www.worldbank.org/en/publication/worldwide-governance-indicators" target="_blank" rel="noopener">Worldwide Governance Indicators</a>: os seis indicadores de governança. Na API, use <code>source=3</code>.</li>
           <li><a href="https://hdr.undp.org/data-center/documentation-and-downloads" target="_blank" rel="noopener">Dados do Relatório de Desenvolvimento Humano (PNUD)</a>: IDH, com <a href="https://prism.hdrdata.org/docs" target="_blank" rel="noopener">API DataPRISM</a>.</li>
           <li><a href="https://pip.worldbank.org/" target="_blank" rel="noopener">Poverty and Inequality Platform</a>: pobreza e Gini do Banco Mundial.</li>
@@ -637,7 +686,7 @@
 
   <footer class="rodape">
     <div class="wrap rodape-in">
-      <p><strong>Fontes:</strong> Banco Mundial (World Development Indicators e Worldwide Governance Indicators) e PNUD (Índice de Desenvolvimento Humano), via Gapminder/open-numbers, licença CC BY 4.0. Aba Vida do Cidadão: DIEESE, ANP e IBGE (PNAD Contínua), via Ipeadata e SIDRA. Aba Estatais: SEST/Ministério da Gestão (dados abertos das empresas estatais). Aba Leis e votação: Câmara dos Deputados (Dados Abertos). Aba Indústria: IBGE (Contas Nacionais Trimestrais, PIM-PF, PMS, LSPA, pesquisas trimestrais do abate e do leite, PPM e PEVS), via SIDRA. Cálculos: Monitora Brasil.</p>
+      <p><strong>Fontes:</strong> Banco Mundial (World Development Indicators e Worldwide Governance Indicators) e PNUD (Índice de Desenvolvimento Humano), via Gapminder/open-numbers, licença CC BY 4.0. Aba Vida do Cidadão: DIEESE, ANP e IBGE (PNAD Contínua), via Ipeadata e SIDRA. Aba Estatais: SEST/Ministério da Gestão (dados abertos das empresas estatais). Aba Contas públicas: Banco Central do Brasil (estatísticas fiscais, NFSP). Saldo primário dos outros países: FMI (Fiscal Monitor). Aba Leis e votação: Câmara dos Deputados (Dados Abertos). Aba Indústria: IBGE (Contas Nacionais Trimestrais, PIM-PF, PMS, LSPA, pesquisas trimestrais do abate e do leite, PPM e PEVS), via SIDRA. Cálculos: Monitora Brasil.</p>
       <p>Projeto voluntário e aberto, feito para ajudar qualquer pessoa a entender como o Brasil está se saindo. <a href="https://github.com/ChrisBerenguer/Monitora-Brasil" rel="noopener">Código, dados e documentação no GitHub</a> · <span id="atualizado"></span></p>
     </div>
   </footer>
@@ -647,6 +696,6 @@
 
   <script src="assets/js/d3.v7.9.0.min.js"></script>
   <script src="assets/js/html-to-image.v1.11.11.min.js"></script>
-  <script src="assets/js/app.js?v=1.34"></script>
+  <script src="assets/js/app.js?v=1.35"></script>
 </body>
 </html>

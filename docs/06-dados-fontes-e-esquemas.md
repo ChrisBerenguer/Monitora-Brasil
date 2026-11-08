@@ -4,9 +4,10 @@
 
 | Fonte | Instituição | O que fornece | Licença |
 |---|---|---|---|
-| World Development Indicators (WDI) | Banco Mundial | 33 dos 40 indicadores (um deles, patentes por milhão, calculado com a população), mais população e classificação de renda | CC BY 4.0 |
+| World Development Indicators (WDI) | Banco Mundial | 33 dos 41 indicadores (um deles, patentes por milhão, calculado com a população), mais população e classificação de renda | CC BY 4.0 |
 | Worldwide Governance Indicators (WGI) | Banco Mundial | 6 indicadores de governança (distribuídos junto com o WDI) | CC BY 4.0 |
 | Human Development Report | PNUD | IDH | CC BY 3.0 IGO |
+| Fiscal Monitor (DataMapper) | FMI | Saldo primário do governo geral (`GGXONLB_G01_GDP_PT`), % do PIB | Termos de uso do FMI (uso livre com citação) |
 
 Por trás do WDI estão produtores especializados: FMI (inflação, juros, balanço de pagamentos, finanças públicas), OIT (trabalho), UNESCO (P&D, educação), OMS/UNICEF (água, saneamento, saúde), UNODC (homicídios), União Interparlamentar (parlamento), OMPI (patentes), FAO (florestas), EDGAR/JRC (emissões) e a Poverty and Inequality Platform do próprio Banco Mundial (pobreza e Gini). A coluna "Fonte" em `dados/indicadores.json` registra o produtor original.
 
@@ -38,12 +39,13 @@ Gerados por `scripts/baixar_brutos.py`:
 - `{codigo}.csv`: 40 séries do WDI. São 38 indicadores usados diretamente, mais `ip_pat_resd.csv` (pedidos de patente) e `sp_pop_totl.csv` (população), que formam o indicador derivado de patentes por milhão
 - `countries.csv`: entidades de país, com classificação de renda (`income_groups`) e marcação de Estado-membro da ONU (`un_state`)
 - `hdi.csv`: IDH
+- `ggxonlb_g01_gdp_pt.csv`: saldo primário do governo geral, % do PIB (FMI, Fiscal Monitor), baixado da API do DataMapper e gravado no mesmo formato. Inclui projeções do FMI depois do último ano observado; o cálculo usa só até 2025, e o ano mais recente costuma ser estimativa
 
 ## Conjuntos de dados gerados (`dados/`)
 
 Todos são arrays JSON de objetos (uma linha por objeto), em UTF-8. O pipeline grava uma cópia idêntica em `site/data/`, que é a que o site carrega.
 
-### `indicadores.json` (40 linhas): metadados
+### `indicadores.json` (41 linhas): metadados
 
 | Campo | Tipo | Descrição |
 |---|---|---|
@@ -257,6 +259,35 @@ Coletados por `scripts/coletar_industria.py` no GitHub Actions (workflow `dados-
 | `categorias[]` | `id` (`agro`, `extracao`, `manufatura`, `energia`, `construcao`, `servicos`, `pib`), `nome`, `indice` (`{ano: média dos trimestres do índice da CNT}`), `cresc` (`{ano: %}`), `parcial` (`{ano, rotulo, cresc}` ou `null`) e `ultimo` (último trimestre publicado) |
 | `segmentos[]` | `id`, `nome`, `categoria` (id da categoria), `fonte`, `url` (tabela SIDRA), `mede` (o que é medido), `desde` (primeiro ano), `cresc`, `parcial` e `ultimo` |
 | `fontes` | Nome e endereço de cada pesquisa |
+
+## Dados da aba Contas públicas
+
+Coletados por `scripts/coletar_fiscal.py` no GitHub Actions (workflow `dados-fiscal.yml`, toda segunda-feira e quando disparado à mão), da API do SGS do Banco Central (`https://api.bcb.gov.br/dados/serie/bcdata.sgs.{código}/dados?formato=json`). Gera `contas_publicas.json`.
+
+Todas as séries são das Necessidades de Financiamento do Setor Público (NFSP) sem desvalorização cambial, em % do PIB, fluxo acumulado em 12 meses:
+
+| `id` | Código SGS | O que mede | Desde |
+|---|---|---|---|
+| `primario` | 5793 | Resultado primário do setor público consolidado | 2002 |
+| `central` | 5783 | Resultado primário do governo central (Governo Federal, INSS e Banco Central) | 1991 |
+| `regionais` | 5786 | Resultado primário dos estados e municípios | 1991 |
+| `estatais` | 5789 | Resultado primário das empresas estatais (sem Petrobras e bancos públicos) | 2002 |
+| `juros` | 5760 | Juros nominais do setor público consolidado | 2002 |
+| `nominal` | 5727 | Resultado nominal do setor público consolidado | 2002 |
+
+**Sinal.** Nas NFSP, positivo é déficit. O script inverte o sinal do primário e do nominal (positivo = superávit, como o resultado é noticiado) e mantém o dos juros (positivo = juros pagos).
+
+**Ano.** O valor de dezembro do acumulado em 12 meses é o resultado do ano. O ano corrente aparece como o acumulado em 12 meses até o último mês publicado (`ultimo`).
+
+### `contas_publicas.json`
+
+| Campo | Descrição |
+|---|---|
+| `coletado_em` | Data da última coleta com dado novo |
+| `fonte` | Nome e endereço da fonte |
+| `series[]` | `id`, `sgs`, `nome`, `anual` (`{ano: % do PIB}`), `mensal` (`{AAAA-MM: acumulado em 12 meses}`, desde 2015) e `ultimo` (`{mes, rotulo, valor}`) |
+
+**Comparação com outros países.** O saldo primário do governo geral do FMI (`ggxonlb_g01_gdp_pt`, Fiscal Monitor) entra como indicador do tema Estabilidade macroeconômica (ver "Arquivos brutos"). Ele cobre União, estados e municípios, sem as estatais, e por isso difere um pouco do número do Banco Central.
 
 ## Dados da aba Leis e votação
 

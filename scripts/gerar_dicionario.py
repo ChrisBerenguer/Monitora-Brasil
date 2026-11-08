@@ -14,6 +14,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fontes import CODIGO_OFICIAL  # noqa: E402
 
 DEF = {
+    'ggxonlb_g01_gdp_pt': 'Saldo primário do governo geral (receitas menos despesas, sem os juros da dívida), em % do PIB, segundo o Fiscal Monitor do FMI. Positivo é superávit. Os anos mais recentes podem ser estimativas do FMI.',
     'fp_cpi_totl_zg': 'Variação anual do índice de preços ao consumidor: quanto custa a mais, de um ano para o outro, uma cesta típica de bens e serviços das famílias.',
     'fr_inr_rinr': 'Taxa de juros de empréstimo bancário descontada a inflação medida pelo deflator do PIB. Não é a Selic: reflete o custo do crédito ao setor privado.',
     'gc_dod_totl_gd_zs': 'Estoque bruto de obrigações do governo central (títulos, empréstimos e outros passivos de dívida) em proporção do PIB. Não inclui estados e municípios.',

@@ -1,5 +1,18 @@
 # Histórico de versões
 
+## 1.35 — 08/11/2026
+
+### Adicionado
+- **Aba "Contas públicas"** (`#fiscal`), com os dados oficiais do Banco Central (estatísticas fiscais, NFSP):
+  - **Resultado primário** por ano desde 2002 (governo central e estados e municípios desde 1995), em % do PIB, com a média por ano de cada governo, o acumulado em 12 meses do ano corrente e a escolha da esfera (setor público consolidado, governo central, estados e municípios, estatais).
+  - **Tabela por mandato** com a média por ano do primário de cada esfera, dos juros e do resultado nominal.
+  - **Primário, juros e resultado nominal** em linhas, com CSV.
+- `scripts/coletar_fiscal.py` e o workflow `dados-fiscal.yml` (toda segunda-feira), pela API do SGS.
+- **Novo indicador no escore: saldo primário do governo** (FMI, Fiscal Monitor, `GGXONLB_G01_GDP_PT`), no tema Estabilidade macroeconômica, com "maior é melhor". O painel passa de 40 para 41 indicadores (38 no escore). Ele aparece também nas Séries temporais e nas Coortes, para comparar o Brasil com os outros países.
+
+### Alterado
+- Com o novo indicador, os escores mudam em todos os anos. Exemplos do Brasil: Estabilidade macroeconômica em 2025 de 43,3 para 45,5; escore geral em 2025 de 47,0 para 47,4; posição no ranking em 2025 da 100ª para a 97ª (entre 176 países).
+
 ## 1.34 — 06/11/2026
 
 ### Alterado
