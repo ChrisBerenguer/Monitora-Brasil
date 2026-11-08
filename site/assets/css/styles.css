@@ -339,3 +339,10 @@ td.leis-proj { white-space: normal; min-width: 16rem; max-width: 46rem; text-ali
 .prop-vot:hover { color: var(--accent); }
 .prop-vot:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .prop-aviso { background: color-mix(in srgb, var(--accent-2) 14%, var(--panel)); border: 1px solid color-mix(in srgb, var(--accent-2) 45%, transparent); border-radius: 8px; padding: 10px 12px; font-size: var(--t-sm); }
+/* aba Empresas */
+#emp-leg i.tracejado { width: 18px; height: 0; border-radius: 0; border-top: 2px dashed var(--muted); align-self: center; }
+#emp-leg b { font-weight: 600; color: var(--fg); }
+#emp-table td:first-child { white-space: normal; min-width: 12rem; text-align: left; }
+#emp-table .seg-cat { display: block; font-size: .78em; margin-top: 1px; }
+#emp-setor-table td:first-child { white-space: normal; min-width: 10rem; text-align: left; }
+#emp-mais { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }

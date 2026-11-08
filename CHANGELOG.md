@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 1.37 — 08/11/2026
+
+### Adicionado
+- **Aba "Empresas"** (`#empresas`): o lucro líquido das companhias abertas brasileiras com ações (categoria A na CVM), de 2010 a 2025, pelas demonstrações financeiras entregues à CVM.
+  - **Lucro das companhias abertas** por ano e média por mandato, em reais de hoje (IPCA) ou de cada ano, para todas, todas sem Petrobras e Vale, privadas de controle nacional, de controle estrangeiro e estatais (com as privatizações de Eletrobras, Chesf, BR Distribuidora, Sabesp, Copel e CEEE-D). A soma desconta o lucro contado duas vezes quando uma companhia aberta tem participação em outra (Itaúsa no Itaú, Banco do Brasil na BB Seguridade e outras), pelo Formulário de Referência.
+  - **Lucro por setor** e **lucro de cada companhia** (cerca de 750), com busca, filtro de setor, ordenação e CSV.
+- `scripts/coletar_empresas.py` e o workflow `dados-empresas.yml` (toda terça-feira): DFP, FRE e cadastro da CVM, e IPCA do Banco Central.
+
 ## 1.36 — 08/11/2026
 
 ### Removido

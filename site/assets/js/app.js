@@ -20,6 +20,7 @@
     consumo: 'consumo.json',
     economias: 'economias.json',
     estatais: 'estatais.json',
+    empresas: 'empresas.json',
     industria: 'industria.json',
   };
 
@@ -45,7 +46,7 @@
   const ORDEM_PAISES = ['bra', ...COORTES.filter((c) => c.membros).flatMap((c) => c.membros)];
   const PERIODOS = ['1995–1998', '1999–2002', '2003–2006', '2007–2010', '2011–2014', '2015–2018', '2019–2022', '2023–2026'];
   const MANDATO = { '1995–1998': 'FHC 1', '1999–2002': 'FHC 2', '2003–2006': 'Lula 1', '2007–2010': 'Lula 2', '2011–2014': 'Dilma 1', '2015–2018': 'Dilma 2 / Temer', '2019–2022': 'Bolsonaro', '2023–2026': 'Lula 3 (até 2025)' };
-  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'vida', 'estatais', 'industria', 'leis'];
+  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'vida', 'estatais', 'empresas', 'industria', 'leis'];
   const APELIDOS = { consumo: 'vida' }; // endereços antigos continuam funcionando
   // Mandatos usados na variação dos escores (Visão geral). Os escores começam em 2000,
   // então FHC 2 é medido de 2000 a 2002.
@@ -60,7 +61,7 @@
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
     ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cbMa: '2019–2022', cbMb: '2023–2026', cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
     estFiltro: 'todas', estSort: { key: null, dir: -1 }, estSemVendas: true,
-    leisAno: null, leisTipo: 'principal', leisRes: 'todas', leisForma: 'nominal', leisBusca: '', leisSel: null, leisDVoto: 'todos', leisDPart: 'todos', leisDUf: 'todos', leisDBusca: '', leisDep: null,
+    empGrupo: 'todas', empValores: 'real', empSetor: 'todos', empBusca: '', empSort: { key: null, dir: -1 }, empSSort: { key: null, dir: -1 }, empTodas: false, leisAno: null, leisTipo: 'principal', leisRes: 'todas', leisForma: 'nominal', leisBusca: '', leisSel: null, leisDVoto: 'todos', leisDPart: 'todos', leisDUf: 'todos', leisDBusca: '', leisDep: null,
     indModo: 'indice', indBase: 2002, indFiltro: 'todas', indSort: { key: null, dir: -1 },
   };
   let D = null; // dados carregados e indexados
@@ -669,6 +670,19 @@
     return [['No Brasil, agora', f(c).replace(/\.\.$/, '.')]];
   };
   const CARD_INFO = {
+    'emp-total': { titulo: 'Lucro das companhias abertas', blocos: [
+      ['O que mostra', 'A soma do lucro líquido de cada ano das companhias abertas brasileiras que têm ações (registro de categoria A na CVM), segundo as demonstrações financeiras entregues à CVM. É o lucro atribuído aos acionistas controladores, do balanço consolidado; quem não consolida entra com o lucro do balanço individual.'],
+      ['Sem dupla contagem', 'Quando uma companhia aberta tem parte de outra (a Itaúsa no Itaú, o Banco do Brasil na BB Seguridade, a Eletrobras na Chesf), o lucro da investida aparece duas vezes: no balanço dela e no da dona. A soma desconta a parte da dona no lucro da investida, pelo percentual informado no Formulário de Referência.'],
+      ['Grupos', 'Estatal, privada de controle nacional ou de controle estrangeiro vêm do cadastro da CVM, corrigido nas privatizações que o cadastro não reflete (Eletrobras, Chesf, BR Distribuidora, Sabesp, Copel e CEEE-D): elas contam como estatais até o ano anterior à privatização. "Sem Petrobras e Vale" tira as duas maiores, que sozinhas mudam o total.'],
+      ['Atenção', 'Valores "em reais de hoje" corrigem cada ano pelo IPCA médio até o último ano. O conjunto de companhias muda com o tempo (abertura e fechamento de capital). Lucro contábil inclui ganhos e perdas não recorrentes, como baixas de ativos e decisões judiciais. Companhias de categoria B (só dívida, como securitizadoras e subsidiárias) ficam de fora.'],
+    ] },
+    'emp-setor': { titulo: 'Lucro por setor', blocos: [
+      ['O que mostra', 'O lucro somado das companhias de cada setor (o setor de atividade do cadastro da CVM; holdings entram no setor das empresas que controlam) no último ano, no anterior e a média por ano nos dois últimos mandatos, sem a dupla contagem. Segue o grupo e os valores escolhidos no primeiro quadro.'],
+    ] },
+    'emp-cias': { titulo: 'Lucro de cada companhia', blocos: [
+      ['O que mostra', 'O lucro líquido de cada companhia em cada ano, atribuído aos acionistas controladores, como divulgado no balanço (sem desconto de dupla contagem), e a soma nos dois últimos mandatos. Traço é ano sem balanço: a companhia ainda não era aberta, já tinha fechado o capital ou não entregou a demonstração.'],
+      ['Atenção', 'O nome é o atual do cadastro da CVM: a PRIO Forte, por exemplo, é a antiga OGX, e a Axia Energia é a Eletrobras. Os valores são em reais de cada ano ou de hoje, conforme o primeiro quadro.'],
+    ] },
     'leis-lista': { titulo: 'Votações nominais no Plenário', blocos: [
       ['O que mostra', 'Cada votação nominal do Plenário da Câmara no ano: o projeto, o que foi votado, o placar, se foi aprovado e o que o Governo orientou a sua base a votar. Votação nominal é a feita no painel eletrônico, que registra o voto de cada deputado. Muitas decisões são tomadas em votação simbólica, sem registro de quem votou o quê, e por isso não aparecem aqui.'],
       ['O que foi votado', 'Um projeto costuma passar por várias votações no mesmo dia. "Texto dos projetos" é a decisão sobre o texto em si: o projeto, o substitutivo do relator, a PEC em cada turno ou a medida provisória. "Pedidos de urgência" aceleram a tramitação. "Destaques e emendas" mudam ou mantêm trechos do texto já aprovado. A separação é feita pela descrição que a Câmara dá a cada votação e pode errar em casos raros.'],
@@ -935,6 +949,12 @@
     infoEl.replaceChildren(...partes);
   }
   const FONTES_EXTRA = {
+    empresas: { t: 'Comissão de Valores Mobiliários (CVM), Portal de Dados Abertos:', l: [
+      ['Demonstrações Financeiras Padronizadas (DFP) das companhias abertas', 'https://dados.cvm.gov.br/dataset/cia_aberta-doc-dfp'],
+      ['Formulário de Referência (FRE): participações em outras sociedades', 'https://dados.cvm.gov.br/dataset/cia_aberta-doc-fre'],
+      ['Cadastro de companhias abertas (setor, categoria e controle)', 'https://dados.cvm.gov.br/dataset/cia_aberta-cad'],
+      ['IPCA, Banco Central (SGS 433), para os valores em reais de hoje', 'https://api.bcb.gov.br/dados/serie/bcdata.sgs.433/dados?formato=json'],
+    ], data: () => D.raw.empresas?.coletado_em },
     camara: { t: 'Dados Abertos da Câmara dos Deputados, arquivos anuais de votações:', l: [
       ['Portal de Dados Abertos da Câmara dos Deputados', 'https://dadosabertos.camara.leg.br/'],
       ['API e arquivos (documentação): votações, votos, proposições e orientações', 'https://dadosabertos.camara.leg.br/swagger/api.html'],
@@ -1077,6 +1097,7 @@
     if (spec === 'fonte:precos') return 'DIEESE (cesta básica) e ANP (combustíveis)';
     if (spec === 'fonte:renda') return 'IBGE (PNAD Contínua) e Ipeadata';
     if (spec === 'fonte:estatais') return 'SEST/Ministério da Gestão (balanços das estatais federais)';
+    if (spec === 'fonte:empresas') return 'CVM (demonstrações financeiras das companhias abertas)';
     if (spec === 'fonte:camara') return 'Câmara dos Deputados (Dados Abertos)';
     if (spec === 'fonte:industria') return 'IBGE (Contas Nacionais, PIM-PF, PMS, LSPA e pesquisas agropecuárias)';
     const alvo = spec === 'ind' ? st.ind : spec === 'tema' ? st.tema : spec === 'cstema' ? st.cstema : spec.startsWith('tema:') ? spec.slice(5) : spec;
@@ -1173,7 +1194,7 @@
     posicionarInfo(btn);
   }
   /** Coloca o botão de compartilhar ao lado do título de cada cartão com gráfico ou tabela. */
-  document.querySelectorAll('#visao article.card, #series article.card, #coortes article.card, #vida article.card, #estatais article.card, #industria article.card, #leis article.card').forEach((card) => {
+  document.querySelectorAll('#visao article.card, #series article.card, #coortes article.card, #vida article.card, #estatais article.card, #empresas article.card, #industria article.card, #leis article.card').forEach((card) => {
     const alvo = card.querySelector('.titulo-info');
     if (!alvo) return;
     const b = el('button', { class: 'info-btn share-btn', type: 'button', 'aria-label': 'Compartilhar este gráfico como imagem', 'aria-haspopup': 'dialog' });
@@ -1996,6 +2017,185 @@
     ]);
   });
 
+  // ---------------------------------------------------------------- empresas (companhias abertas, CVM)
+  const PETRO_VALE = new Set(['9512', '4170']);
+  const ctrlNoAno = (e, a) => (typeof e.controle === 'string' ? e.controle : e.controle[a] || Object.values(e.controle).at(-1));
+  const noGrupo = (e, a) => (st.empGrupo === 'todas' ? true : st.empGrupo === 'sem_pv' ? !PETRO_VALE.has(e.id) : ctrlNoAno(e, a) === st.empGrupo);
+  /** Lucro em R$ milhões no ano, corrigido pelo IPCA se escolhido. */
+  const empVal = (v, a) => (v == null ? null : st.empValores === 'real' ? v * (D.raw.empresas.ipca[a] ?? 1) : v);
+  const corPerE = (per) => cor(PERIODOS.indexOf(per) % 8);
+  /** Soma do grupo no ano, sem dupla contagem; e quantas companhias entraram. */
+  function empTotal(a, filtro = () => true) {
+    let soma = 0, n = 0;
+    for (const e of D.raw.empresas.empresas) {
+      const l = e.lucro[a];
+      if (l == null || !noGrupo(e, a) || !filtro(e)) continue;
+      soma += l - (e.cruzada?.[a] || 0); n++;
+    }
+    return { v: empVal(soma, a), n };
+  }
+  function drawEmpresas() {
+    const E = D.raw.empresas;
+    if (!E?.empresas?.length) return vazio($('#emp-chart'), 'Dados das companhias abertas indisponíveis.');
+    $('#emp-grupo').value = st.empGrupo; $('#emp-valores').value = st.empValores;
+    const anos = E.anos, ua = anos.at(-1);
+    const tot = Object.fromEntries(anos.map((a) => [a, empTotal(a)]));
+    const real = st.empValores === 'real';
+    const grupoTxt = $('#emp-grupo').selectedOptions[0].textContent.toLowerCase();
+    const var1 = tot[ua - 1] && tot[ua - 1].v ? 100 * (tot[ua].v - tot[ua - 1].v) / Math.abs(tot[ua - 1].v) : null;
+    const cruz = d3.sum(E.empresas, (e) => (noGrupo(e, ua) ? e.cruzada?.[ua] || 0 : 0));
+    const lider = E.empresas.filter((e) => e.lucro[ua] != null && noGrupo(e, ua)).sort((x, y) => y.lucro[ua] - x.lucro[ua]);
+    $('#emp-nota').textContent = `Em ${ua}, ${f0(tot[ua].n)} companhias abertas (${grupoTxt}) lucraram ${bi(tot[ua].v)}`
+      + (var1 != null ? `, ${var1 >= 0 ? 'alta' : 'queda'} de ${f1(Math.abs(var1))}% sobre ${ua - 1}` : '') + '.'
+      + (lider.length ? ` As maiores foram ${lider.slice(0, 3).map((e) => `${e.nome} (${bi(empVal(e.lucro[ua], ua))})`).join(', ')}.` : '')
+      + (cruz ? ` Já descontados ${bi(empVal(cruz, ua))} de lucro contado duas vezes, por participações de uma companhia aberta em outra.` : '')
+      + (real ? ` Em reais de ${ua}, corrigidos pelo IPCA.` : ' Em reais de cada ano, sem correção pela inflação.')
+      + ` Dados da CVM coletados em ${fmtData(E.coletado_em)}.`;
+    const medias = PERIODOS.map((per) => {
+      const i = +per.slice(0, 4), rs = anos.filter((a) => a >= i && a <= i + 3);
+      return rs.length ? { per, de: String(rs[0]), ate: String(rs.at(-1)), v: d3.mean(rs, (a) => tot[a].v) / 1000, cor: corPerE(per) } : null;
+    }).filter(Boolean);
+    barras($('#emp-chart'), anos.map((a) => ({ label: String(a), v: tot[a].v / 1000, a })), {
+      fmt: (v) => f0(v), height: 300, negativos: true, medias,
+      cor: (x) => corPerE(periodoDoAno(x.a)),
+      tipLinhas: (x) => [
+        { name: `Lucro em ${x.a}`, value: bi(tot[x.a].v) },
+        { name: 'Média do governo, por ano', value: (() => { const m = medias.find((q) => +q.de <= x.a && x.a <= +q.ate); return m ? `R$ ${f1(m.v)} bi` : '—'; })() },
+        { name: 'Companhias na conta', value: f0(tot[x.a].n) },
+        { name: 'Mandato', value: nomeMand(periodoDoAno(x.a)) || '—' },
+      ],
+    });
+    const leg = $('#emp-leg'); leg.replaceChildren();
+    for (const m of medias) {
+      const sp = el('span'); sp.append(el('i', { style: `background:${m.cor}` }), nomeMand(m.per) + (m.de === m.ate ? ` (só ${m.de})` : +m.ate - +m.de < 3 ? ` (${m.de}–${m.ate})` : ''), el('b', {}, ` · média de R$ ${f1(m.v)} bi por ano`)); leg.append(sp);
+    }
+    const sl = el('span'); sl.append(el('i', { class: 'tracejado' }), 'linha tracejada: média por ano no governo'); leg.append(sl);
+    // por mandato
+    const tb = $('#emp-mand-table tbody'); tb.replaceChildren();
+    for (const per of [...PERIODOS].reverse()) {
+      const i = +per.slice(0, 4), rs = anos.filter((a) => a >= i && a <= i + 3);
+      if (!rs.length) continue;
+      const soma = (e) => { const vs = rs.map((a) => (e.lucro[a] != null && noGrupo(e, a) ? empVal(e.lucro[a], a) : null)).filter((v) => v != null); return vs.length ? d3.sum(vs) : null; };
+      const porE = E.empresas.map((e) => ({ e, s: soma(e) })).filter((x) => x.s != null).sort((a, b) => b.s - a.s);
+      const mx = porE[0], mn = porE.at(-1);
+      const nome = el('td'); nome.append(nomeMand(per));
+      if (rs[0] > i || rs.at(-1) < i + 3) nome.append(el('span', { class: 'cod' }, ` · ${rs[0]}${rs.length > 1 ? '–' + rs.at(-1) : ''}`));
+      const media = d3.mean(rs, (a) => tot[a].v);
+      const tr = el('tr');
+      tr.append(nome, el('td', { class: 'some-p' }, f0(rs.length)), el('td', { class: media < 0 ? 'ruim' : '' }, bi(media)),
+        el('td', { class: 'some-p' }, mx ? `${mx.e.nome} (${bi(mx.s)})` : '—'),
+        el('td', { class: 'some-p' + (mn && mn.s < 0 ? ' ruim' : '') }, mn && mn.s < 0 ? `${mn.e.nome} (${bi(mn.s)})` : 'nenhum'));
+      tb.append(tr);
+    }
+    drawEmpSetores(anos);
+    drawEmpCias(anos);
+  }
+  const mandatosRecentes = (anos) => PERIODOS.filter((per) => anos.some((a) => a >= +per.slice(0, 4) && a <= +per.slice(0, 4) + 3)).slice(-2);
+  function drawEmpSetores(anos) {
+    const E = D.raw.empresas, ua = anos.at(-1);
+    const mands = mandatosRecentes(anos);
+    const setores = [...new Set(E.empresas.map((e) => e.setor))];
+    const linhas = setores.map((s) => {
+      const f = (e) => e.setor === s;
+      const r = { setor: s, n: empTotal(ua, f).n, [ua]: empTotal(ua, f).v, [ua - 1]: empTotal(ua - 1, f).v };
+      for (const per of mands) { const i = +per.slice(0, 4), rs = anos.filter((a) => a >= i && a <= i + 3); r[`m:${per}`] = d3.mean(rs, (a) => empTotal(a, f).v); }
+      return r;
+    }).filter((r) => r.n > 0 || r[ua - 1]);
+    const cols = [['setor', 'Setor', ''], ['n', `Companhias em ${ua}`, 'some-p'], [String(ua), String(ua), ''], [String(ua - 1), String(ua - 1), 'some-p'],
+      ...mands.map((per) => [`m:${per}`, `Média por ano, ${nomeMand(per)}`, ''])];
+    const k = st.empSSort.key || String(ua), dir = st.empSSort.dir;
+    linhas.sort((a, b) => (k === 'setor' ? dir * a.setor.localeCompare(b.setor, 'pt-BR') : dir * ((a[k] ?? -Infinity) - (b[k] ?? -Infinity))));
+    $('#emp-setor-head').replaceChildren(...cols.map(([key, nome, c]) => {
+      const th = el('th', { scope: 'col', class: c, 'data-sort': key, 'aria-sort': key === k ? (dir > 0 ? 'ascending' : 'descending') : 'none' });
+      th.append(el('button', {}, nome)); return th;
+    }));
+    const tb = $('#emp-setor-table tbody'); tb.replaceChildren();
+    for (const r of linhas) {
+      const tr = el('tr');
+      const td = el('td', { class: 'emp-setor-nome' }); td.append(el('button', { type: 'button', class: 'prop-link', 'data-setor': r.setor }, r.setor)); tr.append(td);
+      tr.append(el('td', { class: 'some-p' }, f0(r.n)));
+      for (const [key, , c] of cols.slice(2)) tr.append(el('td', { class: `${c} ${r[key] < 0 ? 'ruim' : ''}` }, bi(r[key])));
+      tb.append(tr);
+    }
+  }
+  function empOrdenadas(anos) {
+    const E = D.raw.empresas, ua = anos.at(-1);
+    const q = semAcento(st.empBusca).trim();
+    const k = st.empSort.key || String(ua), dir = st.empSort.dir;
+    const somaMand = (e, per) => { const i = +per.slice(0, 4); const vs = anos.filter((a) => a >= i && a <= i + 3 && e.lucro[a] != null).map((a) => empVal(e.lucro[a], a)); return vs.length ? d3.sum(vs) : null; };
+    const val = (e) => (k === 'nome' ? e.nome : k.startsWith('m:') ? somaMand(e, k.slice(2)) : empVal(e.lucro[k], +k));
+    const lista = E.empresas.filter((e) => anos.some((a) => e.lucro[a] != null && noGrupo(e, a))
+      && (st.empSetor === 'todos' || e.setor === st.empSetor)
+      && (!q || semAcento(`${e.nome} ${e.razao}`).includes(q)));
+    lista.sort((a, b) => {
+      if (k === 'nome') return dir * a.nome.localeCompare(b.nome, 'pt-BR');
+      const va = val(a), vb = val(b);
+      if (va == null && vb == null) return 0;
+      if (va == null) return 1;
+      if (vb == null) return -1;
+      return dir * (va - vb);
+    });
+    return { lista, somaMand };
+  }
+  function drawEmpCias(anos) {
+    const E = D.raw.empresas, ua = anos.at(-1);
+    const setores = [...new Set(E.empresas.map((e) => e.setor))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+    fillSelect($('#emp-c-setor'), [{ label: 'Todos', value: 'todos' }, ...setores.map((s) => ({ label: s, value: s }))], st.empSetor);
+    if ($('#emp-c-busca').value !== st.empBusca) $('#emp-c-busca').value = st.empBusca;
+    const mands = mandatosRecentes(anos);
+    const ultAnos = anos.slice(-6);
+    const cols = [['nome', 'Companhia', ''], ...ultAnos.map((a, i) => [String(a), String(a), i < 3 ? 'some-p' : '']),
+      ...mands.map((per) => [`m:${per}`, `Soma ${nomeMand(per)}`, 'some-p'])];
+    const k = st.empSort.key || String(ua);
+    $('#emp-head').replaceChildren(...cols.map(([key, nome, c]) => {
+      const th = el('th', { scope: 'col', class: c, 'data-sort': key, 'aria-sort': key === k ? (st.empSort.dir > 0 ? 'ascending' : 'descending') : 'none' });
+      th.append(el('button', {}, nome)); return th;
+    }));
+    const { lista, somaMand } = empOrdenadas(anos);
+    const LIM = 60, mostrar = st.empTodas ? lista : lista.slice(0, LIM);
+    const tb = $('#emp-table tbody'); tb.replaceChildren();
+    for (const e of mostrar) {
+      const tr = el('tr'), nome = el('td');
+      const ctrl = ctrlNoAno(e, ua);
+      nome.append(e.nome, el('span', { class: 'cod seg-cat' }, `${e.setor} · ${ctrl === 'estatal' ? 'estatal' : ctrl === 'estrangeira' ? 'controle estrangeiro' : 'privada'}${typeof e.controle === 'object' ? ' (privatizada)' : ''}`));
+      nome.title = e.razao;
+      tr.append(nome);
+      ultAnos.forEach((a, i) => { const v = empVal(e.lucro[a], a); tr.append(el('td', { class: `${i < 3 ? 'some-p ' : ''}${v < 0 ? 'ruim' : ''}` }, bi(v))); });
+      mands.forEach((per) => { const v = somaMand(e, per); tr.append(el('td', { class: `some-p ${v < 0 ? 'ruim' : ''}` }, bi(v))); });
+      tb.append(tr);
+    }
+    $('#emp-c-nota').textContent = `Lucro líquido de cada companhia, como divulgado no balanço, ${st.empValores === 'real' ? `em reais de ${ua} (IPCA)` : 'em reais de cada ano'}. Grupo: ${$('#emp-grupo').selectedOptions[0].textContent.toLowerCase()}.`;
+    const mais = $('#emp-mais'); mais.replaceChildren();
+    if (lista.length > LIM) {
+      const b = el('button', { type: 'button', class: 'botao' }, st.empTodas ? 'Mostrar só as primeiras' : `Mostrar todas as ${f0(lista.length)}`);
+      b.addEventListener('click', () => { st.empTodas = !st.empTodas; drawEmpCias(anos); });
+      mais.append(`Mostrando ${f0(mostrar.length)} de ${f0(lista.length)} companhias. `, b);
+    } else mais.textContent = `${f0(lista.length)} companhia${lista.length === 1 ? '' : 's'}.`;
+  }
+  $('#emp-setor-table').addEventListener('click', (ev) => {
+    const s = ev.target.closest('[data-setor]');
+    if (s) { st.empSetor = s.dataset.setor; st.empBusca = ''; st.empTodas = false; drawEmpCias(D.raw.empresas.anos); $('#emp-cias-card').scrollIntoView({ behavior: 'smooth', block: 'start' }); return; }
+    const th = ev.target.closest('th[data-sort]'); if (!th) return;
+    const ua = String(D.raw.empresas.anos.at(-1)), key = th.dataset.sort, atual = st.empSSort.key || ua;
+    st.empSSort = { key, dir: atual === key ? -st.empSSort.dir : key === 'setor' ? 1 : -1 };
+    drawEmpSetores(D.raw.empresas.anos);
+  });
+  $('#emp-table thead').addEventListener('click', (ev) => {
+    const th = ev.target.closest('th[data-sort]'); if (!th) return;
+    const ua = String(D.raw.empresas.anos.at(-1)), key = th.dataset.sort, atual = st.empSort.key || ua;
+    st.empSort = { key, dir: atual === key ? -st.empSort.dir : key === 'nome' ? 1 : -1 };
+    drawEmpCias(D.raw.empresas.anos);
+  });
+  $('#csv-empresas').addEventListener('click', () => {
+    const E = D.raw.empresas;
+    const { lista } = empOrdenadas(E.anos);
+    baixarCSV('monitora-brasil-lucro-companhias-abertas.csv', lista, [
+      { titulo: 'companhia', valor: (e) => e.nome }, { titulo: 'razão social', valor: (e) => e.razao }, { titulo: 'código CVM', valor: (e) => e.id },
+      { titulo: 'setor', valor: (e) => e.setor }, { titulo: `controle em ${E.anos.at(-1)}`, valor: (e) => ctrlNoAno(e, E.anos.at(-1)) },
+      ...E.anos.map((a) => ({ titulo: `lucro ${a} (R$ milhões${st.empValores === 'real' ? `, de ${E.anos.at(-1)}` : ''})`, valor: (e) => { const v = empVal(e.lucro[a], a); return v == null ? '' : Math.round(v * 10) / 10; } })),
+    ]);
+  });
+
   // ---------------------------------------------------------------- leis e votação
   /** Dados carregados só quando a aba abre: a lista (votacoes.json), os votos de cada ano (votos/AAAA.json)
    *  e, em tempo real, as votações mais novas que a coleta diária, pela função /api/votacoes-recentes. */
@@ -2408,6 +2608,11 @@
   on('#est-filtro', (v) => { st.estFiltro = v; });
   $('#est-sem-vendas').addEventListener('change', (e) => { st.estSemVendas = e.target.checked; render(); });
   on('#ind-modo', (v) => { st.indModo = v; });
+  on('#emp-grupo', (v) => { st.empGrupo = v; });
+  on('#emp-valores', (v) => { st.empValores = v; });
+  on('#emp-c-setor', (v) => { st.empSetor = v; st.empTodas = false; });
+  let empT;
+  $('#emp-c-busca').addEventListener('input', (e) => { st.empBusca = e.target.value; st.empTodas = false; clearTimeout(empT); empT = setTimeout(render, 220); });
   on('#leis-ano', (v) => { st.leisAno = +v; st.leisSel = null; });
   on('#leis-tipo', (v) => { st.leisTipo = v; st.leisSel = null; });
   on('#leis-res', (v) => { st.leisRes = v; st.leisSel = null; });
@@ -2436,6 +2641,7 @@
     else if (st.page === 'estatais') drawEstatais();
     else if (st.page === 'industria') drawIndustria();
     else if (st.page === 'leis') drawLeis();
+    else if (st.page === 'empresas') drawEmpresas();
     else drawMetodo();
   }
 

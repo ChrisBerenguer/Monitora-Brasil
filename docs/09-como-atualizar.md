@@ -45,6 +45,10 @@ Confira: o crescimento do PIB e das categorias no último ano deve bater com o c
 
 O saldo primário do FMI, usado no escore, vem com os outros dados brutos: `python scripts/baixar_brutos.py && python scripts/build_dados.py`. O FMI atualiza o Fiscal Monitor em abril e outubro.
 
+### Dados da aba Empresas
+
+O workflow **Atualizar lucro das companhias abertas (CVM)** (`.github/workflows/dados-empresas.yml`) roda toda terça-feira, baixa os arquivos da CVM de 2010 em diante (cerca de 300 MB) e grava `empresas.json` quando algo mudou. O lucro de um ano fica completo em abril do ano seguinte, quando vence o prazo das demonstrações anuais; companhias que reapresentam balanços mudam anos antigos. No próprio computador: `python scripts/coletar_empresas.py`. Se a CVM recusar a conexão, o script avisa e mantém os dados atuais.
+
 ### Dados da aba Leis e votação
 
 O workflow **Atualizar votações da Câmara (Leis e votação)** (`.github/workflows/dados-votacoes.yml`) roda todo dia, baixa os arquivos anuais da Câmara de 2019 em diante e grava `votacoes.json` e `votos/AAAA.json` quando há votação nova. Para rodar na hora: GitHub → **Actions** → esse workflow → **Run workflow**. No próprio computador: `python scripts/coletar_votacoes.py` (só a biblioteca padrão do Python). Se a Câmara recusar a conexão, o script avisa e mantém os dados atuais. Entre uma coleta e outra, o site busca as votações novas em tempo real pela função `/api/votacoes-recentes` (doc 07); ela só funciona na Vercel.

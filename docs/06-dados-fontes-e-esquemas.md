@@ -260,6 +260,35 @@ Coletados por `scripts/coletar_industria.py` no GitHub Actions (workflow `dados-
 | `segmentos[]` | `id`, `nome`, `categoria` (id da categoria), `fonte`, `url` (tabela SIDRA), `mede` (o que é medido), `desde` (primeiro ano), `cresc`, `parcial` e `ultimo` |
 | `fontes` | Nome e endereço de cada pesquisa |
 
+## Dados da aba Empresas
+
+Coletados por `scripts/coletar_empresas.py` no GitHub Actions (workflow `dados-empresas.yml`, toda terça-feira e quando disparado à mão), do Portal de Dados Abertos da CVM (`https://dados.cvm.gov.br/dados/CIA_ABERTA/`), de 2010 em diante. Gera `empresas.json`.
+
+| Arquivo da CVM | Uso |
+|---|---|
+| `DOC/DFP/DADOS/dfp_cia_aberta_AAAA.zip` | Demonstração do Resultado consolidada (`DRE_con`) e individual (`DRE_ind`), última versão de cada companhia, exercício `ÚLTIMO` |
+| `DOC/FRE/DADOS/fre_cia_aberta_AAAA.zip` | `participacao_sociedade`: o percentual de cada companhia em outras sociedades, com o CNPJ da investida |
+| `CAD/DADOS/cad_cia_aberta.csv` | Setor de atividade, categoria de registro (A ou B) e controle acionário |
+| IPCA, Banco Central (SGS 433) | Fator para reais do último ano, pela média anual do índice |
+
+**Lucro.** A conta fixa de lucro consolidado do período (`Lucro/Prejuízo Consolidado do Período`, código 3.11 na maioria; 3.09 ou 3.13 em alguns planos) e a filha `Atribuído a Sócios da Empresa Controladora`, que é o valor usado. Sem demonstração consolidada, o `Lucro/Prejuízo do Período` da individual. A escala (`MIL` ou `UNIDADE`) é aplicada e os valores ficam em R$ milhões.
+
+**Quem entra.** Companhias com registro de categoria A (podem ter ações negociadas). As de categoria B (só dívida: securitizadoras, subsidiárias, concessionárias) ficam de fora. Um ano só entra quando tem ao menos 300 companhias, para não mostrar um ano em que os balanços ainda estão chegando.
+
+**Dupla contagem.** Para cada participação de uma companhia da lista em outra da lista (FRE do mesmo ano ou, se faltar, do seguinte), o script calcula `percentual × lucro da investida` e grava em `cruzada` da dona. O site desconta esse valor nas somas (gráfico, mandatos e setores), mas não na tabela por companhia, que mostra o lucro como divulgado.
+
+**Controle.** Do cadastro (`ESTATAL`, `PRIVADO`, `ESTRANGEIRO`, com ou sem `HOLDING`), corrigido em `CONTROLE_ESTATAL` (no script) para privatizações que o cadastro não reflete: Eletrobras e Chesf (estatais até 2021), BR Distribuidora/Vibra (até 2018), Sabesp (até 2023), Copel (até 2022) e CEEE-D (até 2020). O setor é o atual do cadastro; holdings (`Emp. Adm. Part. - X`) entram no setor X.
+
+### `empresas.json`
+
+| Campo | Descrição |
+|---|---|
+| `coletado_em` | Data da última coleta com dado novo |
+| `anos` | Anos com dado completo |
+| `ipca` | `{ano: fator}` que leva reais de cada ano a reais do último ano |
+| `empresas[]` | `id` (código CVM), `nome` (nome comercial do cadastro), `razao` (razão social do último balanço), `setor`, `controle` (`estatal`, `privada` ou `estrangeira`; ou `{ano: controle}` quando mudou), `lucro` (`{ano: R$ milhões}`) e `cruzada` (`{ano: R$ milhões}` de lucro de outras companhias abertas já contido no dela) |
+| `privatizacoes` | As correções de controle usadas |
+
 ## Dados da aba Leis e votação
 
 Coletados por `scripts/coletar_votacoes.py` no GitHub Actions (workflow `dados-votacoes.yml`, às quartas e aos sábados e quando disparado à mão), dos arquivos anuais dos Dados Abertos da Câmara dos Deputados (`https://dadosabertos.camara.leg.br/arquivos/<arquivo>/json/<arquivo>-AAAA.json`), de 2019 ao ano corrente:

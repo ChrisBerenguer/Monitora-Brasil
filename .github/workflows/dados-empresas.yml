@@ -1,0 +1,28 @@
+name: Atualizar lucro das companhias abertas (CVM)
+# Baixa da CVM (Dados Abertos) as demonstrações financeiras (DFP) e o formulário de referência (FRE)
+# das companhias abertas, desde 2010, e grava site/data/empresas.json.
+# Roda toda semana e pode ser disparado à mão em Actions → "Atualizar lucro das companhias abertas (CVM)" → Run workflow.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '11 9 * * 2'   # toda terça-feira, 06h11 em Brasília: a CVM atualiza os arquivos quando as companhias reapresentam balanços
+permissions:
+  contents: write
+concurrency: dados-empresas
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: python scripts/coletar_empresas.py
+      - name: Gravar no repositório se algo mudou
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dados/empresas.json site/data/empresas.json
+          git diff --cached --quiet && echo "Sem mudanças." && exit 0
+          git commit -m "Dados: lucro das companhias abertas (CVM), coleta automática"
+          git push

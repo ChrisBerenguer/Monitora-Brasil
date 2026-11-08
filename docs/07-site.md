@@ -13,7 +13,7 @@ site/
 │   ├── js/d3.v7.9.0.min.js     biblioteca d3 (cópia local, ISC License)
 │   ├── js/html-to-image.v1.11.11.min.js  gera a imagem de compartilhamento (cópia local, MIT License)
 │   └── favicon.svg
-├── data/                       os JSON de scripts/build_dados.py e dos coletores (consumo, economias, estatais, industria, votacoes e votos/)
+├── data/                       os JSON de scripts/build_dados.py e dos coletores (consumo, economias, estatais, empresas, industria, votacoes e votos/)
 ├── _headers                    cabeçalhos de cache e segurança (Netlify, Cloudflare Pages; na Vercel, ver vercel.json na raiz)
 ├── .htaccess                   o mesmo para Apache
 ├── .nojekyll                   impede o GitHub Pages de processar a pasta com Jekyll
@@ -101,6 +101,14 @@ Quanto cresce cada parte da economia, em volume (sem a inflação), com dados do
 
 Dados em `industria.json` (doc 06); a coleta é automática (doc 09). Funções `drawIndustria`, `mediaComposta`, `mandatosIndustria` e `industriaOrdenada`.
 
+### Empresas (`#empresas`)
+Quanto lucram as companhias abertas brasileiras (`empresas.json`, doc 06). Três cartões:
+- **Lucro das companhias abertas:** barras por ano desde 2010, coloridas por mandato, com a linha tracejada da média por ano de cada governo, e a tabela **Por mandato** (lucro médio por ano, maior lucro e maior prejuízo somados no mandato). **Grupo** filtra todas, todas sem Petrobras e Vale, privadas de controle nacional, de controle estrangeiro ou estatais (o controle de cada ano, com as privatizações); **Valores** alterna entre reais de hoje (IPCA, padrão) e reais de cada ano. As somas descontam a dupla contagem entre companhias abertas.
+- **Lucro por setor:** soma por setor no último ano, no anterior e a média por ano nos dois últimos mandatos, ordenável; clicar no setor filtra o cartão seguinte.
+- **Lucro de cada companhia:** lucro como divulgado nos seis últimos anos e a soma nos dois últimos mandatos, com setor e controle; filtro de setor, busca por nome, ordenação, as 60 primeiras com botão para mostrar todas, e **Baixar CSV** com todos os anos.
+
+Funções `drawEmpresas`, `drawEmpSetores`, `drawEmpCias`, `empTotal` e `empOrdenadas`.
+
 ### Leis e votação (`#leis`)
 O que o Plenário da Câmara votou e como votou cada deputado, desde 2019. Os dados (`votacoes.json` e `votos/AAAA.json`, doc 06) são carregados só quando a aba abre, para não pesar nas outras.
 
@@ -165,7 +173,7 @@ A caixa que se abre mostra a prévia e oferece **Compartilhar…** (no celular, 
 
 Como funciona: `gerarImagem` monta fora da tela um quadro com uma cópia do cartão, e a biblioteca html-to-image (servida pelo próprio site) converte esse quadro em PNG. Para que as fontes do Google entrem na imagem, a política de segurança (CSP) libera `fonts.googleapis.com` e `fonts.gstatic.com` em `connect-src`; se forem bloqueadas, a imagem usa as fontes do sistema. Textos que só fazem sentido na tela ("passe o mouse...") ficam em elementos com a classe `so-tela` e não entram na imagem. O atributo `data-ctx` do cartão controla a linha de escolhas (`proprio`: só os controles do cartão; `nenhum`: sem a linha).
 
-**Links diretos:** acrescente `#series`, `#coortes`, `#metodo`, `#vida`, `#estatais`, `#industria` ou `#leis` ao endereço (o antigo `#consumo` continua funcionando).
+**Links diretos:** acrescente `#series`, `#coortes`, `#metodo`, `#vida`, `#estatais`, `#empresas`, `#industria` ou `#leis` ao endereço (o antigo `#consumo` continua funcionando).
 
 ## Organização do `app.js`
 
