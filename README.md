@@ -18,7 +18,7 @@ Painel que acompanha o desenvolvimento do Brasil em comparação com outros paí
 4. **Quanto as estatais federais lucram ou perdem**, ano a ano e por mandato (aba Estatais)?
 5. **Quanto cresce cada segmento da economia**, da agropecuária aos serviços, ano a ano e por mandato (aba Indústria)?
 6. **O que a Câmara votou e como votou cada deputado**, desde 2019 (aba Leis e votação)?
-7. **Quanto lucram as companhias abertas brasileiras**, por ano, setor, controle e mandato (aba Empresas)?
+7. **Quanto lucram as companhias abertas brasileiras**, por ano, setor, controle e mandato (aba Privadas)?
 
 ## Resultado de referência (dados de outubro de 2026)
 

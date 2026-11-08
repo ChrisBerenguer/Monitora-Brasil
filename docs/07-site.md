@@ -101,7 +101,7 @@ Quanto cresce cada parte da economia, em volume (sem a inflação), com dados do
 
 Dados em `industria.json` (doc 06); a coleta é automática (doc 09). Funções `drawIndustria`, `mediaComposta`, `mandatosIndustria` e `industriaOrdenada`.
 
-### Empresas (`#empresas`)
+### Privadas (`#empresas`)
 Quanto lucram as companhias abertas brasileiras (`empresas.json`, doc 06). Três cartões:
 - **Lucro das companhias abertas:** barras por ano desde 2010, coloridas por mandato, com a linha tracejada da média por ano de cada governo, e a tabela **Por mandato** (lucro médio por ano, maior lucro e maior prejuízo somados no mandato). **Grupo** filtra todas, todas sem Petrobras e Vale, privadas de controle nacional, de controle estrangeiro ou estatais (o controle de cada ano, com as privatizações); **Valores** alterna entre reais de hoje (IPCA, padrão) e reais de cada ano. As somas descontam a dupla contagem entre companhias abertas.
 - **Lucro por setor:** soma por setor no último ano, no anterior e a média por ano nos dois últimos mandatos, ordenável; clicar no setor filtra o cartão seguinte.

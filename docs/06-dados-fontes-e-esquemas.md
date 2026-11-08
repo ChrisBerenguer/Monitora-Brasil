@@ -260,7 +260,7 @@ Coletados por `scripts/coletar_industria.py` no GitHub Actions (workflow `dados-
 | `segmentos[]` | `id`, `nome`, `categoria` (id da categoria), `fonte`, `url` (tabela SIDRA), `mede` (o que é medido), `desde` (primeiro ano), `cresc`, `parcial` e `ultimo` |
 | `fontes` | Nome e endereço de cada pesquisa |
 
-## Dados da aba Empresas
+## Dados da aba Privadas
 
 Coletados por `scripts/coletar_empresas.py` no GitHub Actions (workflow `dados-empresas.yml`, toda terça-feira e quando disparado à mão), do Portal de Dados Abertos da CVM (`https://dados.cvm.gov.br/dados/CIA_ABERTA/`), de 2010 em diante. Gera `empresas.json`.
 

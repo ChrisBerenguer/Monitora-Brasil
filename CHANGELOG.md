@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.37.1 — 08/11/2026
+
+### Alterado
+- A aba "Empresas" passa a se chamar **"Privadas"**. O endereço continua `#empresas`, para não quebrar links, e o conteúdo não muda (o filtro Grupo ainda inclui estatais e estrangeiras).
+
 ## 1.37 — 08/11/2026
 
 ### Adicionado

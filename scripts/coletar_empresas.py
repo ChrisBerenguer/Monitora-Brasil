@@ -1,4 +1,4 @@
-"""Coleta o lucro das companhias abertas brasileiras para a aba "Empresas" do Monitora Brasil.
+"""Coleta o lucro das companhias abertas brasileiras para a aba "Privadas" do Monitora Brasil.
 
 Fonte: Comissão de Valores Mobiliários (CVM), Portal de Dados Abertos (https://dados.cvm.gov.br), sem cadastro:
   - DFP (Demonstrações Financeiras Padronizadas), um zip por ano desde 2010:
