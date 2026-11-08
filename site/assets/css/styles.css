@@ -339,5 +339,3 @@ td.leis-proj { white-space: normal; min-width: 16rem; max-width: 46rem; text-ali
 .prop-vot:hover { color: var(--accent); }
 .prop-vot:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
 .prop-aviso { background: color-mix(in srgb, var(--accent-2) 14%, var(--panel)); border: 1px solid color-mix(in srgb, var(--accent-2) 45%, transparent); border-radius: 8px; padding: 10px 12px; font-size: var(--t-sm); }
-#fis-leg i.tracejado { width: 18px; height: 0; border-radius: 0; border-top: 2px dashed var(--muted); align-self: center; }
-#fis-leg b { font-weight: 600; color: var(--fg); }

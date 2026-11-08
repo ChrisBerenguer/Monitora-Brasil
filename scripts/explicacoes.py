@@ -56,8 +56,8 @@ EXPLICACOES = {
         'por_que_importa': "É o termômetro das contas do governo usado nas metas fiscais do Brasil. Mostra se o governo vive "
                            "dentro do que arrecada, sem precisar se endividar para pagar despesas do dia a dia.",
         'atencao': "Vem do FMI e cobre o governo geral (União, estados e municípios), com regras iguais para todos os países. "
-                   "O número oficial do Brasil, do Banco Central, cobre também as estatais e sai um pouco diferente: ele "
-                   "aparece na aba Vida do Cidadão. O último ano pode ser estimativa do FMI.",
+                   "O número oficial do Brasil, do Banco Central, cobre também as estatais e sai um pouco diferente. "
+                   "O último ano pode ser estimativa do FMI.",
     },
     'dt_dod_dect_gn_zs': {
         'o_que_e': "Quanto o país (governo e empresas) deve a credores de fora, comparado com a renda do país em um ano.",

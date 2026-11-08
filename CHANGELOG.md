@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.36 — 08/11/2026
+
+### Removido
+- **Aba "Contas públicas"**, com o resultado primário do Banco Central, e o coletor `coletar_fiscal.py` com o workflow `dados-fiscal.yml`. Endereços antigos com `#fiscal` abrem a Visão geral. O saldo primário do governo do FMI continua no escore de Estabilidade macroeconômica, nas Séries temporais e nas Coortes.
+
 ## 1.35.1 — 08/11/2026
 
 ### Alterado

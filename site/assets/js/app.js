@@ -20,7 +20,6 @@
     consumo: 'consumo.json',
     economias: 'economias.json',
     estatais: 'estatais.json',
-    fiscal: 'contas_publicas.json',
     industria: 'industria.json',
   };
 
@@ -46,7 +45,7 @@
   const ORDEM_PAISES = ['bra', ...COORTES.filter((c) => c.membros).flatMap((c) => c.membros)];
   const PERIODOS = ['1995–1998', '1999–2002', '2003–2006', '2007–2010', '2011–2014', '2015–2018', '2019–2022', '2023–2026'];
   const MANDATO = { '1995–1998': 'FHC 1', '1999–2002': 'FHC 2', '2003–2006': 'Lula 1', '2007–2010': 'Lula 2', '2011–2014': 'Dilma 1', '2015–2018': 'Dilma 2 / Temer', '2019–2022': 'Bolsonaro', '2023–2026': 'Lula 3 (até 2025)' };
-  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'vida', 'estatais', 'industria', 'fiscal', 'leis'];
+  const PAGINAS = ['visao', 'series', 'coortes', 'metodo', 'vida', 'estatais', 'industria', 'leis'];
   const APELIDOS = { consumo: 'vida' }; // endereços antigos continuam funcionando
   // Mandatos usados na variação dos escores (Visão geral). Os escores começam em 2000,
   // então FHC 2 é medido de 2000 a 2002.
@@ -61,7 +60,7 @@
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
     ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cbMa: '2019–2022', cbMb: '2023–2026', cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
     estFiltro: 'todas', estSort: { key: null, dir: -1 }, estSemVendas: true,
-    fisEsfera: 'primario', leisAno: null, leisTipo: 'principal', leisRes: 'todas', leisForma: 'nominal', leisBusca: '', leisSel: null, leisDVoto: 'todos', leisDPart: 'todos', leisDUf: 'todos', leisDBusca: '', leisDep: null,
+    leisAno: null, leisTipo: 'principal', leisRes: 'todas', leisForma: 'nominal', leisBusca: '', leisSel: null, leisDVoto: 'todos', leisDPart: 'todos', leisDUf: 'todos', leisDBusca: '', leisDep: null,
     indModo: 'indice', indBase: 2002, indFiltro: 'todas', indSort: { key: null, dir: -1 },
   };
   let D = null; // dados carregados e indexados
@@ -670,16 +669,6 @@
     return [['No Brasil, agora', f(c).replace(/\.\.$/, '.')]];
   };
   const CARD_INFO = {
-    'fis-primario': { titulo: 'Resultado primário do setor público', blocos: [
-      ['O que mostra', 'Quanto sobrou (superávit, barra para cima) ou faltou (déficit, barra para baixo) nas contas públicas em cada ano, sem contar os juros da dívida, em % do PIB. É o número das metas fiscais. O setor público consolidado soma o governo central (União, Previdência e Banco Central), os estados e municípios e as empresas estatais, menos Petrobras, Eletrobras e bancos públicos.'],
-      ['Estatais aqui e na aba Estatais', 'São medidas diferentes. A aba Estatais mostra o lucro líquido contábil das estatais federais, incluindo Petrobras, Banco do Brasil, Caixa e BNDES, que concentram quase todo o lucro. Aqui, o Banco Central exclui essas empresas (Petrobras desde 2009, Eletrobras desde 2010, e nunca incluiu os bancos), soma as estatais de estados e municípios e mede o caixa: receitas menos despesas não financeiras. Investimentos contam inteiros como gasto no ano em que são feitos, e os dividendos que a estatal paga ao governo saem da conta dela e entram na do governo central. Por isso as estatais podem dar lucro e ainda assim aparecer com pequeno déficit primário.'],
-      ['Como ler', 'Cada barra é um ano; a cor marca o governo, e a linha tracejada é a média por ano daquele governo. A última barra, mais clara, é o acumulado em 12 meses até o último mês publicado. A tabela traz a média por ano em cada mandato, para cada esfera, e também os juros e o resultado nominal.'],
-      ['Atenção', 'O Banco Central mede pelo financiamento (quanto a dívida variou), e não pelas receitas e despesas como o Tesouro; os números do governo central podem diferir um pouco dos do Tesouro. Anos de crise e eleição pesam: 2020 teve o maior déficit por causa dos gastos da pandemia. A série do setor público consolidado começa em 2002; a do governo central e a dos estados e municípios, antes.'],
-    ] },
-    'fis-nominal': { titulo: 'Primário, juros e resultado nominal', blocos: [
-      ['O que mostra', 'O resultado primário, os juros pagos sobre a dívida e o resultado nominal (primário menos juros) do setor público consolidado, em % do PIB.'],
-      ['Como ler', 'O resultado nominal é o que de fato aumenta ou diminui a necessidade de se endividar. No Brasil ele é quase sempre deficitário, mesmo em anos de superávit primário, porque os juros da dívida são altos.'],
-    ] },
     'leis-lista': { titulo: 'Votações nominais no Plenário', blocos: [
       ['O que mostra', 'Cada votação nominal do Plenário da Câmara no ano: o projeto, o que foi votado, o placar, se foi aprovado e o que o Governo orientou a sua base a votar. Votação nominal é a feita no painel eletrônico, que registra o voto de cada deputado. Muitas decisões são tomadas em votação simbólica, sem registro de quem votou o quê, e por isso não aparecem aqui.'],
       ['O que foi votado', 'Um projeto costuma passar por várias votações no mesmo dia. "Texto dos projetos" é a decisão sobre o texto em si: o projeto, o substitutivo do relator, a PEC em cada turno ou a medida provisória. "Pedidos de urgência" aceleram a tramitação. "Destaques e emendas" mudam ou mantêm trechos do texto já aprovado. A separação é feita pela descrição que a Câmara dá a cada votação e pode errar em casos raros.'],
@@ -946,13 +935,6 @@
     infoEl.replaceChildren(...partes);
   }
   const FONTES_EXTRA = {
-    fiscal: { t: 'Banco Central do Brasil, Necessidades de Financiamento do Setor Público (NFSP), séries do SGS em % do PIB, acumuladas em 12 meses:', l: [
-      ['Estatísticas fiscais do Banco Central (nota mensal)', 'https://www.bcb.gov.br/estatisticas/estatisticasfiscais'],
-      ['Série 5793: resultado primário do setor público consolidado', 'https://dadosabertos.bcb.gov.br/dataset/5793-nfsp-sem-desvalorizacao-cambial--pib---fluxo-acumulado-em-12-meses---resultado-primario---tota'],
-      ['API do SGS (exemplo: série 5793 em JSON)', 'https://api.bcb.gov.br/dados/serie/bcdata.sgs.5793/dados?formato=json'],
-      ['Outras séries: 5783 (governo central), 5786 (estados e municípios), 5789 (estatais), 5760 (juros), 5727 (nominal)', 'https://www3.bcb.gov.br/sgspub/'],
-      ['Saldo primário dos outros países: FMI, Fiscal Monitor', 'https://www.imf.org/external/datamapper/GGXONLB_G01_GDP_PT@FM'],
-    ], data: () => D.raw.fiscal?.coletado_em },
     camara: { t: 'Dados Abertos da Câmara dos Deputados, arquivos anuais de votações:', l: [
       ['Portal de Dados Abertos da Câmara dos Deputados', 'https://dadosabertos.camara.leg.br/'],
       ['API e arquivos (documentação): votações, votos, proposições e orientações', 'https://dadosabertos.camara.leg.br/swagger/api.html'],
@@ -1095,7 +1077,6 @@
     if (spec === 'fonte:precos') return 'DIEESE (cesta básica) e ANP (combustíveis)';
     if (spec === 'fonte:renda') return 'IBGE (PNAD Contínua) e Ipeadata';
     if (spec === 'fonte:estatais') return 'SEST/Ministério da Gestão (balanços das estatais federais)';
-    if (spec === 'fonte:fiscal') return 'Banco Central do Brasil (estatísticas fiscais)';
     if (spec === 'fonte:camara') return 'Câmara dos Deputados (Dados Abertos)';
     if (spec === 'fonte:industria') return 'IBGE (Contas Nacionais, PIM-PF, PMS, LSPA e pesquisas agropecuárias)';
     const alvo = spec === 'ind' ? st.ind : spec === 'tema' ? st.tema : spec === 'cstema' ? st.cstema : spec.startsWith('tema:') ? spec.slice(5) : spec;
@@ -1192,7 +1173,7 @@
     posicionarInfo(btn);
   }
   /** Coloca o botão de compartilhar ao lado do título de cada cartão com gráfico ou tabela. */
-  document.querySelectorAll('#visao article.card, #series article.card, #coortes article.card, #vida article.card, #estatais article.card, #industria article.card, #fiscal article.card, #leis article.card').forEach((card) => {
+  document.querySelectorAll('#visao article.card, #series article.card, #coortes article.card, #vida article.card, #estatais article.card, #industria article.card, #leis article.card').forEach((card) => {
     const alvo = card.querySelector('.titulo-info');
     if (!alvo) return;
     const b = el('button', { class: 'info-btn share-btn', type: 'button', 'aria-label': 'Compartilhar este gráfico como imagem', 'aria-haspopup': 'dialog' });
@@ -2015,99 +1996,6 @@
     ]);
   });
 
-  // ---------------------------------------------------------------- contas públicas
-  const pctPIB = (v) => (v == null ? '—' : `${v > 0 ? '+' : v < 0 ? '−' : ''}${f2(Math.abs(v)).replace(/0$/, '')}% do PIB`);
-  const pctCurto = (v) => (v == null ? '—' : `${v > 0 ? '+' : v < 0 ? '−' : ''}${f2(Math.abs(v))}`);
-  const corPer = (per) => cor(PERIODOS.indexOf(per) % 8);
-  /** Média por ano de uma série num mandato (só anos completos com dado). */
-  function mediaMandato(s, per) {
-    const i = +per.slice(0, 4), vs = d3.range(i, i + 4).map((a) => s.anual[a]).filter((v) => v != null);
-    return vs.length ? { v: d3.mean(vs), n: vs.length, de: d3.range(i, i + 4).find((a) => s.anual[a] != null) } : null;
-  }
-  function drawFiscal() {
-    const F = D.raw.fiscal;
-    if (!F || !F.series?.length) return vazio($('#fis-chart'), 'Dados fiscais indisponíveis.');
-    const S = Object.fromEntries(F.series.map((s) => [s.id, s]));
-    $('#fis-esfera').value = st.fisEsfera;
-    const s = S[st.fisEsfera];
-    const anos = Object.keys(s.anual).map(Number).filter((a) => a >= 1995).sort((a, b) => a - b);
-    const ua = anos.at(-1), u = s.ultimo;
-    const nomeEsfera = { primario: 'o setor público consolidado', central: 'o governo central', regionais: 'os estados e municípios', estatais: 'as empresas estatais' }[st.fisEsfera];
-    $('#fis-titulo').textContent = `Resultado primário: ${$('#fis-esfera').selectedOptions[0].textContent.toLowerCase()}`;
-    const txt = (v) => (v >= 0 ? `superávit primário de ${f2(v)}% do PIB` : `déficit primário de ${f2(-v)}% do PIB`);
-    $('#fis-nota').textContent = `Em ${ua}, ${nomeEsfera} teve ${txt(s.anual[ua])}.`
-      + (u.mes.slice(0, 4) > String(ua) ? ` Nos ${u.rotulo}, ${txt(u.valor)}.` : '')
-      + ` Positivo é superávit (sobrou dinheiro antes dos juros); negativo é déficit.`
-      + (st.fisEsfera === 'estatais' ? ' Atenção: não é o lucro das estatais. O Banco Central deixa de fora Petrobras, Eletrobras e os bancos públicos (Banco do Brasil, Caixa, BNDES), que respondem pela maior parte do lucro mostrado na aba Estatais, e mede o caixa: investimentos contam como gasto e dividendos pagos ao governo saem da conta da empresa. Entram também as estatais de estados e municípios.' : '')
-      + ` Dados do Banco Central coletados em ${fmtData(F.coletado_em)}.`;
-    // barras: anos completos e, por último, o acumulado em 12 meses do ano corrente
-    const rows = anos.map((a) => ({ label: String(a), v: s.anual[a], a }));
-    if (u.mes.slice(0, 4) > String(ua)) rows.push({ label: `12m ${u.mes.slice(5)}/${u.mes.slice(2, 4)}`, v: u.valor, a: +u.mes.slice(0, 4), fraco: true });
-    const medias = PERIODOS.map((per) => {
-      const m = mediaMandato(s, per); if (!m) return null;
-      const i = +per.slice(0, 4), noAno = anos.filter((a) => a >= i && a <= i + 3);
-      return { per, de: String(noAno[0]), ate: String(noAno.at(-1)), v: m.v, cor: corPer(per) };
-    }).filter(Boolean);
-    barras($('#fis-chart'), rows, {
-      fmt: (v) => f1(v), height: 300, negativos: true, medias,
-      cor: (x) => corPer(periodoDoAno(x.a)),
-      tipLinhas: (x) => [
-        { name: x.fraco ? u.rotulo : `Resultado de ${x.a}`, value: pctPIB(x.v) },
-        { name: 'Média do governo, por ano', value: (() => { const m = medias.find((q) => +q.de <= x.a && x.a <= +q.ate); return m ? pctPIB(m.v) : '—'; })() },
-        { name: 'Mandato', value: nomeMandato(periodoDoAno(x.a)) || '—' },
-      ],
-    });
-    const leg = $('#fis-leg'); leg.replaceChildren();
-    for (const m of medias) {
-      const sp = el('span'); sp.append(el('i', { style: `background:${m.cor}` }), nomeMandato(m.per) + (m.de === m.ate ? ` (só ${m.de})` : +m.ate - +m.de < 3 ? ` (${m.de}–${m.ate})` : ''), el('b', {}, ` · média de ${pctCurto(m.v)}% por ano`)); leg.append(sp);
-    }
-    const sl = el('span'); sl.append(el('i', { class: 'tracejado' }), 'linha tracejada: média por ano no governo'); leg.append(sl);
-    // tabela por mandato
-    const tb = $('#fis-mand-table tbody'); tb.replaceChildren();
-    let parcial = false;
-    for (const per of [...PERIODOS].reverse()) {
-      const cols = ['primario', 'central', 'regionais', 'estatais', 'juros', 'nominal'].map((k) => mediaMandato(S[k], per));
-      if (cols.every((c) => !c)) continue;
-      const tr = el('tr'), nome = el('td');
-      nome.append(nomeMandato(per));
-      const i = +per.slice(0, 4), com = d3.range(i, i + 4).filter((a) => S.central.anual[a] != null || S.primario.anual[a] != null);
-      if (com.length < 4) { nome.append(el('span', { class: 'cod' }, ` · ${com[0]}${com.length > 1 ? '–' + com.at(-1) : ''}`)); }
-      tr.append(nome);
-      cols.forEach((c, k) => {
-        const ehJuros = k === 4, cls = (k >= 1 && k <= 3 ? 'some-p ' : '') + (c && !ehJuros && c.v < 0 ? 'ruim' : '');
-        if (c && c.n < com.length) parcial = true;
-        tr.append(el('td', { class: cls }, c ? (ehJuros ? f2(c.v) : pctCurto(c.v)) + (c.n < com.length ? '*' : '') : '—'));
-      });
-      tb.append(tr);
-    }
-    $('#fis-t-nota').textContent = 'Valores em % do PIB: positivo é superávit, negativo é déficit; juros são o custo da dívida no ano. '
-      + 'O mandato atual conta só os anos completos.' + (parcial ? ' * Média só dos anos com dado: a série do setor público consolidado, a das estatais, a dos juros e a do resultado nominal começam em 2002.' : '');
-    // primário, juros e nominal
-    const anosN = Object.keys(S.nominal.anual).map(Number).sort((a, b) => a - b);
-    const pts = (k, sinal = 1) => anosN.map((a) => ({ x: a, y: S[k].anual[a] != null ? sinal * S[k].anual[a] : null }));
-    const ul = anosN.at(-1);
-    $('#fis-n-nota').textContent = `Em ${ul}, o setor público teve ${txt(S.primario.anual[ul])}, pagou ${f2(S.juros.anual[ul])}% do PIB em juros e fechou com resultado nominal de ${pctPIB(S.nominal.anual[ul])}.`
-      + ` Nos ${S.juros.ultimo.rotulo}, os juros somaram ${f2(S.juros.ultimo.valor)}% do PIB.`;
-    lineChart($('#fis-n-chart'), {
-      series: [
-        { name: 'Resultado primário', color: cor(0), pts: pts('primario'), width: 2.5 },
-        { name: 'Juros pagos (com sinal negativo)', color: cor(2), pts: pts('juros', -1) },
-        { name: 'Resultado nominal', color: cor(1), pts: pts('nominal'), width: 2.5 },
-      ],
-      yfmt: (v) => `${f1(v)}%`, xdomain: [anosN[0], ul], height: 320, faixas: FAIXAS_MANDATO(), ref: 0, legenda: true,
-      endLabels: $('#fis-n-chart').clientWidth > 640,
-    });
-  }
-  $('#fis-ir-series').addEventListener('click', (ev) => { ev.preventDefault(); st.ind = 'ggxonlb_g01_gdp_pt'; show('series'); });
-  $('#csv-fiscal').addEventListener('click', () => {
-    const F = D.raw.fiscal; if (!F) return;
-    const anos = [...new Set(F.series.flatMap((s) => Object.keys(s.anual)))].sort();
-    baixarCSV('monitora-brasil-contas-publicas.csv', anos, [
-      { titulo: 'ano', valor: (a) => a },
-      ...F.series.map((s) => ({ titulo: `${s.nome} (% PIB, SGS ${s.sgs})`, valor: (a) => s.anual[a] })),
-    ]);
-  });
-
   // ---------------------------------------------------------------- leis e votação
   /** Dados carregados só quando a aba abre: a lista (votacoes.json), os votos de cada ano (votos/AAAA.json)
    *  e, em tempo real, as votações mais novas que a coleta diária, pela função /api/votacoes-recentes. */
@@ -2520,7 +2408,6 @@
   on('#est-filtro', (v) => { st.estFiltro = v; });
   $('#est-sem-vendas').addEventListener('change', (e) => { st.estSemVendas = e.target.checked; render(); });
   on('#ind-modo', (v) => { st.indModo = v; });
-  on('#fis-esfera', (v) => { st.fisEsfera = v; });
   on('#leis-ano', (v) => { st.leisAno = +v; st.leisSel = null; });
   on('#leis-tipo', (v) => { st.leisTipo = v; st.leisSel = null; });
   on('#leis-res', (v) => { st.leisRes = v; st.leisSel = null; });
@@ -2549,7 +2436,6 @@
     else if (st.page === 'estatais') drawEstatais();
     else if (st.page === 'industria') drawIndustria();
     else if (st.page === 'leis') drawLeis();
-    else if (st.page === 'fiscal') drawFiscal();
     else drawMetodo();
   }
 

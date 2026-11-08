@@ -13,7 +13,7 @@ site/
 │   ├── js/d3.v7.9.0.min.js     biblioteca d3 (cópia local, ISC License)
 │   ├── js/html-to-image.v1.11.11.min.js  gera a imagem de compartilhamento (cópia local, MIT License)
 │   └── favicon.svg
-├── data/                       os JSON de scripts/build_dados.py e dos coletores (consumo, economias, estatais, industria, contas_publicas, votacoes e votos/)
+├── data/                       os JSON de scripts/build_dados.py e dos coletores (consumo, economias, estatais, industria, votacoes e votos/)
 ├── _headers                    cabeçalhos de cache e segurança (Netlify, Cloudflare Pages; na Vercel, ver vercel.json na raiz)
 ├── .htaccess                   o mesmo para Apache
 ├── .nojekyll                   impede o GitHub Pages de processar a pasta com Jekyll
@@ -101,13 +101,6 @@ Quanto cresce cada parte da economia, em volume (sem a inflação), com dados do
 
 Dados em `industria.json` (doc 06); a coleta é automática (doc 09). Funções `drawIndustria`, `mediaComposta`, `mandatosIndustria` e `industriaOrdenada`.
 
-### Contas públicas (`#fiscal`)
-As contas do governo segundo o Banco Central (`contas_publicas.json`, doc 06). Dois cartões:
-- **Resultado primário:** barras por ano em % do PIB (para cima, superávit; para baixo, déficit), coloridas por mandato, com a linha tracejada da média por ano de cada governo e, por último, uma barra clara com o acumulado em 12 meses do ano corrente. **Esfera** troca entre setor público consolidado (padrão), governo central, estados e municípios e estatais. Na esfera estatais, o texto avisa que o número não é o lucro da aba Estatais: o Banco Central exclui Petrobras, Eletrobras e bancos públicos, inclui as estatais de estados e municípios e mede o caixa (investimento conta como gasto; dividendo pago ao governo sai da conta da estatal). Abaixo, a tabela da média por ano em cada mandato para todas as esferas, os juros e o resultado nominal.
-- **Primário, juros e resultado nominal:** linhas do setor público consolidado desde 2002, com as faixas dos mandatos, e **Baixar CSV** com todas as séries anuais.
-
-O texto do topo da aba leva às Séries temporais já com o saldo primário do FMI, que compara o Brasil com os outros países. Funções `drawFiscal` e `mediaMandato`.
-
 ### Leis e votação (`#leis`)
 O que o Plenário da Câmara votou e como votou cada deputado, desde 2019. Os dados (`votacoes.json` e `votos/AAAA.json`, doc 06) são carregados só quando a aba abre, para não pesar nas outras.
 
@@ -172,7 +165,7 @@ A caixa que se abre mostra a prévia e oferece **Compartilhar…** (no celular, 
 
 Como funciona: `gerarImagem` monta fora da tela um quadro com uma cópia do cartão, e a biblioteca html-to-image (servida pelo próprio site) converte esse quadro em PNG. Para que as fontes do Google entrem na imagem, a política de segurança (CSP) libera `fonts.googleapis.com` e `fonts.gstatic.com` em `connect-src`; se forem bloqueadas, a imagem usa as fontes do sistema. Textos que só fazem sentido na tela ("passe o mouse...") ficam em elementos com a classe `so-tela` e não entram na imagem. O atributo `data-ctx` do cartão controla a linha de escolhas (`proprio`: só os controles do cartão; `nenhum`: sem a linha).
 
-**Links diretos:** acrescente `#series`, `#coortes`, `#metodo`, `#vida`, `#estatais`, `#industria`, `#fiscal` ou `#leis` ao endereço (o antigo `#consumo` continua funcionando).
+**Links diretos:** acrescente `#series`, `#coortes`, `#metodo`, `#vida`, `#estatais`, `#industria` ou `#leis` ao endereço (o antigo `#consumo` continua funcionando).
 
 ## Organização do `app.js`
 

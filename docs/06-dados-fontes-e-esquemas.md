@@ -260,35 +260,6 @@ Coletados por `scripts/coletar_industria.py` no GitHub Actions (workflow `dados-
 | `segmentos[]` | `id`, `nome`, `categoria` (id da categoria), `fonte`, `url` (tabela SIDRA), `mede` (o que é medido), `desde` (primeiro ano), `cresc`, `parcial` e `ultimo` |
 | `fontes` | Nome e endereço de cada pesquisa |
 
-## Dados da aba Contas públicas
-
-Coletados por `scripts/coletar_fiscal.py` no GitHub Actions (workflow `dados-fiscal.yml`, toda segunda-feira e quando disparado à mão), da API do SGS do Banco Central (`https://api.bcb.gov.br/dados/serie/bcdata.sgs.{código}/dados?formato=json`). Gera `contas_publicas.json`.
-
-Todas as séries são das Necessidades de Financiamento do Setor Público (NFSP) sem desvalorização cambial, em % do PIB, fluxo acumulado em 12 meses:
-
-| `id` | Código SGS | O que mede | Desde |
-|---|---|---|---|
-| `primario` | 5793 | Resultado primário do setor público consolidado | 2002 |
-| `central` | 5783 | Resultado primário do governo central (Governo Federal, INSS e Banco Central) | 1991 |
-| `regionais` | 5786 | Resultado primário dos estados e municípios | 1991 |
-| `estatais` | 5789 | Resultado primário das empresas estatais (sem Petrobras e bancos públicos) | 2002 |
-| `juros` | 5760 | Juros nominais do setor público consolidado | 2002 |
-| `nominal` | 5727 | Resultado nominal do setor público consolidado | 2002 |
-
-**Sinal.** Nas NFSP, positivo é déficit. O script inverte o sinal do primário e do nominal (positivo = superávit, como o resultado é noticiado) e mantém o dos juros (positivo = juros pagos).
-
-**Ano.** O valor de dezembro do acumulado em 12 meses é o resultado do ano. O ano corrente aparece como o acumulado em 12 meses até o último mês publicado (`ultimo`).
-
-### `contas_publicas.json`
-
-| Campo | Descrição |
-|---|---|
-| `coletado_em` | Data da última coleta com dado novo |
-| `fonte` | Nome e endereço da fonte |
-| `series[]` | `id`, `sgs`, `nome`, `anual` (`{ano: % do PIB}`), `mensal` (`{AAAA-MM: acumulado em 12 meses}`, desde 2015) e `ultimo` (`{mes, rotulo, valor}`) |
-
-**Comparação com outros países.** O saldo primário do governo geral do FMI (`ggxonlb_g01_gdp_pt`, Fiscal Monitor) entra como indicador do tema Estabilidade macroeconômica (ver "Arquivos brutos"). Ele cobre União, estados e municípios, sem as estatais, e por isso difere um pouco do número do Banco Central.
-
 ## Dados da aba Leis e votação
 
 Coletados por `scripts/coletar_votacoes.py` no GitHub Actions (workflow `dados-votacoes.yml`, às quartas e aos sábados e quando disparado à mão), dos arquivos anuais dos Dados Abertos da Câmara dos Deputados (`https://dadosabertos.camara.leg.br/arquivos/<arquivo>/json/<arquivo>-AAAA.json`), de 2019 ao ano corrente:

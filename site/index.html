@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=1.35.1">
+  <link rel="stylesheet" href="assets/css/styles.css?v=1.36">
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -57,7 +57,6 @@
       <button class="aba" role="tab" id="aba-vida" aria-controls="vida" data-page="vida" aria-selected="false">Vida do Cidadão</button>
       <button class="aba" role="tab" id="aba-estatais" aria-controls="estatais" data-page="estatais" aria-selected="false">Estatais</button>
       <button class="aba" role="tab" id="aba-industria" aria-controls="industria" data-page="industria" aria-selected="false">Indústria</button>
-      <button class="aba" role="tab" id="aba-fiscal" aria-controls="fiscal" data-page="fiscal" aria-selected="false">Contas públicas</button>
       <button class="aba" role="tab" id="aba-leis" aria-controls="leis" data-page="leis" aria-selected="false">Leis e votação</button>
     </nav>
 
@@ -445,53 +444,6 @@
     </section>
 
 
-    <!-- CONTAS PÚBLICAS -->
-    <section class="pagina" id="fiscal" role="tabpanel" aria-labelledby="aba-fiscal" hidden>
-      <p class="nota">As contas do governo segundo o Banco Central: quanto sobrou ou faltou de dinheiro a cada ano, antes e depois dos juros da dívida, em % do PIB. A comparação com outros países, pelo saldo primário do FMI, está nas <a href="#series" id="fis-ir-series">Séries temporais</a> e entra no escore de Estabilidade macroeconômica.</p>
-
-      <article class="card" data-ctx="proprio">
-        <div class="card-topo">
-          <div>
-            <div class="titulo-info"><h2 id="fis-titulo">Resultado primário do setor público</h2><button class="info-btn" type="button" data-info-card="fis-primario" aria-label="Como ler: resultado primário"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button><button class="info-btn fonte-btn" type="button" data-fonte="fonte:fiscal" aria-label="Fonte original dos dados"><svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg></button></div>
-            <p class="nota" id="fis-nota"></p>
-          </div>
-          <div class="controles">
-            <label class="ctl">Esfera <select id="fis-esfera">
-              <option value="primario">Setor público consolidado</option>
-              <option value="central">Governo central (União)</option>
-              <option value="regionais">Estados e municípios</option>
-              <option value="estatais">Estatais (sem Petrobras, Eletrobras e bancos)</option>
-            </select></label>
-          </div>
-        </div>
-        <div class="grafico" id="fis-chart"></div>
-        <div class="waffle-leg" id="fis-leg"></div>
-        <div class="titulo-info sub"><h3>Média por ano em cada mandato, em % do PIB</h3></div>
-        <div class="tabela-box">
-          <table id="fis-mand-table">
-            <thead><tr>
-              <th scope="col">Mandato</th><th scope="col">Primário do setor público</th><th scope="col" class="some-p">Governo central</th>
-              <th scope="col" class="some-p">Estados e municípios</th><th scope="col" class="some-p">Estatais</th>
-              <th scope="col">Juros pagos</th><th scope="col">Resultado nominal</th>
-            </tr></thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <p class="nota" id="fis-t-nota"></p>
-      </article>
-
-      <article class="card" data-ctx="proprio">
-        <div class="card-topo">
-          <div>
-            <div class="titulo-info"><h2>Primário, juros e resultado nominal</h2><button class="info-btn" type="button" data-info-card="fis-nominal" aria-label="Como ler: primário, juros e resultado nominal"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button><button class="info-btn fonte-btn" type="button" data-fonte="fonte:fiscal" aria-label="Fonte original dos dados"><svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg></button></div>
-            <p class="nota" id="fis-n-nota"></p>
-          </div>
-          <button class="botao" type="button" id="csv-fiscal">Baixar CSV</button>
-        </div>
-        <div class="grafico" id="fis-n-chart"></div>
-      </article>
-    </section>
-
     <!-- LEIS E VOTAÇÃO -->
     <section class="pagina" id="leis" role="tabpanel" aria-labelledby="aba-leis" hidden>
       <p class="nota">O que o Plenário da Câmara dos Deputados votou e como votou cada deputado, desde 2019, atualizado em tempo real com a API da Câmara. As votações nominais, feitas no painel eletrônico, trazem o voto de cada deputado. As simbólicas sobre o texto dos projetos também aparecem, mas sem votos individuais, que a Câmara não registra. Clique no nome de um projeto para ver os detalhes dele.</p>
@@ -686,7 +638,7 @@
 
   <footer class="rodape">
     <div class="wrap rodape-in">
-      <p><strong>Fontes:</strong> Banco Mundial (World Development Indicators e Worldwide Governance Indicators) e PNUD (Índice de Desenvolvimento Humano), via Gapminder/open-numbers, licença CC BY 4.0. Aba Vida do Cidadão: DIEESE, ANP e IBGE (PNAD Contínua), via Ipeadata e SIDRA. Aba Estatais: SEST/Ministério da Gestão (dados abertos das empresas estatais). Aba Contas públicas: Banco Central do Brasil (estatísticas fiscais, NFSP). Saldo primário dos outros países: FMI (Fiscal Monitor). Aba Leis e votação: Câmara dos Deputados (Dados Abertos). Aba Indústria: IBGE (Contas Nacionais Trimestrais, PIM-PF, PMS, LSPA, pesquisas trimestrais do abate e do leite, PPM e PEVS), via SIDRA. Cálculos: Monitora Brasil.</p>
+      <p><strong>Fontes:</strong> Banco Mundial (World Development Indicators e Worldwide Governance Indicators) e PNUD (Índice de Desenvolvimento Humano), via Gapminder/open-numbers, licença CC BY 4.0. Aba Vida do Cidadão: DIEESE, ANP e IBGE (PNAD Contínua), via Ipeadata e SIDRA. Aba Estatais: SEST/Ministério da Gestão (dados abertos das empresas estatais). Saldo primário do governo: FMI (Fiscal Monitor). Aba Leis e votação: Câmara dos Deputados (Dados Abertos). Aba Indústria: IBGE (Contas Nacionais Trimestrais, PIM-PF, PMS, LSPA, pesquisas trimestrais do abate e do leite, PPM e PEVS), via SIDRA. Cálculos: Monitora Brasil.</p>
       <p>Projeto voluntário e aberto, feito para ajudar qualquer pessoa a entender como o Brasil está se saindo. <a href="https://github.com/ChrisBerenguer/Monitora-Brasil" rel="noopener">Código, dados e documentação no GitHub</a> · <span id="atualizado"></span></p>
     </div>
   </footer>
@@ -696,6 +648,6 @@
 
   <script src="assets/js/d3.v7.9.0.min.js"></script>
   <script src="assets/js/html-to-image.v1.11.11.min.js"></script>
-  <script src="assets/js/app.js?v=1.35.1"></script>
+  <script src="assets/js/app.js?v=1.36"></script>
 </body>
 </html>

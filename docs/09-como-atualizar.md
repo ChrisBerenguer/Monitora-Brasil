@@ -41,9 +41,7 @@ A API do IBGE às vezes recusa conexões vindas de fora do Brasil, como as do Gi
 
 Confira: o crescimento do PIB e das categorias no último ano deve bater com o comunicado das Contas Nacionais do IBGE (2025: PIB +2,3%, agropecuária +11,7%).
 
-### Dados da aba Contas públicas
-
-O workflow **Atualizar contas públicas (Banco Central)** (`.github/workflows/dados-fiscal.yml`) roda toda segunda-feira e grava `contas_publicas.json` quando há mês novo. O Banco Central publica as estatísticas fiscais perto do fim de cada mês, com dados do mês anterior. No próprio computador: `python scripts/coletar_fiscal.py`. Se o Banco Central recusar a conexão, o script avisa e mantém os dados atuais.
+### Saldo primário do FMI
 
 O saldo primário do FMI, usado no escore, vem com os outros dados brutos: `python scripts/baixar_brutos.py && python scripts/build_dados.py`. O FMI atualiza o Fiscal Monitor em abril e outubro.
 
