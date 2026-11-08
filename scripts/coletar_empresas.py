@@ -265,7 +265,7 @@ def main():
                 e['cruzada'][ano] = round(e['cruzada'].get(ano, 0) + parte, 1)
         print(f'  {ano}: {len(lucros)} companhias, lucro R$ {sum(lucros.values()) / 1000:.1f} bi, '
               f'dupla contagem R$ {sum(e["cruzada"].get(ano, 0) for e in empresas.values()) / 1000:.1f} bi')
-    lista = sorted(empresas.values(), key=lambda e: -max(abs(x) for x in e['lucro'].values()))
+    lista = sorted(empresas.values(), key=lambda e: (-max(abs(x) for x in e['lucro'].values()), int(e['id'])))  # ordem estável
     for e in lista:
         # controle: guarda só a mudança, para o arquivo ficar pequeno
         vals = set(e['controle'].values())
