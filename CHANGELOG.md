@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.37.3 — 15/11/2026
+
+### Alterado
+- Leis e votação: a lista volta a abrir com as votações nominais e simbólicas, para a votação mais recente do Plenário aparecer no topo (antes, só as nominais, e a primeira linha podia ser de semanas atrás). A ordem é sempre pela data da votação, da mais recente para a mais antiga, e a coluna passa a se chamar "Data da votação". O quadro de votos continua abrindo na votação nominal mais recente.
+
 ## 1.37.2 — 15/11/2026
 
 ### Corrigido
