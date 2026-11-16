@@ -2244,7 +2244,7 @@
   const ufDep = (id) => LV.idx.deputados[id]?.[1] || '';
   const propDe = (v) => (v.prop != null ? LV.idx.proposicoes[v.prop] : null);
   function leisFiltradas() {
-    const q = semAcento(st.leisBusca).replace(/\s+/g, ' ').trim();
+    const q = semAcento(st.leisBusca).replace(/\//g, ' / ').replace(/\s+/g, ' ').trim(); // "PEC 18/2025" acha "PEC 18 / 2025"
     return LV.idx.votacoes.filter((v) => +v.quando.slice(0, 4) === st.leisAno
       && (st.leisTipo === 'todas' || v.tipo === st.leisTipo)
       && (st.leisRes === 'todas' || String(v.aprovada) === st.leisRes)
