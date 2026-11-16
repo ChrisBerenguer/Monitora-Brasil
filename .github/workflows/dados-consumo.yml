@@ -26,4 +26,4 @@ jobs:
           git add dados/consumo.json site/data/consumo.json
           git diff --cached --quiet && echo "Sem mudanças." && exit 0
           git commit -m "Dados: consumo básico (DIEESE, ANP e IBGE), coleta automática"
-          git push
+          for t in 1 2 3; do git pull --rebase -q && git push && break; sleep 10; done  # outro workflow pode ter gravado antes

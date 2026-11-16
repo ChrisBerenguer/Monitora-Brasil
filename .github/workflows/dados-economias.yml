@@ -25,6 +25,6 @@ jobs:
           git add dados/economias.json site/data/economias.json
           git diff --cached --quiet && echo "Sem mudanças." && exit 0
           git commit -m "Dados: ranking das maiores economias (FMI, WEO), coleta automática"
-          git push
+          for t in 1 2 3; do git pull --rebase -q && git push && break; sleep 10; done  # outro workflow pode ter gravado antes
 
 # (coleta mensal do ranking de economias)
