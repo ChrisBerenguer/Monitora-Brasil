@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.38 — 15/11/2026
+
+### Adicionado
+- Leis e votação: numa votação simbólica sem votação nominal do mesmo projeto, o quadro "Como votou cada deputado" mostra os **deputados presentes na sessão**, com a contagem por partido e busca por nome, consultados na hora na Câmara (lista de presença do evento da votação). O texto deixa claro que presença não é voto. A função `/api/camara` passa a aceitar `eventos/{id}/deputados`.
+
 ## 1.37.4 — 15/11/2026
 
 ### Alterado

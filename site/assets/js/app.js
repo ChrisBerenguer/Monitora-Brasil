@@ -2365,8 +2365,10 @@
         }
         pl.append(ul);
       }
+      mostrarPresenca(v);
       return;
     }
+    $('#leis-pres').hidden = true;
     // placar
     const tot = vs.length || 1, cont = [0, 0, 0, 0, 0, 0];
     vs.forEach((x) => cont[x.v]++);
@@ -2434,6 +2436,41 @@
       : `${nomeDep(st.leisDep)} votou em ${f0(votou)} das ${f0(nominais.length)} votações nominais da lista: Sim em ${f0(cont[0])} e Não em ${f0(cont[1])}`
         + (cont[2] + cont[3] ? `, com ${f0(cont[2] + cont[3])} abstenções ou obstruções` : '') + '.'
         + (govN ? ` Votou como o Governo orientou em ${f0((100 * comGov) / govN)}% das ${f0(govN)} votações em que o Governo pediu Sim ou Não e ele votou Sim ou Não.` : '');
+  }
+
+  /** Votação simbólica: a Câmara não registra votos, mas registra quem estava presente na sessão (o evento da votação).
+   *  Busca a lista na hora, pela função /api/camara (votacoes/{id} dá o evento; eventos/{id}/deputados, os presentes). */
+  async function mostrarPresenca(v) {
+    const box = $('#leis-pres');
+    box.hidden = false;
+    $('#leis-pres-nota').textContent = 'Consultando a Câmara…';
+    $('#leis-pres-part tbody').replaceChildren(); $('#leis-pres-table tbody').replaceChildren();
+    LV.pres = LV.pres || {};
+    try {
+      if (!LV.pres[v.id]) {
+        const api = (c) => json(`/api/camara?p=${encodeURIComponent(c)}`).then((j) => j.dados);
+        const det = await api(`votacoes/${v.id}`);
+        const ev = det.idEvento || String(det.uriEvento || '').split('/').pop();
+        LV.pres[v.id] = ev ? await api(`eventos/${ev}/deputados`) : [];
+      }
+    } catch (e) { LV.pres[v.id] = null; }
+    if (LV.alvoId !== v.id) return; // outra votação foi escolhida enquanto carregava
+    const deps = LV.pres[v.id];
+    if (!deps || !deps.length) {
+      $('#leis-pres-nota').textContent = deps ? 'A Câmara não registrou a lista de presença desta sessão.' : 'Não foi possível consultar a lista de presença na Câmara agora.';
+      return;
+    }
+    $('#leis-pres-titulo').textContent = `Deputados presentes na sessão (${f0(deps.length)})`;
+    $('#leis-pres-nota').textContent = `Quem registrou presença na sessão de ${dataBR(v.quando)}, segundo a Câmara. Não é o voto: numa votação simbólica, os que concordam ficam como estão e o presidente anuncia o resultado, sem registro individual. Partido de hoje.`;
+    const P = d3.rollups(deps, (g) => g.length, (d) => d.siglaPartido || '—').sort((a, b) => b[1] - a[1]);
+    $('#leis-pres-part tbody').replaceChildren(...P.map(([p, n]) => { const tr = el('tr'); tr.append(el('td', {}, p), el('td', {}, f0(n))); return tr; }));
+    const desenhar = () => {
+      const q = semAcento($('#leis-pres-busca').value).trim();
+      const lista = deps.filter((d) => !q || semAcento(d.nome).includes(q)).sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+      $('#leis-pres-table tbody').replaceChildren(...lista.map((d) => { const tr = el('tr'); tr.append(el('td', {}, d.nome), el('td', {}, d.siglaPartido || '—'), el('td', {}, d.siglaUf || '')); return tr; }));
+    };
+    $('#leis-pres-busca').oninput = desenhar;
+    desenhar();
   }
 
   // ---- quadro de detalhes do projeto (dados ao vivo da Câmara, via /api/camara)

@@ -8,6 +8,7 @@ const PERMITIDOS = [
   /^proposicoes\/\d+\/(autores|tramitacoes|temas|votacoes|relacionadas)$/,
   /^votacoes\/[\w-]+$/,
   /^votacoes\/[\w-]+\/(votos|orientacoes)$/,
+  /^eventos\/\d+\/deputados$/,
 ];
 const PARAMS = ['dataInicio', 'dataFim', 'itens', 'pagina', 'ordem', 'ordenarPor', 'idOrgao'];
 
