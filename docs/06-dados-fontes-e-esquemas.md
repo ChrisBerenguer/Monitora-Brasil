@@ -169,6 +169,9 @@ Vêm de fontes fora do Banco Mundial e são coletados por `scripts/coletar_consu
 | Salário mínimo | Valor nominal vigente em cada mês | Ipeadata, série `MTE12_SALMIN12` |
 | IPCA (número-índice) | Correção dos preços | Ipeadata, série `PRECOS12_IPCA12` |
 | IBGE, PNAD Contínua anual | Rendimento médio mensal real domiciliar per capita | SIDRA, tabela 7395, variável 4196 |
+| IBGE, IPCA por grupo, item e subitem | Variação mensal (%) e peso de 35 categorias de consumo | SIDRA, tabelas 2938 (jul/2006 a dez/2011), 1419 (2012 a 2019) e 7060 (2020 em diante), variáveis 63 e 66, classificação 315 |
+
+As consultas ao SIDRA passam por `scripts/ibge_api.py`: primeiro direto ao IBGE e, se ele não responder (costuma recusar o GitHub Actions), pela função `/api/ibge` do site, que roda na Vercel em São Paulo e só repassa leituras de agregados.
 
 ### `consumo.json`
 
@@ -182,6 +185,10 @@ Vêm de fontes fora do Banco Mundial e são coletados por `scripts/coletar_consu
 | `salario_minimo[]` | `mes`, `v` (nominal) e `real` (corrigido), desde dezembro de 1994 |
 | `renda_per_capita[]` | `ano` e `valor` (já em valores reais, como o IBGE publica) |
 | `ipca[]` | `mes` e `indice` (número-índice do IPCA), desde dezembro de 1994, usado para calcular a inflação de cada mandato |
+| `ipca_categorias.meses[]` | Meses da série de categorias (`AAAA-MM`), de julho de 2006 ao último IPCA |
+| `ipca_categorias.categorias[]` | `id` (código da categoria no SIDRA), `nome`, `nivel` (`geral`, `grupo` ou `item`), `grupo` (código do grupo, nos itens), `var[]` (variação mensal em %, alinhada a `meses`), `peso` (peso no IPCA no mês `peso_mes`, em %) |
+
+**Categorias do IPCA.** As três tabelas do SIDRA usam o mesmo código para quase todas as categorias, e as séries são emendadas por ele; a exceção é "Cursos regulares" (12427), que na tabela 2938 se chama "Cursos" (7768). A lista fica em `IPCA_GRUPOS` e `IPCA_ITENS` no coletor. O site encadeia as variações mensais num número-índice para calcular a inflação de cada mandato (de dezembro anterior à posse ao fim) e compara com o salário mínimo vigente.
 
 **Cesta básica do Brasil.** O DIEESE pesquisa capital por capital e não publica uma média nacional. O painel usa a **média simples das capitais pesquisadas no mês**, só para os meses com pelo menos 3 capitais, e guarda também a série de cada capital em `cesta_capitais`.
 

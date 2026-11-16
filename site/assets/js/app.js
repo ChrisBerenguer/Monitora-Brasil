@@ -59,7 +59,7 @@
   const st = {
     page: 'visao', coorte: 'latam', mandato: '2023–2026', tema: 'geral', ind: 'ny_gdp_pcap_pp_kd', banda: 'latam',
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
-    ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cbMa: '2019–2022', cbMb: '2023–2026', cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
+    ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cbMa: '2019–2022', cbMb: '2023–2026', icMa: '2019–2022', icMb: '2023–2026', icNivel: 'todos', icCat: '7558', icY0: 2007, cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
     estFiltro: 'todas', estSort: { key: null, dir: -1 }, estSemVendas: true,
     empGrupo: 'todas', empValores: 'real', empSetor: 'todos', empBusca: '', empSort: { key: null, dir: -1 }, empSSort: { key: null, dir: -1 }, empTodas: false, leisAno: null, leisTipo: 'principal', leisRes: 'todas', leisForma: 'todas', leisBusca: '', leisSel: null, leisDVoto: 'todos', leisDPart: 'todos', leisDUf: 'todos', leisDBusca: '', leisDep: null,
     indModo: 'indice', indBase: 2002, indFiltro: 'todas', indSort: { key: null, dir: -1 },
@@ -759,6 +759,18 @@
       ['Como ler', 'A linha subindo quer dizer que o salário mínimo passou a comprar mais, por ter aumentado mais que o preço. Descendo, o preço subiu mais que o salário. Essa é a medida mais direta de poder de compra, porque junta preço e renda num número só.'],
       ['Atenção', 'O salário mínimo é só uma referência: a maioria das pessoas ganha mais ou menos que isso, e uma família costuma ter mais de uma renda. O cálculo usa o salário mínimo vigente no mês, sem descontos.'],
     ] },
+    'ic-tabela': { titulo: 'Inflação por categoria de consumo', blocos: [
+      ['O que mostra', 'Quanto subiram os preços de cada tipo de gasto: os nove grupos do IPCA (alimentação, habitação, artigos de residência, vestuário, transportes, saúde, despesas pessoais, educação e comunicação) e itens que pesam no orçamento ou que as famílias acompanham, como roupas, eletrodomésticos, automóveis, remédios, plano de saúde e escola.'],
+      ['Peso no IPCA', 'O quanto cada categoria pesa no gasto das famílias que ganham de 1 a 40 salários mínimos, nas regiões pesquisadas pelo IBGE. Os nove grupos somam 100%. Um aumento forte numa categoria de peso pequeno, como passagem aérea, mexe pouco na inflação geral.'],
+      ['Como ler as cores', 'Nas colunas de inflação, vermelho quer dizer que a categoria subiu mais que o IPCA geral no mesmo período, e verde, menos. Nas colunas do salário mínimo, o número é quanto o piso passou a comprar a mais (verde) ou a menos (vermelho) daquela categoria entre o início e o fim do mandato.'],
+      ['Como é calculado', 'A variação de cada mandato vai de dezembro anterior à posse até dezembro do último ano, encadeando as variações mensais do IBGE. As séries juntam três tabelas do SIDRA (2006 a 2011, 2012 a 2019 e de 2020 em diante), que usam o mesmo código para cada categoria. Por isso a tabela começa no mandato Lula 2.'],
+      ['Atenção', 'O IPCA mede o preço de uma mesma qualidade de produto. Em eletrônicos e automóveis, o IBGE desconta melhorias de qualidade, e por isso alguns itens aparecem com preço caindo mesmo quando o modelo da vitrine parece mais caro. A lista de itens e os pesos mudam a cada Pesquisa de Orçamentos Familiares (2009, 2018 e 2020).'],
+    ] },
+    'ic-serie': { titulo: 'Preços da categoria ao longo do tempo', blocos: [
+      ['O que mostra', 'Três linhas com 100 no mesmo ponto de partida: o preço da categoria escolhida, a inflação geral (IPCA) e o salário mínimo. Todas mostram quanto cada um subiu desde o ano escolhido.'],
+      ['Como ler', 'Linha da categoria abaixo da do IPCA quer dizer que ela ficou relativamente mais barata. Linha do salário mínimo acima da categoria quer dizer que o piso passou a comprar mais daquilo. A distância entre as duas é o ganho ou a perda de poder de compra.'],
+      ['Atenção', 'É um índice de preços, e não o preço em reais: diz quanto variou, e não quanto custa. O salário mínimo sobe em degraus, no reajuste de janeiro.'],
+    ] },
     'cb-renda': { titulo: 'Renda e salário mínimo', blocos: [
       ['O que mostra', 'As barras são o rendimento médio mensal domiciliar per capita: a soma de tudo o que entra numa casa dividida pelo número de moradores, em média. Vem da PNAD Contínua do IBGE e já está em valores reais.'],
       ['Como ler', 'Per capita quer dizer por morador: numa família de quatro pessoas com renda de R$ 8.000, a renda per capita é R$ 2.000. É uma média, então convive com muita gente ganhando bem menos e pouca gente ganhando muito.'],
@@ -949,6 +961,13 @@
     infoEl.replaceChildren(...partes);
   }
   const FONTES_EXTRA = {
+    ipca: { t: 'IBGE, Índice Nacional de Preços ao Consumidor Amplo (IPCA), consultado pela API do SIDRA:', l: [
+      ['SIDRA, tabela 7060: IPCA por grupo, item e subitem, de janeiro de 2020 em diante', 'https://sidra.ibge.gov.br/tabela/7060'],
+      ['SIDRA, tabela 1419: IPCA por grupo, item e subitem, de 2012 a 2019', 'https://sidra.ibge.gov.br/tabela/1419'],
+      ['SIDRA, tabela 2938: IPCA por grupo, item e subitem, de julho de 2006 a 2011', 'https://sidra.ibge.gov.br/tabela/2938'],
+      ['Página do IPCA no IBGE (metodologia e pesos)', 'https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html'],
+      ['Salário mínimo, via Ipeadata (MTE12_SALMIN12)', 'http://www.ipeadata.gov.br/ExibeSerie.aspx?serid=1739471028'],
+    ] },
     empresas: { t: 'Comissão de Valores Mobiliários (CVM), Portal de Dados Abertos:', l: [
       ['Demonstrações Financeiras Padronizadas (DFP) das companhias abertas', 'https://dados.cvm.gov.br/dataset/cia_aberta-doc-dfp'],
       ['Formulário de Referência (FRE): participações em outras sociedades', 'https://dados.cvm.gov.br/dataset/cia_aberta-doc-fre'],
@@ -1096,6 +1115,7 @@
     const spec = card.querySelector('[data-fonte]')?.dataset.fonte || 'bases';
     if (spec === 'fonte:precos') return 'DIEESE (cesta básica) e ANP (combustíveis)';
     if (spec === 'fonte:renda') return 'IBGE (PNAD Contínua) e Ipeadata';
+    if (spec === 'fonte:ipca') return 'IBGE (IPCA por grupo, item e subitem)';
     if (spec === 'fonte:estatais') return 'SEST/Ministério da Gestão (balanços das estatais federais)';
     if (spec === 'fonte:empresas') return 'CVM (demonstrações financeiras das companhias abertas)';
     if (spec === 'fonte:camara') return 'Câmara dos Deputados (Dados Abertos)';
@@ -1726,8 +1746,109 @@
       yfmt: brl, xdomain: [y0, anoFim + 1], faixas: FAIXAS_MANDATO(), endLabels: false, height: 260,
       mensal: true, tituloTip: (p) => mesTexto(p.mes),
     });
+    desenharCategorias(C);
   }
   $('#cb-real').addEventListener('change', (e) => { st.cbReal = e.target.checked; render(); });
+
+  // ---------------------------------------------------------------- inflação por categoria do IPCA
+  /** Número-índice de cada categoria (1 antes do primeiro mês), a partir das variações mensais. */
+  function indicesIpca(IC) {
+    const m = IC.meses, ant = (() => { const [a, b] = m[0].split('-').map(Number); return b === 1 ? `${a - 1}-12` : `${a}-${String(b - 1).padStart(2, '0')}`; })();
+    const out = new Map();
+    for (const c of IC.categorias) {
+      const idx = new Map([[ant, 1]]); let x = 1, ok = true;
+      c.var.forEach((v, i) => { if (v == null) ok = false; x *= 1 + (v || 0) / 100; idx.set(m[i], ok ? x : null); });
+      out.set(c.id, idx);
+    }
+    return out;
+  }
+  /** Salário mínimo vigente no mês (repete o último valor conhecido). */
+  function smNoMes(C) {
+    const lista = (C.salario_minimo || []).map((p) => [p.mes, p.v]);
+    return (mes) => { let v = null; for (const [m, x] of lista) { if (m <= mes) v = x; else break; } return v; };
+  }
+  /** Meses de início (dezembro anterior à posse) e fim de um mandato, limitados aos dados. */
+  function mesesMandato(per, ultimo) {
+    const i = +per.slice(0, 4), fim = `${i + 3}-12`;
+    return { ini: `${i - 1}-12`, fim: fim <= ultimo ? fim : ultimo, emCurso: fim > ultimo };
+  }
+  function desenharCategorias(C) {
+    const IC = C.ipca_categorias;
+    if (!IC || !IC.categorias?.length) { vazio($('#ic-chart'), 'Categorias do IPCA indisponíveis nesta versão dos dados.'); return; }
+    const idx = indicesIpca(IC), sm = smNoMes(C), ultimo = IC.meses.at(-1);
+    const temIdx = (mes) => idx.get('7169').get(mes) != null;
+    const mand = PERIODOS.filter((p) => temIdx(`${+p.slice(0, 4) - 1}-12`));
+    const opts = mand.map((p) => ({ label: `${p} · ${MANDATO[p]}`, value: p }));
+    if (!mand.includes(st.icMa)) st.icMa = mand.at(-2) || mand[0];
+    if (!mand.includes(st.icMb)) st.icMb = mand.at(-1);
+    fillSelect($('#ic-ma'), opts, st.icMa); fillSelect($('#ic-mb'), opts, st.icMb);
+    $('#ic-nivel').value = st.icNivel;
+    let a = st.icMa, b = st.icMb, inv = false;
+    if (a > b) { [a, b] = [b, a]; inv = true; }
+    const msg = $('#ic-msg');
+    msg.textContent = a === b ? 'Escolha dois mandatos diferentes.' : inv ? `Mostrando A = ${a} e B = ${b}, em ordem cronológica.` : '';
+    msg.hidden = !msg.textContent;
+    const nome = (p) => MANDATO[p].replace(' (até 2025)', '');
+    const MA = mesesMandato(a, ultimo), MB = mesesMandato(b, ultimo);
+    const geral = IC.categorias.find((c) => c.id === '7169');
+    $('#ic-nota').textContent = `Quanto subiram os preços de cada categoria de consumo do IPCA, a inflação oficial do IBGE. Os mandatos são medidos de dezembro anterior à posse até o fim${MB.emCurso ? ` (o mandato ${nome(b)} vai até ${mesTexto(ultimo)})` : ''}. `
+      + `Vermelho marca a categoria que subiu mais que o IPCA geral no período, e verde a que subiu menos. As colunas do salário mínimo dizem quanto o poder de compra do piso, medido naquela categoria, mudou no mandato. Peso de ${mesTexto(geral.peso_mes || ultimo)}. Clique numa linha para ver o gráfico.`;
+    $('#ic-th-a').textContent = `Inflação ${nome(a)}`; $('#ic-th-b').textContent = `Inflação ${nome(b)}`;
+    $('#ic-th-sa').textContent = `Salário mínimo em ${nome(a)}`; $('#ic-th-sb').textContent = `Salário mínimo em ${nome(b)}`;
+    const varPer = (id, M) => { const s = idx.get(id), x = s.get(M.ini), y = s.get(M.fim); return x && y ? 100 * (y / x - 1) : null; };
+    const smPer = (id, M) => { const x = sm(M.ini), y = sm(M.fim), v = varPer(id, M); return x && y && v != null ? 100 * ((y / x) / (1 + v / 100) - 1) : null; };
+    const i12 = IC.meses.length - 13;
+    const M12 = { ini: i12 >= 0 ? IC.meses[i12] : null, fim: ultimo };
+    const gA = varPer('7169', MA), gB = varPer('7169', MB), g12 = varPer('7169', M12);
+    const corVar = (v, g) => (v == null || g == null ? '' : v > g + 0.5 ? 'ruim' : v < g - 0.5 ? 'bom' : '');
+    const corSm = (v) => (v == null ? '' : v > 0.5 ? 'bom' : v < -0.5 ? 'ruim' : '');
+    const pct = (v) => (v == null ? '—' : `${sgn(v, f1)}%`);
+    const tb = $('#ic-table tbody'); tb.replaceChildren();
+    if (a === b) return desenharCategoriaSerie(C, IC, idx, sm);
+    for (const c of IC.categorias) {
+      if (st.icNivel === 'grupo' && c.nivel === 'item') continue;
+      const tr = el('tr', { class: `ic-${c.nivel}${c.id === st.icCat ? ' sel' : ''}`, 'data-cat': c.id, tabindex: '0' });
+      const v12 = varPer(c.id, M12), va = varPer(c.id, MA), vb = varPer(c.id, MB);
+      const ref = c.id !== '7169';
+      tr.append(el('td', {}, c.nome),
+        el('td', { class: 'some-p' }, c.peso == null ? '—' : `${f2(c.peso)}%`),
+        el('td', { class: ref ? corVar(v12, g12) : '' }, pct(v12)),
+        el('td', { class: ref ? corVar(va, gA) : '' }, pct(va)),
+        el('td', { class: ref ? corVar(vb, gB) : '' }, pct(vb)),
+        el('td', { class: 'some-p ' + corSm(smPer(c.id, MA)) }, pct(smPer(c.id, MA))),
+        el('td', { class: corSm(smPer(c.id, MB)) }, pct(smPer(c.id, MB))));
+      const escolher = () => { st.icCat = c.id; desenharCategorias(C); };
+      tr.addEventListener('click', escolher);
+      tr.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); escolher(); } });
+      tb.append(tr);
+    }
+    desenharCategoriaSerie(C, IC, idx, sm);
+  }
+  function desenharCategoriaSerie(C, IC, idx, sm) {
+    const cats = IC.categorias;
+    const c = cats.find((x) => x.id === st.icCat) || cats.find((x) => x.id === '7558');
+    fillSelect($('#ic-cat'), cats.map((x) => ({ label: (x.nivel === 'item' ? '· ' : '') + x.nome, value: x.id })), c.id);
+    const anoIni = +IC.meses[0].slice(0, 4) + 1, ultimo = IC.meses.at(-1), anoFim = +ultimo.slice(0, 4);
+    const y0 = Math.min(Math.max(st.icY0, anoIni), anoFim - 1);
+    fillSelect($('#ic-y0'), d3.range(anoIni, anoFim).map((a) => ({ label: a, value: a })), y0);
+    const base = `${y0 - 1}-12`;
+    const serie = (id) => { const s = idx.get(id), b0 = s.get(base); return [...s].filter(([m, v]) => m >= base && v != null && b0).map(([m, v]) => ({ x: mesX(m), y: 100 * v / b0, mes: m })); };
+    const smb = sm(base);
+    const smPts = IC.meses.filter((m) => m >= base).map((m) => ({ x: mesX(m), y: smb ? 100 * sm(m) / smb : null, mes: m })).filter((p) => p.y != null);
+    smPts.unshift({ x: mesX(base), y: 100, mes: base });
+    const series = [{ name: c.nome, color: cor(0), width: 2.6, pts: serie(c.id) }];
+    if (c.id !== '7169') series.push({ name: 'IPCA geral', color: cor(5), width: 1.8, dash: '5 4', pts: serie('7169') });
+    series.push({ name: 'Salário mínimo', color: cor(2), width: 1.8, pts: smPts });
+    const u = series[0].pts.at(-1), g = serie('7169').at(-1), s = smPts.at(-1);
+    $('#ic-serie-titulo').textContent = `${c.nome}: preços ao longo do tempo`;
+    $('#ic-serie-nota').textContent = `Índice com 100 em dezembro de ${y0 - 1}: quanto o preço de ${c.nome.toLowerCase()} subiu desde então, comparado com a inflação geral e com o salário mínimo. `
+      + (u && g && s ? `De dez/${y0 - 1} a ${mesTexto(ultimo)}, ${c.nome.toLowerCase()} ${u.y >= 100 ? 'subiu' : 'caiu'} ${f1(Math.abs(u.y - 100))}%` + (c.id !== '7169' ? `, o IPCA geral subiu ${f1(g.y - 100)}%` : '') + ` e o salário mínimo, ${f1(s.y - 100)}%. `
+      + `Com um salário mínimo dá para comprar ${f1(Math.abs(100 * ((s.y / u.y) - 1)))}% ${s.y >= u.y ? 'mais' : 'menos'} dessa categoria do que em dez/${y0 - 1}.` : '');
+    lineChart($('#ic-chart'), {
+      series, yfmt: (v) => f0(v), xdomain: [y0 - 1 + 11.5 / 12, anoFim + 1], faixas: FAIXAS_MANDATO(), ref: 100,
+      endLabels: innerWidth > 720, legenda: true, height: 340, mensal: true, tituloTip: (p) => mesTexto(p.mes),
+    });
+  }
 
 
   // ---------------------------------------------------------------- estatais
@@ -2648,6 +2769,11 @@
   on('#cb-item', (v) => { st.cbItem = v; });
   on('#cb-y0', (v) => { st.cbY0 = +v; });
   on('#cb-ma', (v) => { st.cbMa = v; });
+  on('#ic-ma', (v) => { st.icMa = v; });
+  on('#ic-mb', (v) => { st.icMb = v; });
+  on('#ic-nivel', (v) => { st.icNivel = v; });
+  on('#ic-cat', (v) => { st.icCat = v; });
+  on('#ic-y0', (v) => { st.icY0 = +v; });
   on('#cb-mb', (v) => { st.cbMb = v; });
   on('#pl-a', (v) => { st.ga = v; });
   on('#pl-b', (v) => { st.gb = v; });

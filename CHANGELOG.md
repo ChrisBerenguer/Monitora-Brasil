@@ -1,5 +1,17 @@
 # Histórico de versões
 
+## 1.39 — 16/11/2026
+
+### Adicionado
+- Vida do Cidadão: dois cartões novos com as **categorias de consumo da inflação oficial (IPCA)**: os nove grupos (alimentação, habitação, artigos de residência, vestuário, transportes, saúde, despesas pessoais, educação e comunicação) e 25 itens, entre eles roupas, calçados, eletrodomésticos, móveis, TV e informática, automóvel novo e usado, motocicleta, combustíveis, passagem aérea, energia elétrica, aluguel, remédios, plano de saúde, escola e faculdade, internet e celular.
+  - **Inflação por categoria de consumo:** tabela com o peso de cada categoria no IPCA, a variação em 12 meses, a inflação acumulada em dois mandatos escolhidos (vermelho quando subiu mais que o IPCA geral) e quanto o salário mínimo passou a comprar a mais ou a menos daquela categoria em cada mandato. Clicar numa linha muda o gráfico.
+  - **Preços da categoria ao longo do tempo:** a categoria escolhida, o IPCA geral e o salário mínimo, com 100 no mesmo ponto de partida.
+  - Séries mensais desde julho de 2006, emendando as tabelas 2938, 1419 e 7060 do SIDRA pelo código de cada categoria. Conferidas com a variação em 12 meses publicada pelo IBGE (out/2026).
+- Função `/api/ibge` (Vercel, São Paulo): repassa consultas de leitura à API de agregados do IBGE. Os coletores de consumo e da aba Indústria tentam o IBGE direto e, se ele recusar a conexão do GitHub Actions, passam por ela (`scripts/ibge_api.py`).
+
+### Corrigido
+- A coleta de consumo básico falhava inteira no GitHub Actions quando o IBGE não respondia (renda per capita); agora usa o caminho alternativo.
+
 ## 1.38 — 15/11/2026
 
 ### Adicionado

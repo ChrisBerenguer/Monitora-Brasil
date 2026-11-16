@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=1.38">
+  <link rel="stylesheet" href="assets/css/styles.css?v=1.39">
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -271,7 +271,7 @@
 
     <!-- VIDA DO CIDADÃO -->
     <section class="pagina" id="vida" role="tabpanel" aria-labelledby="aba-vida" hidden>
-      <p class="nota">Quanto custa viver no Brasil: comida, combustível e gás de cozinha, comparados com a renda das pessoas. Os preços são médias nacionais e podem ser corrigidos pela inflação, para comparar anos diferentes.</p>
+      <p class="nota">Quanto custa viver no Brasil: comida, combustível, gás de cozinha e as categorias de consumo da inflação oficial (roupas, eletrodomésticos, automóveis, remédios, escola e outras), comparados com a renda das pessoas. Os preços são médias nacionais e podem ser corrigidos pela inflação, para comparar anos diferentes.</p>
 
       <article class="card" data-ctx="nenhum">
         <div class="titulo-info"><h2 id="cb-hoje-titulo">Quanto custa hoje</h2><button class="info-btn" type="button" data-info-card="cb-hoje" aria-label="Como ler: Quanto custa hoje"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button><button class="info-btn fonte-btn" type="button" data-fonte="fonte:precos" aria-label="Fonte original dos dados"><svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg></button></div>
@@ -318,6 +318,44 @@
         <div class="titulo-info"><h2 id="cb-poder-titulo">Quanto um salário mínimo compra</h2><button class="info-btn" type="button" data-info-card="cb-poder" aria-label="Como ler: Quanto um salário mínimo compra"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button><button class="info-btn fonte-btn" type="button" data-fonte="fonte:precos" aria-label="Fonte original dos dados"><svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg></button></div>
         <p class="nota" id="cb-poder-nota"></p>
         <div class="grafico" id="cb-poder"></div>
+      </article>
+
+      <article class="card" data-ctx="nenhum">
+        <div class="titulo-info"><h2>Inflação por categoria de consumo</h2><button class="info-btn" type="button" data-info-card="ic-tabela" aria-label="Como ler: Inflação por categoria de consumo"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button><button class="info-btn fonte-btn" type="button" data-fonte="fonte:ipca" aria-label="Fonte original dos dados"><svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg></button></div>
+        <p class="nota" id="ic-nota"></p>
+        <div class="controles">
+          <label class="ctl">Mandato A <select id="ic-ma"></select></label>
+          <label class="ctl">Mandato B <select id="ic-mb"></select></label>
+          <label class="ctl">Mostrar <select id="ic-nivel"><option value="todos">grupos e itens</option><option value="grupo">só os 9 grupos</option></select></label>
+        </div>
+        <p class="nota" id="ic-msg" hidden></p>
+        <div class="tabela-box">
+          <table id="ic-table">
+            <thead><tr>
+              <th scope="col">Categoria</th>
+              <th scope="col" class="some-p">Peso no IPCA</th>
+              <th scope="col">12 meses</th>
+              <th scope="col" id="ic-th-a">Inflação A</th><th scope="col" id="ic-th-b">Inflação B</th>
+              <th scope="col" class="some-p" id="ic-th-sa">Salário mínimo em A</th>
+              <th scope="col" id="ic-th-sb">Salário mínimo em B</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="card">
+        <div class="card-topo">
+          <div>
+            <div class="titulo-info"><h2 id="ic-serie-titulo">Preços da categoria ao longo do tempo</h2><button class="info-btn" type="button" data-info-card="ic-serie" aria-label="Como ler: Preços da categoria ao longo do tempo"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button><button class="info-btn fonte-btn" type="button" data-fonte="fonte:ipca" aria-label="Fonte original dos dados"><svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg></button></div>
+            <p class="nota" id="ic-serie-nota"></p>
+          </div>
+          <div class="controles">
+            <label class="ctl">Categoria <select id="ic-cat"></select></label>
+            <label class="ctl">Desde <select id="ic-y0"></select></label>
+          </div>
+        </div>
+        <div class="grafico alto" id="ic-chart"></div>
       </article>
 
       <article class="card" data-ctx="nenhum">
@@ -743,6 +781,6 @@
 
   <script src="assets/js/d3.v7.9.0.min.js"></script>
   <script src="assets/js/html-to-image.v1.11.11.min.js"></script>
-  <script src="assets/js/app.js?v=1.38"></script>
+  <script src="assets/js/app.js?v=1.39"></script>
 </body>
 </html>

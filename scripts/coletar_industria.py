@@ -27,7 +27,7 @@ from pathlib import Path
 RAIZ = Path(__file__).resolve().parent.parent
 UA = {'User-Agent': 'MonitoraBrasil/1.0 (+https://github.com/ChrisBerenguer/Monitora-Brasil)',
       'Accept': 'application/json', 'Accept-Encoding': 'identity'}
-API = 'https://servicodados.ibge.gov.br/api/v3/agregados/'
+from ibge_api import API, ibge  # noqa: E402  (direto ou pelo proxy do site)
 L = 'localidades=N1[all]'
 CONSULTAS = {
     'cnt': f'1620/periodos/all/variaveis/583?{L}&classificacao=11255[90687,90691,90692,90693,90695,90694,90696,90697,90698,90699,90700,90702,90701,90703,90707]',
@@ -227,7 +227,7 @@ def main():
         else:
             print('baixando', k)
             try:
-                bruto[k] = json.loads(baixar(API + q, tentativas=3, timeout=90))
+                bruto[k] = json.loads(ibge(q))
             except RuntimeError as e:
                 # a API do IBGE às vezes recusa conexões vindas de fora do Brasil (como o GitHub Actions):
                 # mantém o industria.json atual e tenta de novo na próxima rodada, em vez de falhar

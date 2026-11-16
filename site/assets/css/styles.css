@@ -346,3 +346,13 @@ td.leis-proj { white-space: normal; min-width: 16rem; max-width: 46rem; text-ali
 #emp-table .seg-cat { display: block; font-size: .78em; margin-top: 1px; }
 #emp-setor-table td:first-child { white-space: normal; min-width: 10rem; text-align: left; }
 #emp-mais { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+/* Vida do Cidadão: inflação por categoria do IPCA */
+#ic-table tbody tr { cursor: pointer; }
+#ic-table tbody tr:hover td { background: color-mix(in srgb, var(--accent) 5%, var(--panel)); }
+#ic-table tr.sel td { background: color-mix(in srgb, var(--accent) 10%, var(--panel)); }
+#ic-table tr.sel td:first-child { box-shadow: inset 3px 0 0 var(--accent); }
+#ic-table tr.ic-geral td { font-weight: 600; border-bottom: 2px solid var(--line); }
+#ic-table tr.ic-grupo td:first-child { font-weight: 600; }
+#ic-table tr.ic-item td:first-child { padding-left: 1.6rem; color: var(--muted); }
+#ic-table tr.ic-item.sel td:first-child { color: inherit; }

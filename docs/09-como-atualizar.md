@@ -25,6 +25,8 @@ Não passam pelo pipeline acima. O workflow **Atualizar dados de consumo básico
 
 Se a ANP mudar o endereço das planilhas, o script falha com "não consegui baixar": basta atualizar `ANP_URLS` em `scripts/coletar_consumo.py`.
 
+As consultas ao IBGE (renda per capita e categorias do IPCA) tentam o IBGE direto e, se ele recusar a conexão do GitHub Actions, passam pela função `/api/ibge` do site (`scripts/ibge_api.py`). Se o IBGE criar uma tabela nova do IPCA (como fez em 2020, com a 7060), acrescente-a a `IPCA_TABELAS` no coletor.
+
 ### Dados da aba Estatais
 
 O workflow **Atualizar lucro das estatais federais** (`.github/workflows/dados-estatais.yml`) roda todo dia 16 e grava `estatais.json`. Para rodar na hora: GitHub → **Actions** → esse workflow → **Run workflow**. No próprio computador: `python scripts/coletar_estatais.py` (só a biblioteca padrão do Python).
@@ -37,7 +39,7 @@ Confira: o total do último ano fechado deve ficar perto do que o Ministério da
 
 O workflow **Atualizar crescimento por segmento (Indústria)** (`.github/workflows/dados-industria.yml`) roda toda segunda-feira, porque as pesquisas do IBGE saem em datas diferentes ao longo do mês, e grava `industria.json` só quando algo mudou. Para rodar na hora: GitHub → **Actions** → esse workflow → **Run workflow**. No próprio computador: `python scripts/coletar_industria.py` (só a biblioteca padrão do Python).
 
-A API do IBGE às vezes recusa conexões vindas de fora do Brasil, como as do GitHub Actions. Nesse caso o script avisa (alerta amarelo no Actions), mantém o `industria.json` atual e tenta de novo na semana seguinte. Para atualizar na hora, rode o script de um computador no Brasil, ou salve as respostas das consultas listadas em `CONSULTAS` (no script) como `PASTA/<chave>.json` e rode `python scripts/coletar_industria.py --cache PASTA`.
+A API do IBGE às vezes recusa conexões vindas de fora do Brasil, como as do GitHub Actions. Nesse caso o script tenta pela função `/api/ibge` do site (Vercel, em São Paulo); se também falhar, avisa (alerta amarelo no Actions), mantém o `industria.json` atual e tenta de novo na semana seguinte. Para atualizar na hora, rode o script de um computador no Brasil, ou salve as respostas das consultas listadas em `CONSULTAS` (no script) como `PASTA/<chave>.json` e rode `python scripts/coletar_industria.py --cache PASTA`.
 
 Confira: o crescimento do PIB e das categorias no último ano deve bater com o comunicado das Contas Nacionais do IBGE (2025: PIB +2,3%, agropecuária +11,7%).
 

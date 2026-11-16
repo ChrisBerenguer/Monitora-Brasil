@@ -6,6 +6,11 @@ Fontes (todas públicas e sem cadastro):
   - Salário mínimo: Ministério do Trabalho, via Ipeadata (MTE12_SALMIN12).
   - IPCA (número-índice): IBGE, via Ipeadata (PRECOS12_IPCA12), usado para corrigir os preços.
   - Renda domiciliar per capita: IBGE, PNAD Contínua anual, SIDRA tabela 7395.
+  - Inflação por categoria de consumo: IBGE, IPCA, variação mensal e peso de grupos e itens
+    (SIDRA tabelas 2938, 1419 e 7060, de jul/2006 em diante, emendadas pelo código da categoria).
+
+O IBGE costuma recusar conexões do GitHub Actions; nesse caso as consultas ao SIDRA passam pela
+função /api/ibge do site (scripts/ibge_api.py).
 
 Gera site/data/consumo.json (e a cópia em dados/). Roda no GitHub Actions
 (.github/workflows/dados-consumo.yml), porque precisa de internet aberta.
@@ -14,6 +19,8 @@ import gzip, io, json, time, urllib.request
 from collections import defaultdict
 from datetime import date
 from pathlib import Path
+
+from ibge_api import ibge
 
 RAIZ = Path(__file__).resolve().parent.parent
 UA = {'User-Agent': 'MonitoraBrasil/1.0 (+https://github.com/ChrisBerenguer/Monitora-Brasil)',
@@ -105,9 +112,70 @@ def anp():
 
 def renda():
     """Rendimento domiciliar per capita (PNAD Contínua anual, já em valores reais)."""
-    d = json.loads(baixar('https://servicodados.ibge.gov.br/api/v3/agregados/7395/periodos/all/variaveis/4196?localidades=N1[all]'))
+    d = json.loads(ibge('7395/periodos/all/variaveis/4196?localidades=N1[all]'))
     s = d[0]['resultados'][0]['series'][0]['serie']
     return [{'ano': int(a), 'valor': float(v)} for a, v in sorted(s.items()) if str(v).replace('.', '').isdigit()]
+
+
+# Categorias de consumo do IPCA que entram na aba: (código, nome no site, código do grupo).
+# Os grupos são os nove do IPCA; os itens e subitens foram escolhidos entre os de maior peso ou
+# os bens que as famílias mais acompanham. O código é o mesmo nas três tabelas, salvo "Cursos".
+IPCA_GERAL = '7169'
+IPCA_GRUPOS = [
+    ('7170', 'Alimentação e bebidas'), ('7445', 'Habitação'), ('7486', 'Artigos de residência'),
+    ('7558', 'Vestuário'), ('7625', 'Transportes'), ('7660', 'Saúde e cuidados pessoais'),
+    ('7712', 'Despesas pessoais'), ('7766', 'Educação'), ('7786', 'Comunicação'),
+]
+IPCA_ITENS = [
+    ('7171', 'Alimentação em casa', '7170'), ('7432', 'Alimentação fora de casa', '7170'),
+    ('7448', 'Aluguel residencial', '7445'), ('7485', 'Energia elétrica', '7445'), ('7451', 'Água e esgoto', '7445'),
+    ('7488', 'Móveis', '7486'), ('7522', 'Eletrodomésticos e equipamentos', '7486'), ('7541', 'TV, som e informática', '7486'),
+    ('7559', 'Roupas', '7558'), ('7604', 'Calçados e acessórios', '7558'),
+    ('7641', 'Automóvel novo', '7625'), ('107654', 'Automóvel usado', '7625'), ('7654', 'Motocicleta', '7625'),
+    ('7656', 'Combustíveis', '7625'), ('7628', 'Ônibus urbano', '7625'), ('7634', 'Passagem aérea', '7625'),
+    ('7662', 'Remédios (produtos farmacêuticos)', '7660'), ('7695', 'Plano de saúde', '7660'), ('7698', 'Higiene pessoal', '7660'),
+    ('7720', 'Empregado doméstico', '7712'), ('7730', 'Recreação', '7712'),
+    ('12427', 'Cursos regulares (escola e faculdade)', '7766'), ('107673', 'Ensino superior', '7766'),
+    ('107688', 'Acesso à internet', '7786'), ('7794', 'Aparelho telefônico', '7786'),
+]
+# Tabelas do IPCA no SIDRA, da mais antiga à mais nova, e os códigos que mudam em cada uma.
+IPCA_TABELAS = [('2938', {'12427': '7768'}), ('1419', {}), ('7060', {})]
+
+
+def ipca_categorias():
+    """Variação mensal (%) e peso de cada categoria, de jul/2006 em diante."""
+    ids = [IPCA_GERAL] + [g for g, _ in IPCA_GRUPOS] + [i for i, _, _ in IPCA_ITENS]
+    var, peso = defaultdict(dict), defaultdict(dict)
+    for tab, troca in IPCA_TABELAS:
+        volta = {v: k for k, v in troca.items()}
+        cod = [troca.get(i, i) for i in ids]
+        d = json.loads(ibge(f'{tab}/periodos/all/variaveis/63|66?localidades=N1[all]&classificacao=315[{",".join(cod)}]'))
+        for v in d:
+            alvo = var if v['id'] == '63' else peso
+            for r in v['resultados']:
+                c = next(iter(r['classificacoes'][0]['categoria']))
+                c = volta.get(c, c)
+                for per, x in r['series'][0]['serie'].items():
+                    try:
+                        alvo[c][f'{per[:4]}-{per[4:]}'] = float(x)
+                    except (TypeError, ValueError):
+                        pass  # "-" ou "..." (sem dado no mês)
+        print(f'  IPCA tabela {tab}: {len(d[0]["resultados"])} categorias')
+    meses = sorted(var[IPCA_GERAL])
+    cats = [{'id': IPCA_GERAL, 'nome': 'IPCA (índice geral)', 'nivel': 'geral'}]
+    cats += [{'id': g, 'nome': n, 'nivel': 'grupo'} for g, n in IPCA_GRUPOS]
+    cats += [{'id': i, 'nome': n, 'nivel': 'item', 'grupo': g} for i, n, g in IPCA_ITENS]
+    for c in cats:
+        s = var.get(c['id'], {})
+        c['var'] = [s.get(m) for m in meses]
+        pk = sorted(peso.get(c['id'], {}))
+        c['peso'] = round(peso[c['id']][pk[-1]], 4) if pk else None
+        c['peso_mes'] = pk[-1] if pk else None
+        falta = sum(v is None for v in c['var'])
+        if falta:
+            print(f'  aviso: {c["nome"]} sem dado em {falta} meses')
+    print(f'  {len(cats)} categorias, {meses[0]} a {meses[-1]}')
+    return {'meses': meses, 'categorias': cats}
 
 
 def main():
@@ -137,6 +205,9 @@ def main():
 
     print('Renda domiciliar per capita (IBGE)...')
     rend = renda()
+
+    print('IPCA por categoria de consumo (IBGE)...')
+    cats = ipca_categorias()
     print('  ', rend)
 
     def real(valor, mes):
@@ -179,12 +250,14 @@ def main():
             'salario': 'Salário mínimo nominal vigente, via Ipeadata (MTE12_SALMIN12)',
             'ipca': 'IPCA, número-índice, IBGE via Ipeadata (PRECOS12_IPCA12)',
             'renda': 'IBGE, PNAD Contínua anual, SIDRA tabela 7395 (rendimento médio mensal real domiciliar per capita)',
+            'ipca_categorias': 'IBGE, IPCA, variação mensal e peso por grupo, item e subitem, SIDRA tabelas 2938 (2006-2011), 1419 (2012-2019) e 7060 (2020 em diante)',
         },
         'itens': itens,
         'cesta_capitais': {c: v for c, v in sorted(cesta_cap.items())},
         'salario_minimo': [{'mes': m, 'v': salario[m], 'real': real(salario[m], m)} for m in sm_meses if m >= '1994-12' and m <= base],
         'renda_per_capita': rend,
         'ipca': [{'mes': m, 'indice': round(ipca[m], 4)} for m in sorted(ipca) if m >= '1994-12'],
+        'ipca_categorias': cats,
     })
 
 
