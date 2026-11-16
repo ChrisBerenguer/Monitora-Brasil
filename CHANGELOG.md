@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.37.4 — 15/11/2026
+
+### Alterado
+- Leis e votação: o quadro "Como votou cada deputado" segue sempre a linha escolhida na lista, desde a abertura da aba (a primeira linha). Numa votação simbólica, ele mostra a votação nominal mais recente do mesmo projeto, com um aviso; se o projeto não teve votação nominal, mostra o projeto e explica que não há lista de votos. Clicar numa votação simbólica não abre mais o quadro de detalhes do projeto (o nome do projeto continua abrindo).
+
 ## 1.37.3 — 15/11/2026
 
 ### Alterado

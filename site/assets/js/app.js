@@ -2299,8 +2299,8 @@
       + (ult ? ` Última votação: ${dataBR(ult)}.` : '')
       + (LV.vivo ? ` Atualizado em tempo real com a API da Câmara (consulta às ${hora}).`
         : LV.vivoErro ? ` A API da Câmara não respondeu agora; dados da coleta de ${fmtData(LV.idx.coletado_em)}.` : ' Consultando a Câmara…');
-    // abre de início a votação nominal mais recente: as simbólicas não têm voto de cada deputado
-    if (!lista.some((v) => v.id === st.leisSel)) st.leisSel = (lista.find(ehNominal) || lista[0])?.id ?? null;
+    // abre de início a votação mais recente da lista; o cartão de votos segue a linha escolhida
+    if (!lista.some((v) => v.id === st.leisSel)) st.leisSel = lista[0]?.id ?? null;
     const tb = $('#leis-table tbody'); tb.replaceChildren();
     for (const v of lista) {
       const tr = el('tr', { class: 'leis-linha' + (v.id === st.leisSel ? ' sel' : ''), tabindex: '0', 'data-id': v.id });
@@ -2320,9 +2320,18 @@
       && (!q || semAcento(nomeDep(x.dep)).includes(q)))
       .sort((a, b) => nomeDep(a.dep).localeCompare(nomeDep(b.dep), 'pt-BR'));
   }
+  /** A votação que o cartão de votos mostra para a linha escolhida: a própria, se for nominal; se for simbólica,
+   *  a votação nominal do mesmo projeto (de preferência sobre o texto, a mais recente), quando houver. */
+  function votacaoDoCartao(sel) {
+    if (!sel || ehNominal(sel) || sel.prop == null) return sel;
+    const irmas = LV.idx.votacoes.filter((x) => x.prop === sel.prop && ehNominal(x)).sort((a, b) => b.quando.localeCompare(a.quando));
+    return irmas.find((x) => x.tipo === 'principal') || irmas[0] || sel;
+  }
   function drawLeisDetalhe() {
     const card = $('#leis-detalhe');
-    const v = LV.idx.votacoes.find((x) => x.id === st.leisSel);
+    const sel = LV.idx.votacoes.find((x) => x.id === st.leisSel);
+    const v = votacaoDoCartao(sel);
+    LV.alvoId = v?.id ?? null;
     card.hidden = !v;
     if (!v) return;
     const vs = votosDe(v);
@@ -2334,6 +2343,9 @@
     if (v.governo) tit.append(` · Governo orientou ${v.governo}`);
     if (v.oposicao) tit.append(` · Oposição orientou ${v.oposicao}`);
     const desc = $('#leis-d-desc'); desc.replaceChildren();
+    if (v !== sel) {
+      desc.append(el('p', { class: 'prop-aviso' }, `A votação escolhida na lista (${dataBR(sel.quando)}: ${sel.desc}) foi simbólica, sem registro do voto de cada deputado. Abaixo está a votação nominal mais recente do mesmo projeto, de ${dataBR(v.quando)}.`));
+    }
     if (p) desc.append(el('p', {}, p[1]));
     desc.append(el('p', { class: 'cod' }, `${TIPO_NOME[v.tipo]}: ${v.desc}`));
     card.querySelectorAll('.so-nominal').forEach((n) => { n.hidden = !nominal; });
@@ -2545,7 +2557,6 @@
 
   const abrirVotacao = (tr) => {
     const v = LV.idx.votacoes.find((x) => x.id === tr.dataset.id);
-    if (v && !ehNominal(v) && v.prop != null) { abrirProjeto(v.prop, v); return; }
     st.leisSel = tr.dataset.id;
     document.querySelectorAll('#leis-table tr.sel').forEach((t) => t.classList.remove('sel'));
     tr.classList.add('sel');
@@ -2555,7 +2566,7 @@
   $('#leis-table tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-id]'); if (tr && !ev.target.closest('a, button')) abrirVotacao(tr); });
   $('#leis-table tbody').addEventListener('keydown', (ev) => { const tr = ev.target.closest('tr[data-id]'); if (tr && ev.target === tr && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); abrirVotacao(tr); } });
   $('#csv-leis-votos').addEventListener('click', () => {
-    const v = LV.idx.votacoes.find((x) => x.id === st.leisSel); if (!v) return;
+    const v = LV.idx.votacoes.find((x) => x.id === LV.alvoId); if (!v) return;
     const p = propDe(v);
     baixarCSV(`monitora-brasil-votacao-${v.id}.csv`, votosFiltradosDetalhe(votosDe(v)), [
       { titulo: 'deputado', valor: (x) => nomeDep(x.dep) }, { titulo: 'partido', valor: (x) => x.part }, { titulo: 'UF', valor: (x) => ufDep(x.dep) },
