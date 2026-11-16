@@ -61,7 +61,7 @@
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
     ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cbMa: '2019–2022', cbMb: '2023–2026', cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
     estFiltro: 'todas', estSort: { key: null, dir: -1 }, estSemVendas: true,
-    empGrupo: 'todas', empValores: 'real', empSetor: 'todos', empBusca: '', empSort: { key: null, dir: -1 }, empSSort: { key: null, dir: -1 }, empTodas: false, leisAno: null, leisTipo: 'principal', leisRes: 'todas', leisForma: 'nominal', leisBusca: '', leisSel: null, leisDVoto: 'todos', leisDPart: 'todos', leisDUf: 'todos', leisDBusca: '', leisDep: null,
+    empGrupo: 'todas', empValores: 'real', empSetor: 'todos', empBusca: '', empSort: { key: null, dir: -1 }, empSSort: { key: null, dir: -1 }, empTodas: false, leisAno: null, leisTipo: 'principal', leisRes: 'todas', leisForma: 'todas', leisBusca: '', leisSel: null, leisDVoto: 'todos', leisDPart: 'todos', leisDUf: 'todos', leisDBusca: '', leisDep: null,
     indModo: 'indice', indBase: 2002, indFiltro: 'todas', indSort: { key: null, dir: -1 },
   };
   let D = null; // dados carregados e indexados
