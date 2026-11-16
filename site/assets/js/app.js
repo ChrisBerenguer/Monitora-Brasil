@@ -1791,10 +1791,9 @@
     const nome = (p) => MANDATO[p].replace(' (até 2025)', '');
     const MA = mesesMandato(a, ultimo), MB = mesesMandato(b, ultimo);
     const geral = IC.categorias.find((c) => c.id === '7169');
-    $('#ic-nota').textContent = `Quanto subiram os preços de cada categoria de consumo do IPCA, a inflação oficial do IBGE. Os mandatos são medidos de dezembro anterior à posse até o fim${MB.emCurso ? ` (o mandato ${nome(b)} vai até ${mesTexto(ultimo)})` : ''}. `
-      + `Vermelho marca a categoria que subiu mais que o IPCA geral no período, e verde a que subiu menos. As colunas do salário mínimo dizem quanto o poder de compra do piso, medido naquela categoria, mudou no mandato. Peso de ${mesTexto(geral.peso_mes || ultimo)}. Clique numa linha para ver o gráfico.`;
-    $('#ic-th-a').textContent = `Inflação ${nome(a)}`; $('#ic-th-b').textContent = `Inflação ${nome(b)}`;
-    $('#ic-th-sa').textContent = `Salário mínimo em ${nome(a)}`; $('#ic-th-sb').textContent = `Salário mínimo em ${nome(b)}`;
+    $('#ic-nota').textContent = `Para cada tipo de gasto da inflação oficial (IPCA, do IBGE), duas perguntas: quanto o preço subiu em cada mandato e se o salário mínimo passou a comprar mais ou menos daquilo. Cada mandato vai de dezembro antes da posse até o fim${MB.emCurso ? ` (${nome(b)} até ${mesTexto(ultimo)})` : ''}. Passe o mouse num número para ler a frase completa, e clique numa linha para ver o gráfico.`;
+    $('#ic-th-a').textContent = nome(a); $('#ic-th-b').textContent = nome(b);
+    $('#ic-th-sa').textContent = nome(a); $('#ic-th-sb').textContent = nome(b);
     const varPer = (id, M) => { const s = idx.get(id), x = s.get(M.ini), y = s.get(M.fim); return x && y ? 100 * (y / x - 1) : null; };
     const smPer = (id, M) => { const x = sm(M.ini), y = sm(M.fim), v = varPer(id, M); return x && y && v != null ? 100 * ((y / x) / (1 + v / 100) - 1) : null; };
     const i12 = IC.meses.length - 13;
@@ -1810,13 +1809,18 @@
       const tr = el('tr', { class: `ic-${c.nivel}${c.id === st.icCat ? ' sel' : ''}`, 'data-cat': c.id, tabindex: '0' });
       const v12 = varPer(c.id, M12), va = varPer(c.id, MA), vb = varPer(c.id, MB);
       const ref = c.id !== '7169';
+      const nm = c.id === '7169' ? 'os preços em geral' : c.nome.toLowerCase();
+      const fraseP = (v, g, quando) => (v == null ? '' : `${quando}, ${nm} ${v >= 0 ? 'subiu' : 'caiu'} ${f1(Math.abs(v))}%`
+        + (ref && g != null ? `, ${v > g + 0.5 ? 'mais' : v < g - 0.5 ? 'menos' : 'quase o mesmo'} que a inflação geral (${f1(g)}%).` : '.'));
+      const fraseS = (v, p) => (v == null ? '' : `No fim do mandato ${nome(p)}, um salário mínimo comprava ${f1(Math.abs(v))}% ${v >= 0 ? 'mais' : 'menos'} de ${nm} do que no início.`);
+      const sa = smPer(c.id, MA), sb = smPer(c.id, MB);
       tr.append(el('td', {}, c.nome),
-        el('td', { class: 'some-p' }, c.peso == null ? '—' : `${f2(c.peso)}%`),
-        el('td', { class: ref ? corVar(v12, g12) : '' }, pct(v12)),
-        el('td', { class: ref ? corVar(va, gA) : '' }, pct(va)),
-        el('td', { class: ref ? corVar(vb, gB) : '' }, pct(vb)),
-        el('td', { class: 'some-p ' + corSm(smPer(c.id, MA)) }, pct(smPer(c.id, MA))),
-        el('td', { class: corSm(smPer(c.id, MB)) }, pct(smPer(c.id, MB))));
+        el('td', { class: 'some-p', title: c.peso == null ? '' : `De cada R$ 100 gastos pelas famílias, R$ ${f2(c.peso)} vão para ${nm}.` }, c.peso == null ? '—' : `${f2(c.peso)}%`),
+        el('td', { class: 'ic-ini-preco ' + (ref ? corVar(v12, g12) : ''), title: fraseP(v12, g12, 'Nos últimos 12 meses') }, pct(v12)),
+        el('td', { class: ref ? corVar(va, gA) : '', title: fraseP(va, gA, `No mandato ${nome(a)}`) }, pct(va)),
+        el('td', { class: ref ? corVar(vb, gB) : '', title: fraseP(vb, gB, `No mandato ${nome(b)}`) }, pct(vb)),
+        el('td', { class: 'ic-ini-sm ' + corSm(sa), title: fraseS(sa, a) }, pct(sa)),
+        el('td', { class: corSm(sb), title: fraseS(sb, b) }, pct(sb)));
       const escolher = () => { st.icCat = c.id; desenharCategorias(C); };
       tr.addEventListener('click', escolher);
       tr.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); escolher(); } });

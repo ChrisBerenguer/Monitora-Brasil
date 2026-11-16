@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.39.1 — 16/11/2026
+
+### Alterado
+- Vida do Cidadão, "Inflação por categoria de consumo": a tabela ficou mais fácil de ler. As colunas agora vêm em dois blocos com título e sentido de leitura: "Quanto o preço subiu" (menor é melhor) e "Quanto um salário mínimo compra a mais" (maior é melhor), com uma legenda das cores logo acima. Cada número explica a si mesmo numa frase ao passar o mouse (por exemplo, "No mandato Lula 3, vestuário subiu 13,5%, menos que a inflação geral (19,0%)").
+
 ## 1.39 — 16/11/2026
 
 ### Adicionado

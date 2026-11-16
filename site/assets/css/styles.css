@@ -356,3 +356,9 @@ td.leis-proj { white-space: normal; min-width: 16rem; max-width: 46rem; text-ali
 #ic-table tr.ic-grupo td:first-child { font-weight: 600; }
 #ic-table tr.ic-item td:first-child { padding-left: 1.6rem; color: var(--muted); }
 #ic-table tr.ic-item.sel td:first-child { color: inherit; }
+#ic-table thead tr.ic-grupos th, #ic-table thead tr.ic-grupos td { position: static; text-align: center; color: var(--fg); font-weight: 600; border-bottom: 0; white-space: nowrap; background: var(--panel); }
+#ic-table thead tr.ic-grupos th span { display: block; font-weight: 400; font-size: var(--t-xs); color: var(--muted); }
+#ic-table .ic-g-preco, #ic-table .ic-g-sm, #ic-table .ic-ini-preco, #ic-table .ic-ini-sm { border-left: 2px solid var(--line); }
+.ic-leg { margin: 0 0 .6rem; padding-left: 1.1rem; font-size: var(--t-sm); color: var(--muted); }
+.ic-leg li { margin: .15rem 0; }
+.ic-leg b { color: var(--fg); font-weight: 600; }

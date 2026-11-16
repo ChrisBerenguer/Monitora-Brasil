@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=1.39">
+  <link rel="stylesheet" href="assets/css/styles.css?v=1.39.1">
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -329,16 +329,27 @@
           <label class="ctl">Mostrar <select id="ic-nivel"><option value="todos">grupos e itens</option><option value="grupo">só os 9 grupos</option></select></label>
         </div>
         <p class="nota" id="ic-msg" hidden></p>
+        <ul class="ic-leg">
+          <li><b>Quanto o preço subiu:</b> <span class="bom">verde</span> = subiu menos que a inflação geral; <span class="ruim">vermelho</span> = subiu mais.</li>
+          <li><b>Salário mínimo compra a mais:</b> <span class="bom">verde, positivo</span> = no fim do mandato o salário mínimo comprava mais daquilo do que no início; <span class="ruim">vermelho, negativo</span> = comprava menos.</li>
+        </ul>
         <div class="tabela-box">
           <table id="ic-table">
-            <thead><tr>
-              <th scope="col">Categoria</th>
-              <th scope="col" class="some-p">Peso no IPCA</th>
-              <th scope="col">12 meses</th>
-              <th scope="col" id="ic-th-a">Inflação A</th><th scope="col" id="ic-th-b">Inflação B</th>
-              <th scope="col" class="some-p" id="ic-th-sa">Salário mínimo em A</th>
-              <th scope="col" id="ic-th-sb">Salário mínimo em B</th>
-            </tr></thead>
+            <thead>
+              <tr class="ic-grupos">
+                <td></td><td class="some-p"></td>
+                <th scope="colgroup" colspan="3" class="ic-g-preco">Quanto o preço subiu<span>menor é melhor</span></th>
+                <th scope="colgroup" colspan="2" class="ic-g-sm">Quanto um salário mínimo compra a mais<span>maior é melhor</span></th>
+              </tr>
+              <tr>
+                <th scope="col">Categoria</th>
+                <th scope="col" class="some-p">Peso no IPCA</th>
+                <th scope="col" class="ic-ini-preco">12 meses</th>
+                <th scope="col" id="ic-th-a">A</th><th scope="col" id="ic-th-b">B</th>
+                <th scope="col" class="ic-ini-sm" id="ic-th-sa">A</th>
+                <th scope="col" id="ic-th-sb">B</th>
+              </tr>
+            </thead>
             <tbody></tbody>
           </table>
         </div>
@@ -781,6 +792,6 @@
 
   <script src="assets/js/d3.v7.9.0.min.js"></script>
   <script src="assets/js/html-to-image.v1.11.11.min.js"></script>
-  <script src="assets/js/app.js?v=1.39"></script>
+  <script src="assets/js/app.js?v=1.39.1"></script>
 </body>
 </html>
