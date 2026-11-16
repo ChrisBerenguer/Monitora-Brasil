@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.37.2 — 15/11/2026
+
+### Corrigido
+- Leis e votação: a busca em tempo real pedia 200 votações por página, mas a API da Câmara devolve no máximo 100, e a função parava na primeira página. Agora pede 100 por página, até 10 páginas.
+
 ## 1.37.1 — 08/11/2026
 
 ### Alterado

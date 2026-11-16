@@ -14,10 +14,10 @@ module.exports = async (req, res) => {
   if (new Date(desde) < new Date(hoje - 60 * 864e5)) desde = iso(new Date(hoje - 60 * 864e5));
   try {
     const lista = [];
-    for (let pag = 1; pag <= 5; pag++) {
-      const j = await camara(`votacoes?idOrgao=180&dataInicio=${desde}&dataFim=${iso(hoje)}&itens=200&pagina=${pag}&ordem=ASC&ordenarPor=dataHoraRegistro`);
+    for (let pag = 1; pag <= 10; pag++) {
+      const j = await camara(`votacoes?idOrgao=180&dataInicio=${desde}&dataFim=${iso(hoje)}&itens=100&pagina=${pag}&ordem=ASC&ordenarPor=dataHoraRegistro`);
       lista.push(...j.dados);
-      if (j.dados.length < 200) break;
+      if (j.dados.length < 100) break; // a API devolve no máximo 100 por página
     }
     // nominais trazem o placar na descrição; das simbólicas, só as que decidem o texto
     const nominalPelaDesc = (v) => /Sim:?\s*\d+/i.test(v.descricao || '');
