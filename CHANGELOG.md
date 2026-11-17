@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.40.1 — 17/11/2026
+
+### Alterado
+- Leis e votação: o cartão Consultas públicas abertas passou a ser o primeiro da aba.
+
 ## 1.40 — 17/11/2026
 
 ### Adicionado
