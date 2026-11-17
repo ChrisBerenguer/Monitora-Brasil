@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.39.3 — 17/11/2026
+
+### Alterado
+- Leis e votação, "Como votou cada deputado": o cartão volta a abrir na votação nominal mais recente, com o placar e as colunas **A favor**, **Contra**, abstenção e ausentes (antes abria na primeira votação da lista, que pode ser simbólica). Os votos aparecem como "A favor" e "Contra" no placar, na tabela por partido, na lista de deputados e no filtro. Nas votações simbólicas, a tabela por partido também tem as colunas A favor e Contra, com um traço, porque a Câmara não registra o voto.
+
 ## 1.39.2 — 17/11/2026
 
 ### Corrigido

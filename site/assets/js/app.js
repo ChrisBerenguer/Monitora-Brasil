@@ -689,9 +689,9 @@
       ['Como ler o placar', 'Verde é Sim, vermelho é Não, cinza são abstenções, obstruções e o voto do presidente da sessão (artigo 17), que não vota. Votar Sim num destaque ou requerimento nem sempre quer dizer apoiar o projeto: leia o que foi votado.'],
     ] },
     'leis-votos': { titulo: 'Como votou cada deputado', blocos: [
-      ['O que mostra', 'O voto de cada deputado na votação escolhida, o placar e a soma por partido. "Votou Sim" é a parte dos votos Sim entre os Sim e os Não do partido. O partido é o do deputado no dia da votação.'],
+      ['O que mostra', 'O voto de cada deputado na votação escolhida, o placar e a soma por partido. A favor é o voto Sim e contra é o voto Não. "% a favor" é a parte dos votos a favor entre os a favor e os contra do partido. O partido é o do deputado no dia da votação.'],
       ['Tipos de voto', 'Sim e Não são os votos comuns. Abstenção é a presença sem tomar lado. Obstrução é a estratégia de não votar para tentar derrubar o quórum, e conta como presença. Artigo 17 é o presidente da sessão, que não vota. Quem não aparece na lista não registrou voto: estava ausente, de licença ou em missão. O placar mostra esse número como "Não votaram (ausentes)", a diferença entre as 513 cadeiras e os votos registrados.'],
-      ['Votação simbólica', 'Não há voto a favor ou contra registrado. O placar mostra quantos deputados registraram presença na sessão e quantos estavam ausentes, e a lista dos presentes aparece abaixo.'],
+      ['Votação simbólica', 'Não há voto a favor ou contra registrado: o presidente anuncia o resultado e as colunas A favor e Contra ficam com um traço. O placar mostra quantos deputados registraram presença na sessão e quantos estavam ausentes, e a lista dos presentes aparece abaixo.'],
     ] },
     'leis-deputado': { titulo: 'Como votou um deputado', blocos: [
       ['O que mostra', 'O voto do deputado escolhido em cada votação nominal do ano, com os mesmos filtros do primeiro quadro (ano, o que foi votado, resultado e busca). O resumo diz em quantas votações ele votou e quantas vezes acompanhou a orientação do Governo, contando só as votações em que o Governo orientou Sim ou Não.'],
@@ -2327,6 +2327,7 @@
    *  e, em tempo real, as votações mais novas que a coleta diária, pela função /api/votacoes-recentes. */
   const LV = { idx: null, anos: {}, erro: null, pend: null, anosArquivo: [], vivo: null, vivoErro: null, props: {} };
   const VOTO_NOME = ['Sim', 'Não', 'Abstenção', 'Obstrução', 'Artigo 17', 'Outro'];
+  const VOTO_ROTULO = ['A favor', 'Contra', 'Abstenção', 'Obstrução', 'Artigo 17', 'Outro']; // como aparece no cartão de votos
   const TIPO_NOME = { principal: 'Texto do projeto', urgencia: 'Urgência', requerimento: 'Requerimento', destaque: 'Destaque ou emenda', outros: 'Outros' };
   const semAcento = (t) => String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
   const dataBR = (q) => `${q.slice(8, 10)}/${q.slice(5, 7)}/${q.slice(0, 4)}`;
@@ -2426,7 +2427,8 @@
       + (LV.vivo ? ` Atualizado em tempo real com a API da Câmara (consulta às ${hora}).`
         : LV.vivoErro ? ` A API da Câmara não respondeu agora; dados da coleta de ${fmtData(LV.idx.coletado_em)}.` : ' Consultando a Câmara…');
     // abre de início a votação mais recente da lista; o cartão de votos segue a linha escolhida
-    if (!lista.some((v) => v.id === st.leisSel)) st.leisSel = lista[0]?.id ?? null;
+    // sem escolha do usuário, abre na votação nominal mais recente (a que tem placar a favor e contra)
+    if (!lista.some((v) => v.id === st.leisSel)) st.leisSel = (lista.find(ehNominal) || lista[0])?.id ?? null;
     const tb = $('#leis-table tbody'); tb.replaceChildren();
     for (const v of lista) {
       const tr = el('tr', { class: 'leis-linha' + (v.id === st.leisSel ? ' sel' : ''), tabindex: '0', 'data-id': v.id });
@@ -2505,7 +2507,7 @@
     [[0, 'sim'], [1, 'nao'], [2, 'abst'], [3, 'obstr'], [4, 'outro'], [5, 'outro']].forEach(([i, c]) => {
       if (!cont[i]) return;
       const s = el('span', { class: c }); s.style.width = `${(100 * cont[i]) / tot}%`; bar.append(s);
-      const it = el('span'); it.append(el('i', { class: `pl-${c}` }), `${VOTO_NOME[i]}: `, el('b', {}, f0(cont[i]))); leg.append(it);
+      const it = el('span'); it.append(el('i', { class: `pl-${c}` }), `${VOTO_ROTULO[i]}: `, el('b', {}, f0(cont[i]))); leg.append(it);
     });
     const aus = Math.max(0, CADEIRAS - vs.length);
     if (aus) { const it = el('span', { title: 'Deputados que não registraram voto: ausentes, de licença, em missão ou que não votaram' }); it.append(el('i', { class: 'pl-aus' }), 'Não votaram (ausentes): ', el('b', {}, f0(aus))); leg.append(it); }
@@ -2530,7 +2532,7 @@
     for (const x of votosFiltradosDetalhe(vs)) {
       const tr = el('tr');
       tr.append(el('td', {}, nomeDep(x.dep)), el('td', {}, x.part || '—'), el('td', {}, ufDep(x.dep)),
-        el('td', { class: x.v === 0 ? 'bom' : x.v === 1 ? 'ruim' : 'neutro' }, VOTO_NOME[x.v]));
+        el('td', { class: x.v === 0 ? 'bom' : x.v === 1 ? 'ruim' : 'neutro' }, VOTO_ROTULO[x.v]));
       td.append(tr);
     }
   }
@@ -2604,7 +2606,7 @@
     }
     $('#leis-pres-nota').textContent = `Quem registrou presença na sessão de ${dataBR(v.quando)}, segundo a Câmara. Não é o voto: numa votação simbólica, os que concordam ficam como estão e o presidente anuncia o resultado, sem registro individual. Partido de hoje.`;
     const P = d3.rollups(deps, (g) => g.length, (d) => d.siglaPartido || '—').sort((a, b) => b[1] - a[1]);
-    $('#leis-pres-part tbody').replaceChildren(...P.map(([p, n]) => { const tr = el('tr'); tr.append(el('td', {}, p), el('td', {}, f0(n))); return tr; }));
+    $('#leis-pres-part tbody').replaceChildren(...P.map(([p, n]) => { const tr = el('tr'); tr.append(el('td', {}, p), el('td', { class: 'neutro', title: 'Votação simbólica: a Câmara não registra o voto' }, '—'), el('td', { class: 'neutro', title: 'Votação simbólica: a Câmara não registra o voto' }, '—'), el('td', {}, f0(n))); return tr; }));
     const desenhar = () => {
       const q = semAcento($('#leis-pres-busca').value).trim();
       const lista = deps.filter((d) => !q || semAcento(d.nome).includes(q)).sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
