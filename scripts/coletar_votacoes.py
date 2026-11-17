@@ -104,6 +104,18 @@ def proposicao_principal(desc, props):
     return next((p for p in props if p.get('siglaTipo') in TIPOS_PRINCIPAIS), props[0])
 
 
+def placar_desc(d):
+    """Placar escrito na descrição ("Sim: 404; Não: 61; Abstenção: 1; Total: 466"). Nas votações
+    secretas (indicação de ministro do TCU, por exemplo) é o único placar: a Câmara registra quem
+    votou, mas não o voto de cada um."""
+    d = d or ''
+    num = lambda r: int(m.group(1)) if (m := re.search(r, d, re.I)) else 0  # noqa: E731
+    sim = re.search(r'Sim:?\s*(\d+)', d, re.I)
+    if not sim:
+        return None
+    return {'sim': int(sim.group(1)), 'nao': num(r'N[ãa]o:?\s*(\d+)'), 'abst': num(r'Absten[çc][ãa]o:?\s*(\d+)'), 'obstr': num(r'Obstru[çc][ãa]o:?\s*(\d+)')}
+
+
 def limpar_desc(d):
     return re.sub(r'\s*Sim:?\s*\d+\s*;.*$', '', d or '', flags=re.I).strip()
 
@@ -145,6 +157,11 @@ def main():
         for v in sorted(R['votacoes'], key=lambda v: v['dataHoraRegistro']):
             vs = R['votos'].get(v['id'], [])
             cont = Counter(VOTO.get(x[2], 5) for x in vs)
+            # votação secreta: todos os votos sem tipo; o placar vem da descrição
+            secreta = bool(vs) and set(cont) == {5} and placar_desc(v.get('descricao')) is not None
+            if secreta:
+                pd = placar_desc(v['descricao'])
+                cont = Counter({0: pd['sim'], 1: pd['nao'], 2: pd['abst'], 3: pd['obstr']})
             cod = []
             for dep, part, voto in vs:
                 if part not in pi:
@@ -162,7 +179,7 @@ def main():
                 'id': v['id'], 'quando': v['dataHoraRegistro'][:16], 'desc': limpar_desc(v['descricao']), 'nominal': bool(vs),
                 'aprovada': v.get('aprovacao'), 'tipo': tipo_votacao(v.get('descricao') or ''),
                 'sim': cont[0], 'nao': cont[1], 'abst': cont[2], 'obstr': cont[3], 'outros': cont[4] + cont[5],
-                'prop': p['id'] if p else None,
+                'prop': p['id'] if p else None, **({'secreta': True} if secreta else {}),
                 'governo': org.get('Governo') or org.get('GOV.') or None, 'oposicao': org.get('Oposição') or None,  # antes de 2023 o Governo aparece também como "GOV."
             })
         assert len(partidos) <= 64, 'mais de 64 partidos num ano: aumentar o espaço do código'

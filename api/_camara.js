@@ -58,4 +58,12 @@ function proposicaoPrincipal(desc, props) {
   return citada || props.find((p) => TIPOS_PRINCIPAIS.includes(p.siglaTipo)) || props[0];
 }
 
-module.exports = { camara, emLotes, tipoVotacao, limparDesc, proposicaoPrincipal };
+/** Placar escrito na descrição ("Sim: 404; Não: 61; Abstenção: 1"); único placar das votações secretas. */
+function placarDesc(d) {
+  d = String(d || '');
+  const n = (re) => { const m = d.match(re); return m ? +m[1] : 0; };
+  if (!/Sim:?\s*\d+/i.test(d)) return null;
+  return { sim: n(/Sim:?\s*(\d+)/i), nao: n(/N[ãa]o:?\s*(\d+)/i), abst: n(/Absten[çc][ãa]o:?\s*(\d+)/i), obstr: n(/Obstru[çc][ãa]o:?\s*(\d+)/i) };
+}
+
+module.exports = { camara, emLotes, tipoVotacao, limparDesc, placarDesc, proposicaoPrincipal };

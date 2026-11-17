@@ -2499,9 +2499,9 @@
       return;
     }
     $('#leis-pres').hidden = true;
-    // placar
+    // placar (na votação secreta, o placar oficial vem da descrição e o voto de cada um não é conhecido)
     const tot = Math.max(CADEIRAS, vs.length), cont = [0, 0, 0, 0, 0, 0];
-    vs.forEach((x) => cont[x.v]++);
+    if (v.secreta) { cont[0] = v.sim; cont[1] = v.nao; cont[2] = v.abst; cont[3] = v.obstr; } else vs.forEach((x) => cont[x.v]++);
     const bar = el('div', { class: 'placar-barra grande-barra' });
     const leg = el('div', { class: 'waffle-leg' });
     [[0, 'sim'], [1, 'nao'], [2, 'abst'], [3, 'obstr'], [4, 'outro'], [5, 'outro']].forEach(([i, c]) => {
@@ -2512,12 +2512,14 @@
     const aus = Math.max(0, CADEIRAS - vs.length);
     if (aus) { const it = el('span', { title: 'Deputados que não registraram voto: ausentes, de licença, em missão ou que não votaram' }); it.append(el('i', { class: 'pl-aus' }), 'Não votaram (ausentes): ', el('b', {}, f0(aus))); leg.append(it); }
     pl.append(bar, leg);
+    if (v.secreta) pl.append(el('p', { class: 'nota' }, `Votação secreta: a Câmara registra quem votou (${f0(vs.length)} deputados), mas não o voto de cada um. O placar acima é o total oficial. Na tabela por partido e na lista abaixo, o voto aparece como "secreto".`));
     // por partido
     const P = new Map();
     for (const x of vs) { const r = P.get(x.part) || { s: 0, n: 0, o: 0 }; if (x.v === 0) r.s++; else if (x.v === 1) r.n++; else if (x.v === 2 || x.v === 3) r.o++; P.set(x.part, r); }
     const tp = $('#leis-part-table tbody'); tp.replaceChildren();
     for (const [part, r] of [...P].sort((a, b) => (b[1].s + b[1].n + b[1].o) - (a[1].s + a[1].n + a[1].o))) {
       const tr = el('tr'), ps = r.s + r.n ? (100 * r.s) / (r.s + r.n) : null;
+      if (v.secreta) { const nv = vs.filter((x) => x.part === part).length; tr.append(el('td', {}, part || '—'), el('td', { class: 'neutro' }, '—'), el('td', { class: 'neutro' }, '—'), el('td', { class: 'some-p neutro' }, '—'), el('td', { class: 'neutro', title: `${nv} deputados votaram` }, `${nv} votaram`)); tp.append(tr); continue; }
       tr.append(el('td', {}, part || '—'), el('td', {}, f0(r.s)), el('td', {}, f0(r.n)), el('td', { class: 'some-p' }, f0(r.o)), el('td', {}, ps == null ? '—' : `${f0(ps)}%`));
       tp.append(tr);
     }
@@ -2532,7 +2534,7 @@
     for (const x of votosFiltradosDetalhe(vs)) {
       const tr = el('tr');
       tr.append(el('td', {}, nomeDep(x.dep)), el('td', {}, x.part || '—'), el('td', {}, ufDep(x.dep)),
-        el('td', { class: x.v === 0 ? 'bom' : x.v === 1 ? 'ruim' : 'neutro' }, VOTO_ROTULO[x.v]));
+        el('td', { class: x.v === 0 ? 'bom' : x.v === 1 ? 'ruim' : 'neutro' }, v.secreta ? 'Secreto' : VOTO_ROTULO[x.v]));
       td.append(tr);
     }
   }
