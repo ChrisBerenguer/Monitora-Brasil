@@ -691,7 +691,7 @@
     'leis-votos': { titulo: 'Como votou cada deputado', blocos: [
       ['O que mostra', 'O voto de cada deputado na votação escolhida, o placar e a soma por partido. A favor é o voto Sim e contra é o voto Não. "% a favor" é a parte dos votos a favor entre os a favor e os contra do partido. O partido é o do deputado no dia da votação.'],
       ['Tipos de voto', 'Sim e Não são os votos comuns. Abstenção é a presença sem tomar lado. Obstrução é a estratégia de não votar para tentar derrubar o quórum, e conta como presença. Artigo 17 é o presidente da sessão, que não vota. Quem não aparece na lista não registrou voto: estava ausente, de licença ou em missão. O placar mostra esse número como "Não votaram (ausentes)", a diferença entre as 513 cadeiras e os votos registrados.'],
-      ['Votação simbólica', 'Não há voto a favor ou contra registrado: o presidente anuncia o resultado e as colunas A favor e Contra ficam com um traço. O placar mostra quantos deputados registraram presença na sessão e quantos estavam ausentes, e a lista dos presentes aparece abaixo.'],
+      ['Votação simbólica', 'Não há voto a favor ou contra registrado: o presidente anuncia o resultado sem contagem. O placar mostra quantos deputados registraram presença na sessão e quantos estavam ausentes, e a lista dos presentes aparece abaixo.'],
     ] },
     'leis-deputado': { titulo: 'Como votou um deputado', blocos: [
       ['O que mostra', 'O voto do deputado escolhido em cada votação nominal do ano, com os mesmos filtros do primeiro quadro (ano, o que foi votado, resultado e busca). O resumo diz em quantas votações ele votou e quantas vezes acompanhou a orientação do Governo, contando só as votações em que o Governo orientou Sim ou Não.'],
@@ -2481,8 +2481,12 @@
     $('#csv-leis-votos').hidden = !nominal;
     const pl = $('#leis-d-placar'); pl.replaceChildren();
     if (!nominal) {
-      pl.append(el('div', { id: 'leis-d-pres-placar' }));
-      pl.append(el('p', { class: 'nota' }, ehNominal(v) ? 'Os votos desta votação ainda não estão disponíveis.' : 'Votação simbólica: o presidente da sessão anuncia o resultado sem registrar o voto de cada deputado. Por isso não há lista de votos.'));
+      const av = el('div', { class: 'leis-aviso' });
+      if (ehNominal(v)) av.append(el('b', {}, 'Os votos desta votação ainda não estão disponíveis.'), ' A Câmara costuma publicá-los em algumas horas.');
+      else av.append(el('b', {}, 'Esta votação foi simbólica: não existe contagem de votos a favor e contra.'),
+        ' Os deputados não votam no painel; quem concorda permanece como está, e o presidente da sessão anuncia o resultado ("',
+        el('b', { class: resCls(v) }, resTxt(v).toLowerCase()), '"). A Câmara registra só quem estava presente, mostrado abaixo. Os números a favor e contra existem apenas nas votações nominais, as que têm placar na lista (por exemplo, 252 × 176).');
+      pl.append(av, el('div', { id: 'leis-d-pres-placar' }));
       // atalho para as votações nominais do mesmo projeto, que têm o voto de cada um
       const irmas = v.prop != null ? LV.idx.votacoes.filter((x) => x.prop === v.prop && ehNominal(x) && x.id !== v.id).sort((a, b) => b.quando.localeCompare(a.quando)) : [];
       if (irmas.length) {
@@ -2602,13 +2606,12 @@
       const leg = el('div', { class: 'waffle-leg' });
       const a = el('span'); a.append(el('i', { class: 'pl-pres' }), 'Presentes: ', el('b', {}, f0(deps.length)));
       const b = el('span'); b.append(el('i', { class: 'pl-aus' }), 'Ausentes: ', el('b', {}, f0(Math.max(0, CADEIRAS - deps.length))));
-      const c = el('span'); c.append('A favor e contra: ', el('b', {}, 'não registrado'), ' (votação simbólica)');
-      leg.append(a, b, c);
+      leg.append(a, b);
       pp.replaceChildren(bar, leg);
     }
     $('#leis-pres-nota').textContent = `Quem registrou presença na sessão de ${dataBR(v.quando)}, segundo a Câmara. Não é o voto: numa votação simbólica, os que concordam ficam como estão e o presidente anuncia o resultado, sem registro individual. Partido de hoje.`;
     const P = d3.rollups(deps, (g) => g.length, (d) => d.siglaPartido || '—').sort((a, b) => b[1] - a[1]);
-    $('#leis-pres-part tbody').replaceChildren(...P.map(([p, n]) => { const tr = el('tr'); tr.append(el('td', {}, p), el('td', { class: 'neutro', title: 'Votação simbólica: a Câmara não registra o voto' }, '—'), el('td', { class: 'neutro', title: 'Votação simbólica: a Câmara não registra o voto' }, '—'), el('td', {}, f0(n))); return tr; }));
+    $('#leis-pres-part tbody').replaceChildren(...P.map(([p, n]) => { const tr = el('tr'); tr.append(el('td', {}, p), el('td', {}, f0(n))); return tr; }));
     const desenhar = () => {
       const q = semAcento($('#leis-pres-busca').value).trim();
       const lista = deps.filter((d) => !q || semAcento(d.nome).includes(q)).sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));

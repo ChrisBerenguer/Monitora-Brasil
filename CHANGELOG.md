@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.39.6 — 17/11/2026
+
+### Alterado
+- Leis e votação, "Como votou cada deputado": nas votações simbólicas, um aviso em destaque explica que não existe contagem de votos a favor e contra (o presidente anuncia o resultado) e aponta as votações nominais, que têm placar. As colunas A favor e Contra com traço, que pareciam dados que não carregaram, saíram da tabela de presentes.
+
 ## 1.39.5 — 17/11/2026
 
 ### Corrigido
