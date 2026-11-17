@@ -20,6 +20,7 @@ Painel que acompanha o desenvolvimento do Brasil em comparação com outros paí
 6. **O que a Câmara votou e como votou cada deputado**, desde 2019 (aba Leis e votação)?
 7. **Quanto lucram as companhias abertas brasileiras**, por ano, setor, controle e mandato (aba Privadas)?
 8. **Quanto subiu o custo de vida em cada categoria de consumo**, de roupas e eletrodomésticos a automóveis, remédios e escola, e quanto um salário mínimo compra delas em cada mandato (aba Vida do Cidadão)?
+9. **Quais projetos em tramitação estão abertos ao voto do público** no Senado e na Câmara, com o placar e o link para votar (aba Leis e votação)?
 
 ## Resultado de referência (dados de outubro de 2026)
 

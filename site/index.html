@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=1.39.6">
+  <link rel="stylesheet" href="assets/css/styles.css?v=1.40">
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -688,6 +688,39 @@
         </div>
       </article>
 
+      <article class="card" data-ctx="nenhum" id="consultas">
+        <div class="titulo-info"><h2>Consultas públicas abertas</h2><button class="info-btn" type="button" data-info-card="consultas" aria-label="Como ler: consultas públicas abertas"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button><button class="info-btn fonte-btn" type="button" data-fonte="fonte:consultas" aria-label="Fonte original dos dados"><svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg></button></div>
+        <p class="nota" id="cons-nota">Projetos em tramitação no Congresso em que qualquer pessoa pode votar a favor ou contra, no Senado (e-Cidadania) e na Câmara (Enquetes). O botão leva à página oficial de votação.</p>
+        <div class="controles">
+          <label class="ctl">Casa <select id="cons-casa">
+            <option value="todas">Senado e Câmara</option>
+            <option value="senado">Senado (e-Cidadania)</option>
+            <option value="camara">Câmara (Enquetes)</option>
+          </select></label>
+          <label class="ctl">Tipo <select id="cons-tipo"></select></label>
+          <label class="ctl">Ordenar por <select id="cons-ordem">
+            <option value="votos">Mais votados</option>
+            <option value="favor">Mais apoio (% a favor)</option>
+            <option value="contra">Mais rejeição (% contra)</option>
+            <option value="dividido">Mais divididos</option>
+          </select></label>
+          <label class="ctl ctl-busca">Buscar projeto ou assunto <input type="search" id="cons-busca" placeholder="Ex.: PEC 12, imposto, armas" autocomplete="off"></label>
+        </div>
+        <p class="nota carregando-texto" id="cons-status">Consultando o Senado e a Câmara…</p>
+        <div class="tabela-box">
+          <table id="cons-table">
+            <thead><tr>
+              <th scope="col">Projeto</th><th scope="col" class="some-p">Casa</th>
+              <th scope="col">A favor</th><th scope="col">Contra</th><th scope="col" class="some-p">Opinião do público</th>
+              <th scope="col" class="some-p">Votar</th>
+            </tr></thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <p class="so-tela"><button type="button" class="botao" id="cons-mais" hidden>Mostrar mais</button></p>
+        <p class="nota">As consultas não são pesquisas de opinião: vota quem quer, com cadastro, e o resultado não obriga os parlamentares. Na Câmara, "a favor" soma "concordo totalmente" e "concordo na maior parte", e "contra" soma as duas formas de discordar.</p>
+      </article>
+
       <dialog id="prop-dlg" class="dlg" aria-labelledby="prop-dlg-titulo">
         <div class="dlg-topo">
           <h2 id="prop-dlg-titulo">Projeto</h2>
@@ -792,6 +825,6 @@
 
   <script src="assets/js/d3.v7.9.0.min.js"></script>
   <script src="assets/js/html-to-image.v1.11.11.min.js"></script>
-  <script src="assets/js/app.js?v=1.39.6"></script>
+  <script src="assets/js/app.js?v=1.40"></script>
 </body>
 </html>

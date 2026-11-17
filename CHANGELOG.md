@@ -1,5 +1,12 @@
 # Histórico de versões
 
+## 1.40 — 17/11/2026
+
+### Adicionado
+- Leis e votação: cartão **Consultas públicas abertas**, com os projetos em tramitação em que qualquer pessoa pode votar a favor ou contra, o placar até agora e um botão "Votar" que leva à página oficial: as 300 proposições em tramitação mais votadas na Consulta Pública do Senado (e-Cidadania) e as enquetes mais votadas e mais comentadas da Câmara (semana, mês e seis meses), com o resultado de cada uma. Filtros por Casa, tipo de projeto e busca; ordena por mais votados, mais apoio, mais rejeição ou mais divididos.
+- Função `/api/consultas` (Vercel, São Paulo): lê as páginas públicas do e-Cidadania e das Enquetes da Câmara, que não têm API, e guarda a resposta no cache por três horas.
+- O quadro de detalhes de um projeto da Câmara ganhou o botão "Opinar na enquete da Câmara" (todo projeto em tramitação na Câmara tem enquete).
+
 ## 1.39.6 — 17/11/2026
 
 ### Alterado

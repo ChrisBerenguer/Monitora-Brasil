@@ -59,7 +59,7 @@
   const st = {
     page: 'visao', coorte: 'latam', mandato: '2023–2026', tema: 'geral', ind: 'ny_gdp_pcap_pp_kd', banda: 'latam',
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
-    ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cbMa: '2019–2022', cbMb: '2023–2026', icMa: '2019–2022', icMb: '2023–2026', icNivel: 'todos', icCat: '7558', icY0: 2007, cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
+    ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cbMa: '2019–2022', cbMb: '2023–2026', consCasa: 'todas', consTipo: 'todos', consOrdem: 'votos', consBusca: '', icMa: '2019–2022', icMb: '2023–2026', icNivel: 'todos', icCat: '7558', icY0: 2007, cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
     estFiltro: 'todas', estSort: { key: null, dir: -1 }, estSemVendas: true,
     empGrupo: 'todas', empValores: 'real', empSetor: 'todos', empBusca: '', empSort: { key: null, dir: -1 }, empSSort: { key: null, dir: -1 }, empTodas: false, leisAno: null, leisTipo: 'principal', leisRes: 'todas', leisForma: 'todas', leisBusca: '', leisSel: null, leisDVoto: 'todos', leisDPart: 'todos', leisDUf: 'todos', leisDBusca: '', leisDep: null,
     indModo: 'indice', indBase: 2002, indFiltro: 'todas', indSort: { key: null, dir: -1 },
@@ -683,6 +683,12 @@
       ['O que mostra', 'O lucro líquido de cada companhia em cada ano, atribuído aos acionistas controladores, como divulgado no balanço (sem desconto de dupla contagem), e a soma nos dois últimos mandatos. Traço é ano sem balanço: a companhia ainda não era aberta, já tinha fechado o capital ou não entregou a demonstração.'],
       ['Atenção', 'O nome é o atual do cadastro da CVM: a PRIO Forte, por exemplo, é a antiga OGX, e a Axia Energia é a Eletrobras. Os valores são em reais de cada ano ou de hoje, conforme o primeiro quadro.'],
     ] },
+    'consultas': { titulo: 'Consultas públicas abertas', blocos: [
+      ['O que mostra', 'Projetos ainda em tramitação no Congresso em que qualquer pessoa pode registrar se é a favor ou contra, com o placar até agora. O botão "Votar" leva à página oficial: no Senado, a Consulta Pública do e-Cidadania; na Câmara, a enquete do projeto.'],
+      ['Quais projetos aparecem', 'Do Senado, as 300 proposições em tramitação com mais votos no e-Cidadania. Da Câmara, as enquetes mais votadas e mais comentadas na última semana, no último mês e nos últimos seis meses. Todo projeto em tramitação na Câmara tem enquete: para outro projeto, abra os detalhes dele na lista de votações e use o botão "Opinar na enquete".'],
+      ['Como ler', 'A barra mostra a parte dos votos a favor (verde) e contra (vermelho). Na Câmara há cinco respostas: "a favor" soma concordo totalmente e concordo na maior parte, "contra" soma as duas formas de discordar, e os indecisos aparecem ao passar o mouse.'],
+      ['Atenção', 'Não é pesquisa de opinião: participa quem quer, com cadastro (gov.br ou conta no site), e campanhas organizadas mudam muito o placar. O resultado não obriga deputados e senadores, mas costuma ser citado nos debates. Os números são atualizados a cada poucas horas.'],
+    ] },
     'leis-lista': { titulo: 'Votações nominais no Plenário', blocos: [
       ['O que mostra', 'Cada votação nominal do Plenário da Câmara no ano: o projeto, o que foi votado, o placar, se foi aprovado e o que o Governo orientou a sua base a votar. Votação nominal é a feita no painel eletrônico, que registra o voto de cada deputado. Muitas decisões são tomadas em votação simbólica, sem registro de quem votou o quê, e por isso não aparecem aqui.'],
       ['O que foi votado', 'Um projeto costuma passar por várias votações no mesmo dia. "Texto dos projetos" é a decisão sobre o texto em si: o projeto, o substitutivo do relator, a PEC em cada turno ou a medida provisória. "Pedidos de urgência" aceleram a tramitação. "Destaques e emendas" mudam ou mantêm trechos do texto já aprovado. A separação é feita pela descrição que a Câmara dá a cada votação e pode errar em casos raros.'],
@@ -975,6 +981,12 @@
       ['Cadastro de companhias abertas (setor, categoria e controle)', 'https://dados.cvm.gov.br/dataset/cia_aberta-cad'],
       ['IPCA, Banco Central (SGS 433), para os valores em reais de hoje', 'https://api.bcb.gov.br/dados/serie/bcdata.sgs.433/dados?formato=json'],
     ], data: () => D.raw.empresas?.coletado_em },
+    consultas: { t: 'Páginas oficiais de participação do Congresso, lidas em tempo real pela função /api/consultas do site:', l: [
+      ['Senado Federal, Portal e-Cidadania, Consulta Pública (proposições em tramitação)', 'https://www12.senado.leg.br/ecidadania/pesquisamateria'],
+      ['Câmara dos Deputados, Enquetes (mais votadas e mais comentadas)', 'https://www.camara.leg.br/enquetes'],
+      ['Como funciona a consulta pública do Senado', 'https://www12.senado.leg.br/ecidadania/comofuncionaconsultapublica'],
+      ['Perguntas frequentes sobre as enquetes da Câmara', 'https://www2.camara.leg.br/transparencia/acesso-a-informacao/copy_of_perguntas-frequentes/enquetes'],
+    ] },
     camara: { t: 'Dados Abertos da Câmara dos Deputados, arquivos anuais de votações:', l: [
       ['Portal de Dados Abertos da Câmara dos Deputados', 'https://dadosabertos.camara.leg.br/'],
       ['API e arquivos (documentação): votações, votos, proposições e orientações', 'https://dadosabertos.camara.leg.br/swagger/api.html'],
@@ -1120,6 +1132,7 @@
     if (spec === 'fonte:estatais') return 'SEST/Ministério da Gestão (balanços das estatais federais)';
     if (spec === 'fonte:empresas') return 'CVM (demonstrações financeiras das companhias abertas)';
     if (spec === 'fonte:camara') return 'Câmara dos Deputados (Dados Abertos)';
+    if (spec === 'fonte:consultas') return 'Senado (e-Cidadania) e Câmara (Enquetes)';
     if (spec === 'fonte:industria') return 'IBGE (Contas Nacionais, PIM-PF, PMS, LSPA e pesquisas agropecuárias)';
     const alvo = spec === 'ind' ? st.ind : spec === 'tema' ? st.tema : spec === 'cstema' ? st.cstema : spec.startsWith('tema:') ? spec.slice(5) : spec;
     const meta = D.ind.get(alvo);
@@ -1855,6 +1868,61 @@
     });
   }
 
+  // ---------------------------------------------------------------- consultas públicas abertas
+  const CONS = { dados: null, pend: null, erro: null, limite: 25 };
+  const TIPO_PROJ = { PL: 'Projetos de lei (PL)', PEC: 'Emendas à Constituição (PEC)', PLP: 'Leis complementares (PLP)', MPV: 'Medidas provisórias (MPV)', PDL: 'Decretos legislativos (PDL)', SUG: 'Sugestões legislativas (SUG)' };
+  function carregarConsultas() {
+    if (CONS.dados || CONS.pend) return;
+    CONS.pend = fetch('/api/consultas').then((r) => r.json().then((j) => { if (!r.ok) throw new Error(j.erro || `HTTP ${r.status}`); return j; }))
+      .then((j) => { CONS.dados = j; }).catch((e) => { CONS.erro = e.message; })
+      .finally(() => { CONS.pend = null; if (st.page === 'leis') drawConsultas(); });
+  }
+  function drawConsultas() {
+    const stt = $('#cons-status');
+    if (!CONS.dados) {
+      if (CONS.erro) { stt.classList.remove('carregando-texto'); stt.textContent = `Não foi possível consultar o Senado e a Câmara agora (${CONS.erro}). Tente de novo mais tarde, ou vá direto ao e-Cidadania do Senado ou às Enquetes da Câmara pelo botão de fonte.`; }
+      carregarConsultas();
+      return;
+    }
+    const D = CONS.dados;
+    const todos = [...D.senado, ...D.camara].map((x) => ({ ...x, tipo: (x.sigla.match(/^[A-Z]+/) || [''])[0], total: x.favor + x.contra }));
+    const tipos = [...new Set(todos.map((x) => x.tipo))].sort((a, b) => todos.filter((x) => x.tipo === b).length - todos.filter((x) => x.tipo === a).length);
+    fillSelect($('#cons-tipo'), [{ label: 'Todos', value: 'todos' }, ...tipos.map((t) => ({ label: TIPO_PROJ[t] || t, value: t }))], tipos.includes(st.consTipo) ? st.consTipo : 'todos');
+    $('#cons-casa').value = st.consCasa; $('#cons-ordem').value = st.consOrdem;
+    if ($('#cons-busca').value !== st.consBusca) $('#cons-busca').value = st.consBusca;
+    const q = semAcento(st.consBusca.trim().toLowerCase()).replace(/\s*\/\s*/g, '/');
+    const pf = (x) => (x.total ? x.favor / x.total : 0.5);
+    let lista = todos.filter((x) => (st.consCasa === 'todas' || x.casa === st.consCasa) && (st.consTipo === 'todos' || x.tipo === st.consTipo)
+      && (!q || semAcento(`${x.sigla} ${x.ementa}`.toLowerCase()).replace(/\s*\/\s*/g, '/').includes(q)));
+    const ord = { votos: (a, b) => b.total - a.total, favor: (a, b) => pf(b) - pf(a) || b.total - a.total, contra: (a, b) => pf(a) - pf(b) || b.total - a.total, dividido: (a, b) => Math.abs(pf(a) - 0.5) - Math.abs(pf(b) - 0.5) || b.total - a.total }[st.consOrdem];
+    lista.sort(ord);
+    const hora = new Date(D.consultado_em).toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' });
+    stt.classList.remove('carregando-texto');
+    stt.textContent = `${f0(lista.length)} projetos${lista.length !== todos.length ? ` de ${f0(todos.length)}` : ''}: ${f0(D.senado.length)} consultas do Senado e ${f0(D.camara.length)} enquetes da Câmara. Placar consultado em ${hora}.`
+      + (D.erros?.senado ? ' O Senado não respondeu agora.' : '') + (D.erros?.camara ? ' A Câmara não respondeu agora.' : '');
+    const tb = $('#cons-table tbody'); tb.replaceChildren();
+    for (const x of lista.slice(0, CONS.limite)) {
+      const tr = el('tr');
+      const tdp = el('td', { class: 'cons-proj' });
+      if (x.casa === 'camara') tdp.append(botaoProjeto(+x.id, x.sigla)); else tdp.append(el('b', {}, x.sigla));
+      tdp.append(el('span', {}, x.ementa.length > 220 ? x.ementa.slice(0, 217) + '…' : x.ementa));
+      const p = x.total ? (100 * x.favor) / x.total : null;
+      const barra = el('div', { class: 'cons-barra', role: 'img', 'aria-label': p == null ? 'sem votos' : `${f0(p)}% a favor` });
+      const a = el('span'); a.style.width = `${p ?? 0}%`; const b = el('span'); b.style.width = `${p == null ? 0 : 100 - p}%`; barra.append(a, b);
+      const op = el('td', { class: 'some-p', title: x.casa === 'camara' ? Object.entries(x.opcoes || {}).map(([k, v]) => `${k}: ${f0(v)}`).join('\n') + (x.desde ? `\nDesde ${x.desde}` : '') : '' });
+      op.append(barra, el('div', { class: 'cons-pct' }, p == null ? 'sem votos' : `${f0(p)}% a favor · ${f0(x.total)} votos`));
+      const btn = el('a', { href: x.url, target: '_blank', rel: 'noopener', class: 'botao principal', 'aria-label': `Votar sobre ${x.sigla} no site ${x.casa === 'senado' ? 'do Senado' : 'da Câmara'} (abre em nova aba)` }, 'Votar ↗');
+      tr.append(tdp, el('td', { class: 'some-p' }, x.casa === 'senado' ? 'Senado' : 'Câmara'),
+        el('td', { class: 'cons-num bom' }, f0(x.favor)), el('td', { class: 'cons-num ruim' }, f0(x.contra)), op);
+      const tdb = el('td', { class: 'some-p' }); tdb.append(btn); tr.append(tdb);
+      const btnP = btn.cloneNode(true); btnP.classList.add('cons-btn-p'); tdp.append(btnP); // no celular, o botão fica embaixo do projeto
+      tb.append(tr);
+    }
+    if (!lista.length) { const tr = el('tr'); tr.append(el('td', { colspan: '6', class: 'nota' }, 'Nenhum projeto com esses filtros.')); tb.append(tr); }
+    const mais = $('#cons-mais'); mais.hidden = lista.length <= CONS.limite;
+    mais.textContent = `Mostrar mais (${f0(Math.min(25, lista.length - CONS.limite))} de ${f0(lista.length - CONS.limite)} restantes)`;
+  }
+
 
   // ---------------------------------------------------------------- estatais
   /** Mandato em que cai um ano (para colorir as barras e somar por mandato). */
@@ -2403,6 +2471,7 @@
   const resTxt = (v) => (v.aprovada === 1 ? 'Aprovada' : v.aprovada === 0 ? 'Rejeitada' : '—');
   const resCls = (v) => (v.aprovada === 1 ? 'bom' : v.aprovada === 0 ? 'ruim' : '');
   function drawLeis() {
+    drawConsultas();
     if (LV.erro) { $('#leis-status').textContent = `Não foi possível carregar as votações (${LV.erro}).`; return; }
     if (!LV.idx || (st.leisAno && !LV.anos[st.leisAno])) {
       $('#leis-status').hidden = false;
@@ -2684,6 +2753,10 @@
       if (d.urlInteiroTeor) links.append(linkExt('Texto original (PDF)', d.urlInteiroTeor), ' · ');
       if (s.url && s.url !== d.urlInteiroTeor) links.append(linkExt('Último documento', s.url), ' · ');
       links.append(linkExt('Ficha de tramitação na Câmara', urlFicha(id)));
+      if (!/arquiv|transformad|vetad/i.test(s.descricaoSituacao || '')) {
+        const op = linkExt('Opinar na enquete da Câmara', `https://www.camara.leg.br/enquetes/${id}`); op.className = 'botao principal';
+        links.append(' ', op);
+      }
       partes.push(links);
     } else {
       if (local) partes.push(el('p', { class: 'prop-ementa' }, local[1]));
@@ -2798,6 +2871,11 @@
   on('#cb-item', (v) => { st.cbItem = v; });
   on('#cb-y0', (v) => { st.cbY0 = +v; });
   on('#cb-ma', (v) => { st.cbMa = v; });
+  on('#cons-casa', (v) => { st.consCasa = v; CONS.limite = 25; });
+  on('#cons-tipo', (v) => { st.consTipo = v; CONS.limite = 25; });
+  on('#cons-ordem', (v) => { st.consOrdem = v; CONS.limite = 25; });
+  $('#cons-busca').addEventListener('input', (e) => { st.consBusca = e.target.value; CONS.limite = 25; drawConsultas(); });
+  $('#cons-mais').addEventListener('click', () => { CONS.limite += 25; drawConsultas(); });
   on('#ic-ma', (v) => { st.icMa = v; });
   on('#ic-mb', (v) => { st.icMb = v; });
   on('#ic-nivel', (v) => { st.icNivel = v; });

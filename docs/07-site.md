@@ -177,6 +177,8 @@ Como funciona: `gerarImagem` monta fora da tela um quadro com uma cópia do cart
 
 **Links diretos:** acrescente `#series`, `#coortes`, `#metodo`, `#vida`, `#estatais`, `#empresas`, `#industria` ou `#leis` ao endereço (o antigo `#consumo` continua funcionando).
 
+**Consultas públicas abertas** (`#consultas`): projetos em tramitação abertos ao voto do público, carregados de `/api/consultas` quando a aba abre (`carregarConsultas`, `drawConsultas`, estado `CONS`). Do Senado, as 300 proposições em tramitação mais votadas no e-Cidadania (SIM e NÃO); da Câmara, as enquetes mais votadas e mais comentadas (semana, mês, seis meses), com "a favor" = concordo totalmente + na maior parte e "contra" = as duas formas de discordar. Filtros `#cons-casa`, `#cons-tipo`, `#cons-ordem` e `#cons-busca`; 25 linhas por vez (`#cons-mais`). O botão "Votar" abre a página oficial em nova aba; no celular ele fica embaixo do nome do projeto. Projetos da Câmara abrem o quadro de detalhes, que também tem o botão "Opinar na enquete da Câmara".
+
 ## Organização do `app.js`
 
 | Bloco | Conteúdo |

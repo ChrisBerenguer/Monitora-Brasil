@@ -340,3 +340,14 @@ Três conjuntos são derivados em `site/assets/js/app.js`:
 ## Atribuição exigida
 
 Ao publicar números deste projeto, cite: *"Fonte: Banco Mundial (World Development Indicators e Worldwide Governance Indicators) e PNUD (IDH), via Gapminder/open-numbers. Cálculos: Monitora Brasil (github.com/ChrisBerenguer/Monitora-Brasil)."*
+
+## Consultas públicas (tempo real, sem arquivo)
+
+`/api/consultas` (api/consultas.js, Vercel em São Paulo, cache de 3 horas) lê duas páginas públicas que não têm API:
+
+| Fonte | Página | O que sai |
+|---|---|---|
+| Senado, e-Cidadania, Consulta Pública | `www12.senado.leg.br/ecidadania/pesquisamateria?p=1..3` (só tramitação em andamento, da mais votada para a menos) | `id`, `sigla`, `ementa`, `favor` (SIM), `contra` (NÃO), `url` da página de votação |
+| Câmara, Enquetes | `www.camara.leg.br/enquetes` (listas de mais votadas e mais comentadas) e `/enquetes/{id}/resultados` | `id` (o mesmo da proposição), `sigla`, `ementa` e `situacao` (API de Dados Abertos), `favor`, `contra`, `indecisos`, `opcoes` (as cinco respostas), `desde`, `url` |
+
+A resposta tem `consultado_em`, `senado[]`, `camara[]` e `erros` (por Casa, quando uma delas não responde). Se o Senado ou a Câmara mudarem o HTML dessas páginas, é aqui que a leitura precisa de ajuste.
