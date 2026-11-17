@@ -2732,17 +2732,19 @@
     const b = ev.target.closest('.prop-link');
     if (!b) return;
     ev.stopPropagation();
+    // clicar no nome do projeto numa linha da lista também escolhe essa votação para o cartão de votos
+    const tr = b.closest('#leis-table tr[data-id]');
+    if (tr) abrirVotacao(tr, false);
     abrirProjeto(b.dataset.prop);
   }, true);
 
-  const abrirVotacao = (tr) => {
-    const v = LV.idx.votacoes.find((x) => x.id === tr.dataset.id);
+  function abrirVotacao(tr, rolar = true) {
     st.leisSel = tr.dataset.id;
     document.querySelectorAll('#leis-table tr.sel').forEach((t) => t.classList.remove('sel'));
     tr.classList.add('sel');
     drawLeisDetalhe();
-    $('#leis-detalhe').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
-  };
+    if (rolar) $('#leis-detalhe').scrollIntoView({ behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start' });
+  }
   $('#leis-table tbody').addEventListener('click', (ev) => { const tr = ev.target.closest('tr[data-id]'); if (tr && !ev.target.closest('a, button')) abrirVotacao(tr); });
   $('#leis-table tbody').addEventListener('keydown', (ev) => { const tr = ev.target.closest('tr[data-id]'); if (tr && ev.target === tr && (ev.key === 'Enter' || ev.key === ' ')) { ev.preventDefault(); abrirVotacao(tr); } });
   $('#csv-leis-votos').addEventListener('click', () => {

@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.39.4 — 17/11/2026
+
+### Corrigido
+- Leis e votação: clicar no nome do projeto (o link "PL 1234/2025") numa linha da lista abria só o quadro de detalhes e não atualizava o cartão "Como votou cada deputado". Agora atualiza também.
+
 ## 1.39.3 — 17/11/2026
 
 ### Alterado
