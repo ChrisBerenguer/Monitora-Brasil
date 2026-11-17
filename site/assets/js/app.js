@@ -690,7 +690,8 @@
     ] },
     'leis-votos': { titulo: 'Como votou cada deputado', blocos: [
       ['O que mostra', 'O voto de cada deputado na votação escolhida, o placar e a soma por partido. "Votou Sim" é a parte dos votos Sim entre os Sim e os Não do partido. O partido é o do deputado no dia da votação.'],
-      ['Tipos de voto', 'Sim e Não são os votos comuns. Abstenção é a presença sem tomar lado. Obstrução é a estratégia de não votar para tentar derrubar o quórum, e conta como presença. Artigo 17 é o presidente da sessão, que não vota. Quem não aparece na lista não registrou voto: estava ausente, de licença ou em missão.'],
+      ['Tipos de voto', 'Sim e Não são os votos comuns. Abstenção é a presença sem tomar lado. Obstrução é a estratégia de não votar para tentar derrubar o quórum, e conta como presença. Artigo 17 é o presidente da sessão, que não vota. Quem não aparece na lista não registrou voto: estava ausente, de licença ou em missão. O placar mostra esse número como "Não votaram (ausentes)", a diferença entre as 513 cadeiras e os votos registrados.'],
+      ['Votação simbólica', 'Não há voto a favor ou contra registrado. O placar mostra quantos deputados registraram presença na sessão e quantos estavam ausentes, e a lista dos presentes aparece abaixo.'],
     ] },
     'leis-deputado': { titulo: 'Como votou um deputado', blocos: [
       ['O que mostra', 'O voto do deputado escolhido em cada votação nominal do ano, com os mesmos filtros do primeiro quadro (ano, o que foi votado, resultado e busca). O resumo diz em quantas votações ele votou e quantas vezes acompanhou a orientação do Governo, contando só as votações em que o Governo orientou Sim ou Não.'],
@@ -2452,6 +2453,7 @@
     const irmas = LV.idx.votacoes.filter((x) => x.prop === sel.prop && ehNominal(x)).sort((a, b) => b.quando.localeCompare(a.quando));
     return irmas.find((x) => x.tipo === 'principal') || irmas[0] || sel;
   }
+  const CADEIRAS = 513; // deputados federais
   function drawLeisDetalhe() {
     const card = $('#leis-detalhe');
     const sel = LV.idx.votacoes.find((x) => x.id === st.leisSel);
@@ -2477,6 +2479,7 @@
     $('#csv-leis-votos').hidden = !nominal;
     const pl = $('#leis-d-placar'); pl.replaceChildren();
     if (!nominal) {
+      pl.append(el('div', { id: 'leis-d-pres-placar' }));
       pl.append(el('p', { class: 'nota' }, ehNominal(v) ? 'Os votos desta votação ainda não estão disponíveis.' : 'Votação simbólica: o presidente da sessão anuncia o resultado sem registrar o voto de cada deputado. Por isso não há lista de votos.'));
       // atalho para as votações nominais do mesmo projeto, que têm o voto de cada um
       const irmas = v.prop != null ? LV.idx.votacoes.filter((x) => x.prop === v.prop && ehNominal(x) && x.id !== v.id).sort((a, b) => b.quando.localeCompare(a.quando)) : [];
@@ -2495,7 +2498,7 @@
     }
     $('#leis-pres').hidden = true;
     // placar
-    const tot = vs.length || 1, cont = [0, 0, 0, 0, 0, 0];
+    const tot = Math.max(CADEIRAS, vs.length), cont = [0, 0, 0, 0, 0, 0];
     vs.forEach((x) => cont[x.v]++);
     const bar = el('div', { class: 'placar-barra grande-barra' });
     const leg = el('div', { class: 'waffle-leg' });
@@ -2504,6 +2507,8 @@
       const s = el('span', { class: c }); s.style.width = `${(100 * cont[i]) / tot}%`; bar.append(s);
       const it = el('span'); it.append(el('i', { class: `pl-${c}` }), `${VOTO_NOME[i]}: `, el('b', {}, f0(cont[i]))); leg.append(it);
     });
+    const aus = Math.max(0, CADEIRAS - vs.length);
+    if (aus) { const it = el('span', { title: 'Deputados que não registraram voto: ausentes, de licença, em missão ou que não votaram' }); it.append(el('i', { class: 'pl-aus' }), 'Não votaram (ausentes): ', el('b', {}, f0(aus))); leg.append(it); }
     pl.append(bar, leg);
     // por partido
     const P = new Map();
@@ -2586,6 +2591,17 @@
       return;
     }
     $('#leis-pres-titulo').textContent = `Deputados presentes na sessão (${f0(deps.length)})`;
+    const pp = $('#leis-d-pres-placar');
+    if (pp) {
+      const bar = el('div', { class: 'placar-barra grande-barra' });
+      const s = el('span', { class: 'pres' }); s.style.width = `${(100 * deps.length) / Math.max(CADEIRAS, deps.length)}%`; bar.append(s);
+      const leg = el('div', { class: 'waffle-leg' });
+      const a = el('span'); a.append(el('i', { class: 'pl-pres' }), 'Presentes: ', el('b', {}, f0(deps.length)));
+      const b = el('span'); b.append(el('i', { class: 'pl-aus' }), 'Ausentes: ', el('b', {}, f0(Math.max(0, CADEIRAS - deps.length))));
+      const c = el('span'); c.append('A favor e contra: ', el('b', {}, 'não registrado'), ' (votação simbólica)');
+      leg.append(a, b, c);
+      pp.replaceChildren(bar, leg);
+    }
     $('#leis-pres-nota').textContent = `Quem registrou presença na sessão de ${dataBR(v.quando)}, segundo a Câmara. Não é o voto: numa votação simbólica, os que concordam ficam como estão e o presidente anuncia o resultado, sem registro individual. Partido de hoje.`;
     const P = d3.rollups(deps, (g) => g.length, (d) => d.siglaPartido || '—').sort((a, b) => b[1] - a[1]);
     $('#leis-pres-part tbody').replaceChildren(...P.map(([p, n]) => { const tr = el('tr'); tr.append(el('td', {}, p), el('td', {}, f0(n))); return tr; }));

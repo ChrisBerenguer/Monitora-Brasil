@@ -1,5 +1,10 @@
 # Histórico de versões
 
+## 1.39.2 — 17/11/2026
+
+### Corrigido
+- Leis e votação, "Como votou cada deputado": o placar volta a aparecer ao escolher uma votação simbólica (agora a primeira da lista), com o número de deputados presentes e ausentes na sessão e o aviso de que a Câmara não registra voto a favor ou contra nesse tipo de votação. Nas votações nominais, o placar ganhou o número de deputados que não votaram (ausentes), ao lado de Sim, Não, abstenções e obstruções.
+
 ## 1.39.1 — 16/11/2026
 
 ### Alterado

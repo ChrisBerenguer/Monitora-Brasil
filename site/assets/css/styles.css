@@ -362,3 +362,5 @@ td.leis-proj { white-space: normal; min-width: 16rem; max-width: 46rem; text-ali
 .ic-leg { margin: 0 0 .6rem; padding-left: 1.1rem; font-size: var(--t-sm); color: var(--muted); }
 .ic-leg li { margin: .15rem 0; }
 .ic-leg b { color: var(--fg); font-weight: 600; }
+.placar-barra .pres, .waffle-leg .pl-pres { background: var(--accent); }
+.waffle-leg .pl-aus { background: var(--grid); border: 1px solid var(--axis); }
