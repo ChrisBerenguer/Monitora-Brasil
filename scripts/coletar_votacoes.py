@@ -117,7 +117,8 @@ def placar_desc(d):
 
 
 def limpar_desc(d):
-    return re.sub(r'\s*Sim:?\s*\d+\s*;.*$', '', d or '', flags=re.I).strip()
+    d = re.sub(r'\s*Sim:?\s*\d+\s*;.*$', '', d or '', flags=re.I | re.S).strip()
+    return re.sub(r'^Votos:\s*', '', d).rstrip(':').strip()  # votação secreta de indicação: "Votos: Sra. Fulana:" 
 
 
 def gravar(nome, obj):

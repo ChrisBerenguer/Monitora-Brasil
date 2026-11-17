@@ -1,6 +1,6 @@
 # Histórico de versões
 
-## 1.39.4 — 17/11/2026
+## 1.39.5 — 17/11/2026
 
 ### Corrigido
 - Leis e votação: votações secretas (como as indicações de ministros do TCU) apareciam com todos os votos como "Outro". Agora o placar usa o total oficial que a Câmara publica na descrição (por exemplo, 404 a favor e 61 contra no PDL 995/2026), e o voto de cada deputado aparece como "secreto". Ajustado no coletor diário e na consulta em tempo real.

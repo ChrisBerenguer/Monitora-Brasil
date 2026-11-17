@@ -49,7 +49,7 @@ function tipoVotacao(desc) {
   if (/^(projeto|proposta|substitutivo|sube?menda substitutiva|medida provis|parecer|PEC|emendas? do senado|mensagem)/i.test(corpo)) return 'principal';
   return 'outros';
 }
-const limparDesc = (d) => String(d || '').replace(/\s*Sim:?\s*\d+\s*;.*$/i, '').trim();
+const limparDesc = (d) => String(d || '').replace(/\s*Sim:?\s*\d+\s*;[\s\S]*$/i, '').trim();
 const TIPOS_PRINCIPAIS = ['PEC', 'PLP', 'PL', 'MPV', 'PLV', 'PDL', 'PRC', 'PLN'];
 function proposicaoPrincipal(desc, props) {
   if (!props || !props.length) return null;
