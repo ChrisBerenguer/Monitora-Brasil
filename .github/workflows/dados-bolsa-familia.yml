@@ -1,0 +1,90 @@
+name: Atualizar dados do Bolsa Família
+# Compara, mês a mês, as famílias que receberam o Bolsa Família / Auxílio Brasil (NIS do responsável,
+# arquivos de pagamentos do Portal da Transparência) e grava site/data/bolsa_familia.json.
+#  - Todo mês (dia 26), modo "atualizar": só os meses novos, o ano corrente e o mandato atual.
+#  - À mão em Actions → "Atualizar dados do Bolsa Família" → Run workflow, com modo "completo":
+#    refaz tudo desde 2013, um ano por job, em paralelo (cerca de 170 arquivos de ~330 MB).
+on:
+  workflow_dispatch:
+    inputs:
+      modo:
+        description: 'atualizar (só meses novos) ou completo (desde 2013)'
+        default: atualizar
+        type: choice
+        options: [atualizar, completo]
+  schedule:
+    - cron: '41 9 26 * *'   # dia 26 de cada mês, 06h41 em Brasília
+permissions:
+  contents: write
+concurrency: dados-bolsa-familia
+jobs:
+  atualizar:
+    if: github.event_name == 'schedule' || inputs.modo == 'atualizar'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -q numpy
+      - run: python scripts/coletar_bolsa_familia.py --atualizar
+      - name: Gravar no repositório se algo mudou
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dados/bolsa_familia.json site/data/bolsa_familia.json 2>/dev/null || true
+          git diff --cached --quiet && echo "Sem mudanças." && exit 0
+          git commit -m "Dados: Bolsa Família, entradas e saídas (Portal da Transparência), coleta automática"
+          for t in 1 2 3; do git pull --rebase -q && git push && break; sleep 10; false; done || exit 1  # outro workflow pode ter gravado antes
+
+  ano:
+    if: github.event_name == 'workflow_dispatch' && inputs.modo == 'completo'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    strategy:
+      fail-fast: false
+      max-parallel: 7
+      matrix:
+        ano: [2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025, 2026]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -q numpy
+      - run: python scripts/coletar_bolsa_familia.py --ano ${{ matrix.ano }} --saida parciais
+      - uses: actions/upload-artifact@v4
+        with: { name: 'parcial-${{ matrix.ano }}', path: parciais/ }
+
+  mandatos:
+    if: github.event_name == 'workflow_dispatch' && inputs.modo == 'completo'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -q numpy
+      - run: python scripts/coletar_bolsa_familia.py --mandatos --saida parciais
+      - uses: actions/upload-artifact@v4
+        with: { name: parcial-mandatos, path: parciais/ }
+
+  juntar:
+    needs: [ano, mandatos]
+    if: always() && github.event_name == 'workflow_dispatch' && inputs.modo == 'completo'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: pip install -q numpy
+      - uses: actions/download-artifact@v4
+        with: { pattern: 'parcial-*', path: parciais, merge-multiple: true }
+      - run: ls parciais && python scripts/coletar_bolsa_familia.py --juntar parciais
+      - name: Gravar no repositório
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dados/bolsa_familia.json site/data/bolsa_familia.json
+          git diff --cached --quiet && echo "Sem mudanças." && exit 0
+          git commit -m "Dados: Bolsa Família, entradas e saídas desde 2013 (Portal da Transparência)"
+          for t in 1 2 3; do git pull --rebase -q && git push && break; sleep 10; false; done || exit 1
