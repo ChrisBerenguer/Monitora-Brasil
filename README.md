@@ -21,6 +21,7 @@ Painel que acompanha o desenvolvimento do Brasil em comparação com outros paí
 7. **Quanto lucram as companhias abertas brasileiras**, por ano, setor, controle e mandato (aba Privadas)?
 8. **Quanto subiu o custo de vida em cada categoria de consumo**, de roupas e eletrodomésticos a automóveis, remédios e escola, e quanto um salário mínimo compra delas em cada mandato (aba Vida do Cidadão)?
 9. **Quais projetos em tramitação estão abertos ao voto do público** no Senado e na Câmara, com o placar e o link para votar (aba Leis e votação)?
+10. **Quantas famílias entraram e saíram do Bolsa Família** em cada mandato, ano e mês (aba Vida do Cidadão)?
 
 ## Resultado de referência (dados de outubro de 2026)
 
@@ -55,6 +56,7 @@ Monitora-Brasil/
 │   ├── baixar_brutos.py       baixa as séries brutas para brutos/ (fora do git)
 │   ├── build_dados.py         calcula percentis, escores e estatísticas → dados/
 │   ├── coletar_consumo.py     cesta básica, combustíveis, salário mínimo, renda e IPCA por categoria → consumo.json
+│   ├── coletar_bolsa_familia.py  entradas e saídas do Bolsa Família (Portal da Transparência) → bolsa_familia.json
 │   ├── ibge_api.py            acesso ao SIDRA do IBGE, com o proxy /api/ibge como alternativa
 │   ├── coletar_industria.py   crescimento por segmento da economia (IBGE/SIDRA) → industria.json
 │   ├── coletar_votacoes.py    votações nominais da Câmara e voto de cada deputado → votacoes.json, votos/

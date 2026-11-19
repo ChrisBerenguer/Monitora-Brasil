@@ -351,3 +351,15 @@ Ao publicar números deste projeto, cite: *"Fonte: Banco Mundial (World Developm
 | Câmara, Enquetes | `www.camara.leg.br/enquetes` (listas de mais votadas e mais comentadas) e `/enquetes/{id}/resultados` | `id` (o mesmo da proposição), `sigla`, `ementa` e `situacao` (API de Dados Abertos), `favor`, `contra`, `indecisos`, `opcoes` (as cinco respostas), `desde`, `url` |
 
 A resposta tem `consultado_em`, `senado[]`, `camara[]` e `erros` (por Casa, quando uma delas não responde). Se o Senado ou a Câmara mudarem o HTML dessas páginas, é aqui que a leitura precisa de ajuste.
+
+## bolsa_familia.json
+
+Fonte: Portal da Transparência (CGU), arquivos mensais de pagamentos: Bolsa Família (`bolsa-familia-pagamentos`, jan/2013 a out/2021), Auxílio Brasil (`auxilio-brasil`, nov/2021 a fev/2023) e Novo Bolsa Família (`novo-bolsa-familia`, mar/2023 em diante). Cada linha é um pagamento, com o NIS do responsável familiar ("NIS favorecido"). Coletor: `scripts/coletar_bolsa_familia.py`.
+
+Uma família está no programa no mês se o NIS do responsável aparece no arquivo daquele mês (inclui parcelas retroativas pagas no mês). Comparando os conjuntos de NIS de dois meses: entraram = no segundo e não no primeiro; saíram = no primeiro e não no segundo. É contagem de famílias, não de pessoas, e troca de responsável familiar aparece como uma saída e uma entrada.
+
+| Chave | Conteúdo |
+|---|---|
+| `meses[]` | `mes`, `programa`, `familias` e, a partir de fev/2013, `entraram` e `sairam` em relação ao mês anterior |
+| `anos[]` | `ano`, `ini` (dezembro anterior), `fim` (dezembro ou último mês), `familias_ini`, `familias_fim`, `entraram`, `sairam`, `permaneceram` |
+| `mandatos[]` | `periodo`, `nome`, `ini` (dezembro antes da posse; jan/2013 para Dilma 1), `fim`, `em_curso`, `familias_ini`, `familias_fim`, `entraram`, `sairam`, `permaneceram` |

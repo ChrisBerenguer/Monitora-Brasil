@@ -59,7 +59,7 @@
   const st = {
     page: 'visao', coorte: 'latam', mandato: '2023–2026', tema: 'geral', ind: 'ny_gdp_pcap_pp_kd', banda: 'latam',
     paises: ['bra', 'arg', 'chl', 'mex', 'chn', 'usa'], y0: 1995, y1: 2025, pa: '2019–2022', pb: '2023–2026',
-    ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cbMa: '2019–2022', cbMb: '2023–2026', consCasa: 'todas', consTipo: 'todos', consOrdem: 'votos', consBusca: '', icMa: '2019–2022', icMb: '2023–2026', icNivel: 'todos', icCat: '7558', icY0: 2007, cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
+    ga: '2019–2022', gb: '2023–2026', cbItem: 'cesta', cbY0: 2001, cbReal: true, cbMa: '2019–2022', cbMb: '2023–2026', bfVer: 'mandato', bfSerie: 'fluxo', bfY0: 2013, consCasa: 'todas', consTipo: 'todos', consOrdem: 'votos', consBusca: '', icMa: '2019–2022', icMb: '2023–2026', icNivel: 'todos', icCat: '7558', icY0: 2007, cano: null, canoInd: null, cy0: 2000, cy1: 2025, cstema: 'geral', sort: { key: 'geral', dir: -1 },
     estFiltro: 'todas', estSort: { key: null, dir: -1 }, estSemVendas: true,
     empGrupo: 'todas', empValores: 'real', empSetor: 'todos', empBusca: '', empSort: { key: null, dir: -1 }, empSSort: { key: null, dir: -1 }, empTodas: false, leisAno: null, leisTipo: 'principal', leisRes: 'todas', leisForma: 'todas', leisBusca: '', leisSel: null, leisDVoto: 'todos', leisDPart: 'todos', leisDUf: 'todos', leisDBusca: '', leisDep: null,
     indModo: 'indice', indBase: 2002, indFiltro: 'todas', indSort: { key: null, dir: -1 },
@@ -766,6 +766,16 @@
       ['Como ler', 'A linha subindo quer dizer que o salário mínimo passou a comprar mais, por ter aumentado mais que o preço. Descendo, o preço subiu mais que o salário. Essa é a medida mais direta de poder de compra, porque junta preço e renda num número só.'],
       ['Atenção', 'O salário mínimo é só uma referência: a maioria das pessoas ganha mais ou menos que isso, e uma família costuma ter mais de uma renda. O cálculo usa o salário mínimo vigente no mês, sem descontos.'],
     ] },
+    'bf-tabela': { titulo: 'Bolsa Família: famílias que entraram e saíram', blocos: [
+      ['O que mostra', 'Quantas famílias passaram a receber o Bolsa Família e quantas deixaram de receber em cada mandato ou ano. Entre novembro de 2021 e fevereiro de 2023 o programa se chamou Auxílio Brasil, e as famílias passaram de um para o outro sem novo cadastro.'],
+      ['Como é contado', 'Cada família é identificada pelo NIS do responsável familiar nos arquivos de pagamento do Portal da Transparência. "Entraram" são as famílias que recebiam no último mês do período e não recebiam no primeiro; "saíram", as que recebiam no primeiro e não mais no último. Quem entrou e saiu no meio do período não aparece nessa conta; o gráfico mês a mês mostra esse vaivém.'],
+      ['Por que saem', 'Os arquivos não dizem o motivo. As saídas incluem famílias cuja renda subiu acima do limite (desde 2023, a regra de proteção mantém metade do benefício por até dois anos antes da saída), cadastros não atualizados, irregularidades achadas em revisões (como a de 2023), mudanças de responsável familiar (o NIS muda) e mortes.'],
+      ['Atenção', 'É contagem de famílias, e não de pessoas: os arquivos trazem só o responsável. O período Dilma 1 começa em janeiro de 2013, primeiro mês publicado. Mandatos em curso vão até o último mês disponível.'],
+    ] },
+    'bf-serie': { titulo: 'Bolsa Família mês a mês', blocos: [
+      ['O que mostra', 'Em "entradas e saídas", quantas famílias começaram a receber e quantas pararam de receber de um mês para o outro. Em "total de famílias", quantas receberam em cada mês.'],
+      ['Atenção', 'Parte das saídas mensais é temporária: pagamento bloqueado ou suspenso para revisão do cadastro, que volta a ser pago depois. Por isso a soma das saídas mensais é maior que as saídas da tabela por mandato, que comparam só o início e o fim.'],
+    ] },
     'ic-tabela': { titulo: 'Inflação por categoria de consumo', blocos: [
       ['O que mostra', 'Quanto subiram os preços de cada tipo de gasto: os nove grupos do IPCA (alimentação, habitação, artigos de residência, vestuário, transportes, saúde, despesas pessoais, educação e comunicação) e itens que pesam no orçamento ou que as famílias acompanham, como roupas, eletrodomésticos, automóveis, remédios, plano de saúde e escola.'],
       ['Peso no IPCA', 'O quanto cada categoria pesa no gasto das famílias que ganham de 1 a 40 salários mínimos, nas regiões pesquisadas pelo IBGE. Os nove grupos somam 100%. Um aumento forte numa categoria de peso pequeno, como passagem aérea, mexe pouco na inflação geral.'],
@@ -968,6 +978,12 @@
     infoEl.replaceChildren(...partes);
   }
   const FONTES_EXTRA = {
+    bolsa: { t: 'Portal da Transparência (Controladoria-Geral da União), arquivos mensais de pagamentos por família, comparados pelo NIS do responsável:', l: [
+      ['Bolsa Família, pagamentos (jan/2013 a out/2021)', 'https://portaldatransparencia.gov.br/download-de-dados/bolsa-familia-pagamentos'],
+      ['Auxílio Brasil (nov/2021 a fev/2023)', 'https://portaldatransparencia.gov.br/download-de-dados/auxilio-brasil'],
+      ['Novo Bolsa Família (mar/2023 em diante)', 'https://portaldatransparencia.gov.br/download-de-dados/novo-bolsa-familia'],
+      ['Ministério do Desenvolvimento e Assistência Social: Bolsa Família', 'https://www.gov.br/mds/pt-br/acoes-e-programas/bolsa-familia'],
+    ] },
     ipca: { t: 'IBGE, Índice Nacional de Preços ao Consumidor Amplo (IPCA), consultado pela API do SIDRA:', l: [
       ['SIDRA, tabela 7060: IPCA por grupo, item e subitem, de janeiro de 2020 em diante', 'https://sidra.ibge.gov.br/tabela/7060'],
       ['SIDRA, tabela 1419: IPCA por grupo, item e subitem, de 2012 a 2019', 'https://sidra.ibge.gov.br/tabela/1419'],
@@ -1129,6 +1145,7 @@
     if (spec === 'fonte:precos') return 'DIEESE (cesta básica) e ANP (combustíveis)';
     if (spec === 'fonte:renda') return 'IBGE (PNAD Contínua) e Ipeadata';
     if (spec === 'fonte:ipca') return 'IBGE (IPCA por grupo, item e subitem)';
+    if (spec === 'fonte:bolsa') return 'Portal da Transparência (CGU)';
     if (spec === 'fonte:estatais') return 'SEST/Ministério da Gestão (balanços das estatais federais)';
     if (spec === 'fonte:empresas') return 'CVM (demonstrações financeiras das companhias abertas)';
     if (spec === 'fonte:camara') return 'Câmara dos Deputados (Dados Abertos)';
@@ -1761,6 +1778,7 @@
       mensal: true, tituloTip: (p) => mesTexto(p.mes),
     });
     desenharCategorias(C);
+    drawBolsa();
   }
   $('#cb-real').addEventListener('change', (e) => { st.cbReal = e.target.checked; render(); });
 
@@ -1867,6 +1885,63 @@
       endLabels: innerWidth > 720, legenda: true, height: 340, mensal: true, tituloTip: (p) => mesTexto(p.mes),
     });
   }
+  // ---------------------------------------------------------------- Bolsa Família: entradas e saídas
+  const BF = { dados: null, pend: null, erro: null };
+  function drawBolsa() {
+    if (!BF.dados) {
+      if (BF.erro) { $('#bf-nota').textContent = `Dados do Bolsa Família indisponíveis (${BF.erro}).`; vazio($('#bf-chart'), 'Dados indisponíveis.'); return; }
+      if (!BF.pend) BF.pend = json(DATA_DIR + 'bolsa_familia.json').then((j) => { BF.dados = j; }).catch((e) => { BF.erro = e.message; }).finally(() => { BF.pend = null; if (st.page === 'vida') drawBolsa(); });
+      return;
+    }
+    const B = BF.dados;
+    const mil = (v) => (Math.abs(v) >= 1e6 ? `${f2(v / 1e6)} milhões` : `${f0(v / 1e3)} mil`);
+    const ult = B.meses.at(-1);
+    $('#bf-nota').textContent = `Famílias que receberam o Bolsa Família (o Auxílio Brasil entre nov/2021 e fev/2023), contadas pelo NIS do responsável familiar nos pagamentos do Portal da Transparência. Compara quem recebia no início e no fim de cada período: "entraram" são as famílias que recebiam no fim e não no início, e "saíram", o contrário. Dados até ${mesTexto(ult.mes)}.`;
+    $('#bf-ver').value = st.bfVer;
+    const linhas = st.bfVer === 'mandato'
+      ? B.mandatos.map((m) => ({ ...m, rot: `${MANDATO[m.periodo] ? MANDATO[m.periodo].replace(' (até 2025)', '') : m.nome}${m.periodo === '2011–2014' ? ' (desde jan/2013)' : ''}`, sub: `${mesTexto(m.ini)} a ${mesTexto(m.fim)}${m.em_curso ? ' (em curso)' : ''}` }))
+      : B.anos.map((a) => ({ ...a, rot: String(a.ano), sub: `${mesTexto(a.ini)} a ${mesTexto(a.fim)}` })).reverse();
+    const tb = $('#bf-table tbody'); tb.replaceChildren();
+    for (const r of linhas) {
+      const saldo = r.familias_fim - r.familias_ini, pctS = r.familias_ini ? (100 * r.sairam) / r.familias_ini : null;
+      const tr = el('tr');
+      const td0 = el('td', { class: 'bf-per' }); td0.append(el('b', {}, r.rot), el('span', {}, r.sub));
+      tr.append(td0,
+        el('td', { class: 'some-p' }, mil(r.familias_ini)),
+        el('td', { class: 'bom', title: `${f0(r.entraram)} famílias recebiam em ${mesTexto(r.fim)} e não recebiam em ${mesTexto(r.ini)}` }, `+${mil(r.entraram)}`),
+        el('td', { class: 'ruim', title: `${f0(r.sairam)} famílias recebiam em ${mesTexto(r.ini)} e não recebiam mais em ${mesTexto(r.fim)}` }, `−${mil(r.sairam)}`),
+        el('td', { class: saldo >= 0 ? '' : '' }, `${saldo >= 0 ? '+' : '−'}${mil(Math.abs(saldo))}`),
+        el('td', {}, mil(r.familias_fim)),
+        el('td', { class: 'some-p' }, pctS == null ? '—' : `${f0(pctS)}%`));
+      tb.append(tr);
+    }
+    // gráfico mensal
+    const anoIni = +B.meses[0].mes.slice(0, 4), anoFim = +ult.mes.slice(0, 4);
+    const y0 = Math.min(Math.max(st.bfY0, anoIni), anoFim);
+    fillSelect($('#bf-y0'), d3.range(anoIni, anoFim + 1).map((a) => ({ label: a, value: a })), y0);
+    $('#bf-serie-ver').value = st.bfSerie;
+    const ms = B.meses.filter((m) => +m.mes.slice(0, 4) >= y0);
+    let series, yfmt, nota;
+    if (st.bfSerie === 'total') {
+      series = [{ name: 'Famílias no programa', color: cor(0), width: 2.4, pts: ms.map((m) => ({ x: mesX(m.mes), y: m.familias / 1e6, mes: m.mes })) }];
+      yfmt = (v) => `${f1(v)} mi`;
+      nota = `Número de famílias que receberam pagamento em cada mês, em milhões. Em ${mesTexto(ult.mes)}, ${mil(ult.familias)}.`;
+    } else {
+      const fl = ms.filter((m) => m.entraram != null);
+      series = [
+        { name: 'Entraram', color: css('--ok'), width: 2, pts: fl.map((m) => ({ x: mesX(m.mes), y: m.entraram / 1e3, mes: m.mes })) },
+        { name: 'Saíram', color: css('--bad'), width: 2, pts: fl.map((m) => ({ x: mesX(m.mes), y: m.sairam / 1e3, mes: m.mes })) },
+      ];
+      yfmt = (v) => `${f0(v)} mil`;
+      nota = `Famílias que passaram a receber (entraram) e que deixaram de receber (saíram) de um mês para o outro, em milhares. Em ${mesTexto(ult.mes)}: ${mil(ult.entraram)} entraram e ${mil(ult.sairam)} saíram. Parte das saídas de um mês é suspensão temporária, e a família volta a receber depois.`;
+    }
+    $('#bf-serie-nota').textContent = nota;
+    lineChart($('#bf-chart'), {
+      series, yfmt, xdomain: [y0, anoFim + 1], faixas: FAIXAS_MANDATO(), endLabels: innerWidth > 720, legenda: true, height: 340,
+      mensal: true, tituloTip: (p) => mesTexto(p.mes),
+    });
+  }
+
 
   // ---------------------------------------------------------------- consultas públicas abertas
   const CONS = { dados: null, pend: null, erro: null, limite: 25 };
@@ -2876,6 +2951,9 @@
   on('#cons-ordem', (v) => { st.consOrdem = v; CONS.limite = 25; });
   $('#cons-busca').addEventListener('input', (e) => { st.consBusca = e.target.value; CONS.limite = 25; drawConsultas(); });
   $('#cons-mais').addEventListener('click', () => { CONS.limite += 25; drawConsultas(); });
+  on('#bf-ver', (v) => { st.bfVer = v; });
+  on('#bf-serie-ver', (v) => { st.bfSerie = v; });
+  on('#bf-y0', (v) => { st.bfY0 = +v; });
   on('#ic-ma', (v) => { st.icMa = v; });
   on('#ic-mb', (v) => { st.icMb = v; });
   on('#ic-nivel', (v) => { st.icNivel = v; });

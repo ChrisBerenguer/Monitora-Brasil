@@ -1,5 +1,13 @@
 # Histórico de versões
 
+## 1.41 — 19/11/2026
+
+### Adicionado
+- Vida do Cidadão: dois cartões sobre o **Bolsa Família** (e o Auxílio Brasil, que o substituiu entre nov/2021 e fev/2023), de janeiro de 2013 em diante:
+  - **Famílias que entraram e saíram**, por mandato ou por ano: famílias no início, quantas entraram (recebiam no fim e não no início), quantas saíram (o contrário), o saldo, as famílias no fim e a parte das famílias do início que saiu.
+  - **Bolsa Família mês a mês**: entradas e saídas de um mês para o outro, ou o total de famílias.
+- Coletor `scripts/coletar_bolsa_familia.py` e workflow `dados-bolsa-familia.yml`: baixam os arquivos mensais de pagamentos do Portal da Transparência (cerca de 330 MB cada) e comparam o NIS dos responsáveis familiares. Roda todo dia 26 só com os meses novos; o modo completo refaz tudo desde 2013, um ano por job.
+
 ## 1.40.1 — 17/11/2026
 
 ### Alterado

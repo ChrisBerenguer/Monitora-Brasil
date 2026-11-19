@@ -79,3 +79,7 @@ Toda mudança de regra deve ser registrada em `docs/03-metodologia.md` no mesmo 
 
 - Mensagens de commit em português, no imperativo, descrevendo o que mudou nos dados ou no método (ex.: "Atualiza dados até 2026; inclui ICE no tema produtivo").
 - Os dados derivados (`dados/`) são versionados para que o site possa ser reconstruído sem rodar o pipeline. Os brutos (`brutos/`) não são.
+
+## Bolsa Família (entradas e saídas)
+
+`.github/workflows/dados-bolsa-familia.yml` roda todo dia 26 em modo "atualizar": vê no Portal da Transparência quais meses foram publicados, processa só os novos (refazendo o ano corrente e o mandato atual) e grava `bolsa_familia.json`. Para refazer tudo desde 2013, rode o workflow à mão com o modo "completo": um job por ano, em paralelo, e um job final que junta os resultados. Cada mês é um arquivo de cerca de 330 MB; o script guarda só os NIS e apaga o arquivo. Se o portal criar um programa novo (como o Auxílio Brasil em 2021), ajuste `programa()` no coletor.
