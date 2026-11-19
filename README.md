@@ -57,6 +57,8 @@ Monitora-Brasil/
 │   ├── build_dados.py         calcula percentis, escores e estatísticas → dados/
 │   ├── coletar_consumo.py     cesta básica, combustíveis, salário mínimo, renda e IPCA por categoria → consumo.json
 │   ├── coletar_bolsa_familia.py  entradas e saídas do Bolsa Família (Portal da Transparência) → bolsa_familia.json
+│   ├── coletar_artigos.py     artigos científicos da lupa (OpenAlex + resumo do Groq) → artigos.json
+│   ├── temas_artigos.py       o que buscar para cada cartão
 │   ├── ibge_api.py            acesso ao SIDRA do IBGE, com o proxy /api/ibge como alternativa
 │   ├── coletar_industria.py   crescimento por segmento da economia (IBGE/SIDRA) → industria.json
 │   ├── coletar_votacoes.py    votações nominais da Câmara e voto de cada deputado → votacoes.json, votos/

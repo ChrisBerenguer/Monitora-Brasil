@@ -1,5 +1,11 @@
 # Histórico de versões
 
+## 1.42 — 19/11/2026
+
+### Adicionado
+- **Lupa em cada cartão** ("O que dizem as pesquisas"): abre um painel com até 7 artigos acadêmicos sobre o tema do cartão, com autores, ano, revista, citações, trecho do resumo e link para o texto completo quando aberto, e um resumo de 3 ou 4 frases feito por IA só a partir desses artigos, com cada afirmação ligada ao artigo de origem. Nos cartões que mudam de assunto (indicador escolhido, item de consumo, categoria do IPCA), a lupa segue a escolha.
+- Coletor `scripts/coletar_artigos.py` (temas em `scripts/temas_artigos.py`) e workflow semanal `dados-artigos.yml`: busca na OpenAlex em inglês e em português, descarta revistas de baixa qualidade, escolhe pela relevância e pelas citações e pede o resumo ao Groq (Llama 3.3 70B). O resumo só é refeito quando a lista de artigos muda. Precisa dos segredos gratuitos `OPENALEX_API_KEY` e `GROQ_API_KEY`.
+
 ## 1.41 — 19/11/2026
 
 ### Adicionado

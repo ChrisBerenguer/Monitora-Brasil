@@ -363,3 +363,16 @@ Uma família está no programa no mês se o NIS do responsável aparece no arqui
 | `meses[]` | `mes`, `programa`, `familias` e, a partir de fev/2013, `entraram` e `sairam` em relação ao mês anterior |
 | `anos[]` | `ano`, `ini` (dezembro anterior), `fim` (dezembro ou último mês), `familias_ini`, `familias_fim`, `entraram`, `sairam`, `permaneceram` |
 | `mandatos[]` | `periodo`, `nome`, `ini` (dezembro antes da posse; jan/2013 para Dilma 1), `fim`, `em_curso`, `familias_ini`, `familias_fim`, `entraram`, `sairam`, `permaneceram` |
+
+## artigos.json (lupa "O que dizem as pesquisas")
+
+Coletor: `scripts/coletar_artigos.py`, com os temas em `scripts/temas_artigos.py` (um por cartão, um por indicador `ind:<id>`, um por grupo do IPCA `ipca:<código>` e um por item de consumo `cb:<item>`). Para cada tema: duas buscas na OpenAlex (inglês e português, de 2005 em diante, só com resumo), sem as revistas da lista `FRACAS`, e até 7 artigos escolhidos pela posição na busca e pelas citações. Com `GROQ_API_KEY`, o Llama 3.3 70B (Groq) escreve 3 ou 4 frases usando só os resumos, com `[n]` apontando o artigo; citações inexistentes são removidas.
+
+| Chave | Conteúdo |
+|---|---|
+| `gerado_em`, `modelo`, `fontes` | data da coleta, modelo de IA usado |
+| `temas.<chave>.contexto` | o que o cartão mostra (enviado à IA) |
+| `temas.<chave>.busca` | os termos em inglês e em português |
+| `temas.<chave>.assinatura` | hash dos artigos escolhidos; o resumo só é refeito quando muda |
+| `temas.<chave>.artigos[]` | `id` (OpenAlex), `titulo`, `ano`, `autores` (até 3), `fonte`, `citacoes`, `idioma`, `tipo`, `url` (DOI ou página), `pdf` (versão aberta), `trecho` (início do resumo) |
+| `temas.<chave>.resumo`, `resumo_em` | o resumo da IA e a data |

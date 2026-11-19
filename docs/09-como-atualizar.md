@@ -83,3 +83,10 @@ Toda mudança de regra deve ser registrada em `docs/03-metodologia.md` no mesmo 
 ## Bolsa Família (entradas e saídas)
 
 `.github/workflows/dados-bolsa-familia.yml` roda todo dia 26 em modo "atualizar": vê no Portal da Transparência quais meses foram publicados, processa só os novos (refazendo o ano corrente e o mandato atual) e grava `bolsa_familia.json`. Para refazer tudo desde 2013, rode o workflow à mão com o modo "completo": um job por ano, em paralelo, e um job final que junta os resultados. Cada mês é um arquivo de cerca de 330 MB; o script guarda só os NIS e apaga o arquivo. Se o portal criar um programa novo (como o Auxílio Brasil em 2021), ajuste `programa()` no coletor.
+
+## Artigos da lupa
+
+`.github/workflows/dados-artigos.yml` roda toda segunda-feira. Precisa de dois segredos do repositório (Settings → Secrets and variables → Actions), ambos gratuitos:
+- `OPENALEX_API_KEY`: chave da OpenAlex (openalex.org, conta gratuita). Desde fevereiro de 2026 a API exige chave; o plano grátis dá cerca de mil buscas por dia e a coleta usa umas 170.
+- `GROQ_API_KEY`: chave do Groq (console.groq.com). Sem ela, a lupa mostra só a lista de artigos.
+Se a cota acabar no meio, o script grava os temas já feitos e mantém os outros. Para mudar a busca de um cartão, edite `scripts/temas_artigos.py`; para um cartão novo, acrescente a chave lá e, se o assunto depender de uma escolha no cartão, em `temaDoCartao()` no app.js.

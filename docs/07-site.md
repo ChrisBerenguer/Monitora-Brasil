@@ -220,3 +220,7 @@ Como funciona: `gerarImagem` monta fora da tela um quadro com uma cópia do cart
 ## Versão no Claude
 
 Existe também uma versão do painel publicada como artifact do Claude (https://claude.ai/artifact/1VN97WbaUYChpm2aESA54X), feita antes deste site. Ela usa os mesmos dados, mas não é mantida junto com este repositório: a referência daqui em diante é a pasta `site/`.
+
+## Lupa "O que dizem as pesquisas"
+
+`ligarLupas()` põe um botão de lupa ao lado do botão de informação de cada cartão (e no título da aba Séries). O clique abre `#art-dlg`, que carrega `artigos.json` uma vez e mostra o tema de `temaDoCartao(chave)`: a própria chave do cartão, ou `ind:<indicador escolhido>` nos cartões de indicador, `cb:<item>` em "Preço ao longo do tempo" e `ipca:<grupo>` em "Preços da categoria ao longo do tempo". Os `[n]` do resumo viram links para o artigo na lista. O rodapé avisa que o resumo é feito por IA a partir dos artigos.

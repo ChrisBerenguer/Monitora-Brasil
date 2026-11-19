@@ -2,7 +2,8 @@
 (Groq) um resumo curto do que elas dizem, citando cada artigo.
 
   - OpenAlex (api.openalex.org): base aberta de trabalhos acadêmicos, que inclui a SciELO, textos
-    para discussão (IPEA, NBER, Banco Mundial) e teses. Sem chave. Para cada tema, uma busca em
+    para discussão (IPEA, NBER, Banco Mundial) e teses. Desde fev/2026 exige chave gratuita (segredo
+    OPENALEX_API_KEY), com cerca de mil buscas por dia; o site usa umas 170 por semana. Para cada tema, uma busca em
     inglês e outra em português, de 2005 em diante, só trabalhos com resumo; descarta revistas de
     baixa qualidade (lista abaixo) e escolhe 7 pela relevância e pelas citações.
   - Groq (api.groq.com, modelo Llama 3.3 70B): resume em português só o que está nos resumos dos
@@ -37,6 +38,10 @@ FRACAS = [
 ]
 
 
+class CotaEsgotada(Exception):
+    pass
+
+
 def get(url, tentativas=4, dados=None, headers=None):
     for t in range(tentativas):
         try:
@@ -46,8 +51,10 @@ def get(url, tentativas=4, dados=None, headers=None):
         except urllib.error.HTTPError as e:
             if e.code == 429:
                 espera = float(e.headers.get('retry-after') or 20)
+                if espera > 120:  # cota do dia esgotada: não adianta esperar
+                    raise CotaEsgotada(url.split('?')[0]) from e
                 print(f'  limite de uso, esperando {espera:.0f}s', flush=True)
-                time.sleep(min(espera, 90))
+                time.sleep(espera)
                 continue
             if t == tentativas - 1:
                 raise
@@ -74,6 +81,8 @@ def buscar(q):
         'filter': 'publication_year:>2004,has_abstract:true,type:article|preprint|report|book-chapter|review|dissertation',
         'select': 'id,doi,display_name,publication_year,cited_by_count,primary_location,best_oa_location,open_access,language,authorships,abstract_inverted_index,type',
     }
+    if os.environ.get('OPENALEX_API_KEY'):
+        params['api_key'] = os.environ['OPENALEX_API_KEY']
     return get(OPENALEX + '?' + urllib.parse.urlencode(params)).get('results', [])
 
 
@@ -171,6 +180,9 @@ def main():
             continue
         try:
             arts = [compacto(w) for w in escolher(buscar(en), buscar(pt))]
+        except CotaEsgotada:
+            print('::warning::Cota diária da OpenAlex esgotada (falta o segredo OPENALEX_API_KEY?). Gravando os temas já feitos; os outros ficam como estavam.')
+            break
         except Exception as e:  # noqa: BLE001
             erros += 1
             print(f'::warning::{chave}: OpenAlex falhou ({e}); tema mantido como estava.')
@@ -185,6 +197,9 @@ def main():
             try:
                 item['resumo'], item['resumo_em'] = resumir(chave, contexto, arts), date.today().isoformat()
                 time.sleep(12)  # limite de tokens por minuto do plano grátis
+            except CotaEsgotada:
+                print(f'::warning::{chave}: cota diária do Groq esgotada; os próximos temas saem sem resumo.')
+                usar_ia = False
             except Exception as e:  # noqa: BLE001
                 print(f'::warning::{chave}: Groq falhou ({e}); tema sai sem resumo.')
         saida[chave] = item

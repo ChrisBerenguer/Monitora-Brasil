@@ -19,6 +19,7 @@ jobs:
       - run: python scripts/coletar_artigos.py
         env:
           GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+          OPENALEX_API_KEY: ${{ secrets.OPENALEX_API_KEY }}
       - name: Gravar no repositório se algo mudou
         run: |
           git config user.name "github-actions[bot]"
