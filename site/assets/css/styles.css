@@ -389,3 +389,17 @@ td.leis-proj { white-space: normal; min-width: 16rem; max-width: 46rem; text-ali
 #bf-table td.bf-per b { display: block; }
 #bf-table td.bf-per span { display: block; font-size: var(--t-xs); color: var(--muted); }
 #bf-table th:first-child { text-align: left; }
+
+/* Lupa: artigos científicos */
+.lupa-btn { cursor: pointer; }
+.lupa-btn:hover, .lupa-btn:focus-visible { color: var(--accent); opacity: 1; }
+.art-resumo { border-left: 3px solid var(--accent); background: color-mix(in srgb, var(--accent) 7%, var(--panel)); padding: 10px 14px; border-radius: 0 6px 6px 0; }
+.art-resumo p { margin: 0; line-height: 1.55; }
+.art-resumo .art-rotulo { font-size: var(--t-xs); color: var(--muted); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 6px; }
+.art-cit { display: inline-block; min-width: 1.3em; margin: 0 1px; padding: 0 4px; border-radius: 4px; font-size: var(--t-xs); text-align: center; vertical-align: 1px; text-decoration: none; background: color-mix(in srgb, var(--accent) 18%, var(--panel)); color: var(--fg); }
+.art-lista { margin: 4px 0 0; padding-left: 1.4rem; display: grid; gap: 12px; }
+.art-lista li { line-height: 1.4; scroll-margin: 80px; }
+.art-titulo { font-weight: 600; }
+.art-meta, .art-trecho { display: block; font-size: var(--t-sm); color: var(--muted); }
+.art-trecho { margin-top: 3px; font-size: var(--t-xs); }
+.art-pdf { font-size: var(--t-sm); }

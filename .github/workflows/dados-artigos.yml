@@ -1,0 +1,29 @@
+name: Atualizar artigos científicos da lupa
+# Busca, para cada cartão do site, artigos na OpenAlex e (com o segredo GROQ_API_KEY) um resumo
+# feito pela IA do Groq; grava site/data/artigos.json. Toda segunda-feira, ou à mão em Actions.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 10 * * 1'   # segunda-feira, 07h17 em Brasília
+permissions:
+  contents: write
+concurrency: dados-artigos
+jobs:
+  coletar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: python scripts/coletar_artigos.py
+        env:
+          GROQ_API_KEY: ${{ secrets.GROQ_API_KEY }}
+      - name: Gravar no repositório se algo mudou
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add site/data/artigos.json
+          git diff --cached --quiet && echo "Sem mudanças." && exit 0
+          git commit -m "Dados: artigos científicos da lupa (OpenAlex e Groq), coleta automática"
+          for t in 1 2 3; do git pull --rebase -q && git push && break; sleep 10; false; done || exit 1

@@ -1885,6 +1885,77 @@
       endLabels: innerWidth > 720, legenda: true, height: 340, mensal: true, tituloTip: (p) => mesTexto(p.mes),
     });
   }
+  // ---------------------------------------------------------------- lupa: artigos científicos de cada cartão
+  const ART = { dados: null, pend: null };
+  const LUPA_SVG = '<svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true" focusable="false"><circle cx="6.8" cy="6.8" r="4.6" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.3 10.3 14 14" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>';
+  const IND_CARTOES = new Set(['tempo', 'pontos', 'hist-mundo', 'hist-umic', 'serie-ind']);
+  /** Tema da lupa para um cartão: fixo, ou o indicador / item / categoria escolhido nele. */
+  function temaDoCartao(chave) {
+    if (IND_CARTOES.has(chave)) return `ind:${st.ind}`;
+    if (chave === 'cb-serie') return `cb:${st.cbItem}`;
+    if (chave === 'ic-serie') {
+      const c = D.raw.consumo?.ipca_categorias?.categorias.find((x) => x.id === st.icCat);
+      return `ipca:${c?.grupo || c?.id || '7169'}`;
+    }
+    return chave;
+  }
+  function ligarLupas() {
+    document.querySelectorAll('.titulo-info').forEach((t) => {
+      if (t.querySelector('.lupa-btn')) return;
+      const info = t.querySelector('[data-info-card]');
+      const chave = info ? info.dataset.infoCard : t.querySelector('#s-titulo') ? 'serie-ind' : null;
+      if (!chave) return;
+      const b = el('button', { type: 'button', class: 'info-btn lupa-btn', 'data-lupa': chave, 'aria-label': 'O que dizem as pesquisas sobre este cartão', title: 'O que dizem as pesquisas' });
+      b.innerHTML = LUPA_SVG;
+      b.addEventListener('click', () => abrirArtigos(chave, t.querySelector('h2')?.textContent || ''));
+      (info || t.querySelector('h2')).after(b);
+    });
+  }
+  async function abrirArtigos(chave, tituloCartao) {
+    const dlgA = $('#art-dlg'), corpo = $('#art-dlg-corpo');
+    $('#art-dlg-titulo').textContent = `O que dizem as pesquisas: ${tituloCartao}`;
+    corpo.replaceChildren(el('p', { class: 'nota' }, 'Carregando…'));
+    if (!dlgA.open) dlgA.showModal();
+    try {
+      if (!ART.dados) ART.dados = await (ART.pend ||= json(DATA_DIR + 'artigos.json'));
+    } catch (e) {
+      ART.pend = null;
+      corpo.replaceChildren(el('p', { class: 'nota' }, `Os artigos ainda não estão disponíveis (${e.message}).`));
+      return;
+    }
+    const T = ART.dados.temas[temaDoCartao(chave)];
+    corpo.replaceChildren();
+    if (!T || !T.artigos?.length) { corpo.append(el('p', { class: 'nota' }, 'Ainda não há artigos para este cartão.')); return; }
+    if (T.resumo) {
+      const box = el('div', { class: 'art-resumo' });
+      box.append(el('p', { class: 'art-rotulo' }, 'Resumo feito por IA a partir dos artigos abaixo'));
+      const p = el('p');
+      // [n] vira link para o artigo
+      for (const parte of T.resumo.split(/(\[\d+\])/)) {
+        const m = parte.match(/^\[(\d+)\]$/);
+        if (m) {
+          const a = el('a', { href: `#art-${m[1]}`, class: 'art-cit', 'aria-label': `artigo ${m[1]}` }, m[1]);
+          a.addEventListener('click', (ev) => { ev.preventDefault(); corpo.querySelector(`#art-${m[1]}`)?.scrollIntoView({ block: 'center', behavior: 'smooth' }); });
+          p.append(a);
+        } else p.append(parte);
+      }
+      box.append(p);
+      corpo.append(box);
+    } else corpo.append(el('p', { class: 'nota' }, 'Pesquisas acadêmicas sobre o tema deste cartão, das mais relevantes e citadas.'));
+    const ol = el('ol', { class: 'art-lista' });
+    T.artigos.forEach((a, i) => {
+      const li = el('li', { id: `art-${i + 1}` });
+      li.append(el('a', { href: a.url, target: '_blank', rel: 'noopener', class: 'art-titulo' }, a.titulo));
+      const meta = [a.autores?.join(', '), a.ano, a.fonte].filter(Boolean).join(' · ');
+      li.append(el('span', { class: 'art-meta' }, `${meta}${a.citacoes ? ` · ${f0(a.citacoes)} citações` : ''}${a.idioma === 'pt' ? ' · em português' : ''}`));
+      if (a.trecho) li.append(el('span', { class: 'art-trecho' }, a.trecho));
+      if (a.pdf) li.append(el('a', { href: a.pdf, target: '_blank', rel: 'noopener', class: 'art-pdf' }, 'Texto completo aberto ↗'));
+      ol.append(li);
+    });
+    corpo.append(ol);
+    if (ART.dados.gerado_em) corpo.append(el('p', { class: 'nota' }, `Busca atualizada em ${fmtData(ART.dados.gerado_em)}. Termos: "${T.busca.join('" e "')}".`));
+  }
+
   // ---------------------------------------------------------------- Bolsa Família: entradas e saídas
   const BF = { dados: null, pend: null, erro: null };
   function drawBolsa() {
@@ -3017,6 +3088,11 @@
   // ---------------------------------------------------------------- início
   document.querySelectorAll('.grafico').forEach((g) => g.classList.add('carregando'));
   show(location.hash.slice(1) || 'visao', false);
+  // lupa de artigos em cada cartão (depois de todas as declarações)
+  ligarLupas();
+  $('#art-dlg-fechar').addEventListener('click', () => $('#art-dlg').close());
+  $('#art-dlg').addEventListener('click', (ev) => { if (ev.target.id === 'art-dlg') ev.target.close(); });
+
   carregar().then((ix) => {
     D = ix;
     drawResumo();
