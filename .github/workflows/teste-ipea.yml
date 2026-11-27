@@ -5,15 +5,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "== OECD fluxos de receita"
-          curl -sS -m 120 "https://sdmx.oecd.org/public/rest/dataflow/all/all/latest" | grep -oE 'id="DSD_REV[^"]*"[^>]*agencyID="[^"]*"' | grep -iv "AFRICA\|LAC@DF_REV[A-Z]\{3\}\"" | sort -u | head -40
-          echo "== OECD global"
-          curl -sS -m 120 "https://sdmx.oecd.org/public/rest/dataflow/all/all/latest" | grep -oE 'id="[^"]*GLOBAL[^"]*"[^>]*agencyID="[^"]*"' | sort -u | head
-          echo "== IMF dataflows"
+          echo "== OECD RSGLOBAL BRA 2021-2023"
+          curl -sS -m 300 "https://sdmx.oecd.org/public/rest/data/OECD.CTP.TPS,DSD_REV_COMP_GLOBAL@DF_RSGLOBAL,/all?startPeriod=2021&endPeriod=2023&format=csvfilewithlabels" -o rs.csv; wc -l rs.csv; head -2 rs.csv
+          grep -i "Brazil" rs.csv | head -30
+          echo "== IMF ids"
           curl -sS -m 120 -H "Accept: application/json" "https://api.imf.org/external/sdmx/3.0/structure/dataflow/*/*/+" -o imf.json; python3 -c "
           import json; d=json.load(open('imf.json')); fl=d['data']['dataflows']
-          print(len(fl))
-          for f in fl:
-              n=(f.get('name') or '') if isinstance(f.get('name'),str) else str(f.get('names',{}).get('en',''))
-              if any(w in (f['id']+n).upper() for w in ['GFS','FM','FISCAL','ICSD','INVEST']): print(f['agencyID'], f['id'], f['version'], '|', n)
-          " || head -c 500 imf.json
+          print(' '.join(sorted(f['agencyID'].split('.')[-1]+':'+f['id'] for f in fl)))
+          "
