@@ -32,13 +32,14 @@ try:  # DataMapper (recusa algumas redes, como a do GitHub Actions)
     req = urllib.request.Request(f'https://www.imf.org/external/datamapper/api/v1/{FMI}', headers={'User-Agent': 'Mozilla/5.0 (MonitoraBrasil)'})
     valores = {p: {a: v for a, v in anos.items()} for p, anos in json.load(urllib.request.urlopen(req, timeout=120))['values'][FMI].items()}
 except Exception as e:  # noqa: BLE001
-    print('  DataMapper falhou:', e, '- usando a API SDMX do FMI (Fiscal Monitor)')
+    print('  DataMapper falhou:', e, '- usando a API SDMX do FMI (Fiscal Monitor, GPB_S13_POGDP_PT = saldo primário do governo geral)')
     import csv as _csv, io as _io
-    req = urllib.request.Request(f'https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.FAD/FM/+/*.{FMI}.A?attributes=none',
+    req = urllib.request.Request(f'https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.FAD/FM/+/*.GPB_S13_POGDP_PT.A?attributes=none',
                                  headers={'User-Agent': 'MonitoraBrasil/1.0', 'Accept': 'application/vnd.sdmx.data+csv;version=2.0.0;labels=id'})
     for r in _csv.DictReader(_io.StringIO(urllib.request.urlopen(req, timeout=300).read().decode('utf-8-sig'))):
         if r.get('OBS_VALUE') and r.get('TIME_PERIOD'):
             valores.setdefault(r['COUNTRY'], {})[r['TIME_PERIOD']] = r['OBS_VALUE']
+assert sum(len(v) for v in valores.values()) > 1000, 'saldo primário do FMI veio vazio: o escore mudaria sem ele'
 with open(os.path.join(DST, FMI.lower() + '.csv'), 'w') as f:
     f.write(f'geo,time,{FMI.lower()}\n')
     for pais in sorted(p for p in valores if len(p) == 3 and p.isalpha()):  # fora os agregados (ADVEC, EURO...)
