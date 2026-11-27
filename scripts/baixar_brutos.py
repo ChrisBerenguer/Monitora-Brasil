@@ -27,15 +27,24 @@ for url, name in jobs:
 import json
 FMI = 'GGXONLB_G01_GDP_PT'
 print('baixando', FMI.lower() + '.csv (FMI)')
-req = urllib.request.Request(f'https://www.imf.org/external/datamapper/api/v1/{FMI}', headers={'User-Agent': 'MonitoraBrasil/1.0'})
-valores = json.load(urllib.request.urlopen(req, timeout=120))['values'][FMI]
+valores = {}
+try:  # DataMapper (recusa algumas redes, como a do GitHub Actions)
+    req = urllib.request.Request(f'https://www.imf.org/external/datamapper/api/v1/{FMI}', headers={'User-Agent': 'Mozilla/5.0 (MonitoraBrasil)'})
+    valores = {p: {a: v for a, v in anos.items()} for p, anos in json.load(urllib.request.urlopen(req, timeout=120))['values'][FMI].items()}
+except Exception as e:  # noqa: BLE001
+    print('  DataMapper falhou:', e, '- usando a API SDMX do FMI (Fiscal Monitor)')
+    import csv as _csv, io as _io
+    req = urllib.request.Request(f'https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.FAD/FM/+/*.{FMI}.A?attributes=none',
+                                 headers={'User-Agent': 'MonitoraBrasil/1.0', 'Accept': 'application/vnd.sdmx.data+csv;version=2.0.0;labels=id'})
+    for r in _csv.DictReader(_io.StringIO(urllib.request.urlopen(req, timeout=300).read().decode('utf-8-sig'))):
+        if r.get('OBS_VALUE') and r.get('TIME_PERIOD'):
+            valores.setdefault(r['COUNTRY'], {})[r['TIME_PERIOD']] = r['OBS_VALUE']
 with open(os.path.join(DST, FMI.lower() + '.csv'), 'w') as f:
     f.write(f'geo,time,{FMI.lower()}\n')
     for pais in sorted(p for p in valores if len(p) == 3 and p.isalpha()):  # fora os agregados (ADVEC, EURO...)
         for ano, v in sorted(valores[pais].items()):
             if v is not None:
                 f.write(f'{pais.lower()},{ano},{round(float(v), 4)}\n')
-
 
 # Carga tributária total (impostos e contribuições sociais de todas as esferas de governo), % do PIB,
 # da Global Revenue Statistics da OCDE (cerca de 130 países), pela API SDMX da OCDE.
