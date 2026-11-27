@@ -8,17 +8,17 @@ jobs:
           for DF in GFS_SOO; do
           echo "== $DF BRA"
           curl -g -sS -m 300 -H "Accept: application/vnd.sdmx.data+csv;version=2.0.0;labels=both" "https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.STA/$DF/+/BRA.*.*.*.*?attributes=none" -o g.csv; wc -l g.csv; head -2 g.csv
-          python3 -c "
+          python3 - <<'Q'
           import csv
           r=list(csv.DictReader(open('g.csv')))
-          ks=[k for k in r[0] if k not in ('TIME_PERIOD','OBS_VALUE')]
-          print(ks)
-          seen=set()
+          col=lambda x,k: next(v for kk,v in x.items() if kk.startswith(k))
+          vis={}
           for x in r:
-              t=' | '.join(x[k] for k in ks)
-              if any(w in t.lower() for w in ['nonfinancial assets','investment','fixed assets','revenue','expense']) and ('gdp' in t.lower() or 'percent' in t.lower()):
-                  key=t
-                  if key in seen: continue
-                  seen.add(key); print(x['TIME_PERIOD'], x['OBS_VALUE'], '|', t[:260])
-          " | head -60
+              if 'POGDP_PT' not in col(x,'TYPE_OF'): continue
+              ind=col(x,'INDICATOR'); sec=col(x,'SECTOR')
+              if any(w in ind.lower() for w in ['nonfinancial assets','fixed assets','revenue, trans','expense, trans','taxes, trans','gross operating']):
+                  vis.setdefault((sec,ind),{})[col(x,'TIME_PERIOD')]=col(x,'OBS_VALUE')
+          for (sec,ind),v in sorted(vis.items()):
+              ks=sorted(v); print(sec[:30],'|',ind[:110],'|',ks[0],'-',ks[-1],'|',{k:round(float(v[k]),2) for k in ks[-4:]})
+          Q
           done
