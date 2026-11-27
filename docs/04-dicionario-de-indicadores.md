@@ -120,8 +120,8 @@ Gerado por `scripts/gerar_dicionario.py`. Para cada indicador: código interno (
 - **Unidade:** % PIB
 - **Sentido no escore:** maior é melhor
 - **Fonte:** FMI (Fiscal Monitor) · [página oficial](https://www.imf.org/external/datamapper/GGXONLB_G01_GDP_PT@FM/BRA) · [API](https://www.imf.org/external/datamapper/api/v1/GGXONLB_G01_GDP_PT/BRA)
-- **Último ano na base (qualquer país):** None
-- **Brasil:** sem dado para o Brasil. Primeiro valor: —. Último valor: —.
+- **Último ano na base (qualquer país):** 2025
+- **Brasil:** 25 anos com dado (2001–2025). Primeiro valor: 3,13 em 2001. Último valor: -0,13 em 2025.
 
 **Em linguagem simples**
 
