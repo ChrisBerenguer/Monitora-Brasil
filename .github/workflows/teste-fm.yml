@@ -1,0 +1,10 @@
+name: Teste FM (temporário)
+on: workflow_dispatch
+jobs:
+  t:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          H='Accept: application/vnd.sdmx.data+csv;version=2.0.0;labels=id'
+          curl -g -sS -m 300 -H "$H" "https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.FAD/FM/+/BRA.*.*?attributes=none" -o fm.csv; wc -l fm.csv; head -3 fm.csv; cut -d, -f5-7 fm.csv | sort -u | grep -i "GGXONLB\|PRIM" | head
+          curl -g -sS -m 300 -H "Accept: application/json" "https://api.imf.org/external/sdmx/3.0/structure/dataflow/IMF.FAD/FM/+?references=datastructure" | python3 -c "import json,sys; d=json.load(sys.stdin)['data']; ds=d['dataStructures'][0]; print([x['id'] for x in ds['dataStructureComponents']['dimensionList']['dimensions']])"
