@@ -1,6 +1,7 @@
 """Baixa as séries brutas usadas pelo painel para a pasta brutos/.
 Fonte: espelho do World Development Indicators (Banco Mundial) e do Gapminder mantido em github.com/open-numbers,
-e a API do DataMapper do FMI (saldo primário do governo geral).
+a API do DataMapper do FMI (saldo primário do governo geral), a Global Revenue Statistics da OCDE (carga
+tributária total) e as estatísticas de finanças públicas (GFS) do FMI (investimento público).
 Uso: python baixar_brutos.py && python build_dados.py
 """
 import os, urllib.request
@@ -34,3 +35,32 @@ with open(os.path.join(DST, FMI.lower() + '.csv'), 'w') as f:
         for ano, v in sorted(valores[pais].items()):
             if v is not None:
                 f.write(f'{pais.lower()},{ano},{round(float(v), 4)}\n')
+
+
+# Carga tributária total (impostos e contribuições sociais de todas as esferas de governo), % do PIB,
+# da Global Revenue Statistics da OCDE (cerca de 130 países), pela API SDMX da OCDE.
+import csv, io
+print('baixando carga_trib_total.csv (OCDE)')
+url = ('https://sdmx.oecd.org/public/rest/data/OECD.CTP.TPS,DSD_REV_COMP_GLOBAL@DF_RSGLOBAL,'
+       '/.TAX_REV.S13._T._T.PT_B1GQ.A?startPeriod=1980&format=csvfilewithlabels')
+txt = urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'MonitoraBrasil/1.0'}), timeout=600).read().decode('utf-8-sig')
+with open(os.path.join(DST, 'carga_trib_total.csv'), 'w') as f:
+    f.write('geo,time,carga_trib_total\n')
+    for r in sorted(csv.DictReader(io.StringIO(txt)), key=lambda r: (r['REF_AREA'], r['TIME_PERIOD'])):
+        if r['OBS_VALUE'] and len(r['REF_AREA']) == 3:
+            f.write(f"{r['REF_AREA'].lower()},{r['TIME_PERIOD']},{round(float(r['OBS_VALUE']), 4)}\n")
+
+# Investimento público (aquisição de ativos fixos: obras, equipamentos, imóveis), % do PIB, das estatísticas
+# de finanças públicas do FMI (GFS, Statement of Operations), para o governo geral (S13: União, estados e
+# municípios) e o governo central (S1311). Pela API SDMX 3.0 do FMI.
+for setor, nome in (('S13', 'inv_pub_gg'), ('S1311', 'inv_pub_gc')):
+    print(f'baixando {nome}.csv (FMI GFS)')
+    url = (f'https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.STA/GFS_SOO/+/*.{setor}.*.N11A_A_T_MI.POGDP_PT.A'
+           '?attributes=none')
+    req = urllib.request.Request(url, headers={'User-Agent': 'MonitoraBrasil/1.0', 'Accept': 'application/vnd.sdmx.data+csv;version=2.0.0;labels=id'})
+    txt = urllib.request.urlopen(req, timeout=600).read().decode('utf-8-sig')
+    with open(os.path.join(DST, nome + '.csv'), 'w') as f:
+        f.write(f'geo,time,{nome}\n')
+        for r in sorted(csv.DictReader(io.StringIO(txt)), key=lambda r: (r['COUNTRY'], r['TIME_PERIOD'])):
+            if r['OBS_VALUE'] and r['TIME_PERIOD'] and len(r['COUNTRY']) == 3:
+                f.write(f"{r['COUNTRY'].lower()},{r['TIME_PERIOD']},{round(float(r['OBS_VALUE']), 4)}\n")

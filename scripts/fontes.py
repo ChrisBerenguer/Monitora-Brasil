@@ -20,6 +20,9 @@ CODIGO_OFICIAL = {
     'eg_elc_accs_zs': 'EG.ELC.ACCS.ZS', 'se_xpd_totl_gd_zs': 'SE.XPD.TOTL.GD.ZS', 'sh_xpd_chex_gd_zs': 'SH.XPD.CHEX.GD.ZS',
     'en_ghg_co2_pc_ce_ar5': 'EN.GHG.CO2.PC.CE.AR5', 'ag_lnd_frst_zs': 'AG.LND.FRST.ZS', 'sp_pop_dpnd_ol': 'SP.POP.DPND.OL',
     'ggxonlb_g01_gdp_pt': 'GGXONLB_G01_GDP_PT (FMI)',
+    'carga_trib_total': 'TAX_REV, S13, _T, PT_B1GQ (OCDE, DF_RSGLOBAL)',
+    'inv_pub_gg': 'N11A_A_T_MI, S13, POGDP_PT (FMI, GFS_SOO)',
+    'inv_pub_gc': 'N11A_A_T_MI, S1311, POGDP_PT (FMI, GFS_SOO)',
 }
 
 API_BM = 'https://api.worldbank.org/v2/country/BRA/indicator/{}?format=json&per_page=100'
@@ -36,6 +39,13 @@ def links(ind_id):
     if ind_id == 'ggxonlb_g01_gdp_pt':
         return ('https://www.imf.org/external/datamapper/GGXONLB_G01_GDP_PT@FM/BRA',
                 'https://www.imf.org/external/datamapper/api/v1/GGXONLB_G01_GDP_PT/BRA')
+    if ind_id == 'carga_trib_total':
+        return ('https://data-explorer.oecd.org/vis?df[ds]=dsDisseminateFinalDMZ&df[id]=DSD_REV_COMP_GLOBAL%40DF_RSGLOBAL&df[ag]=OECD.CTP.TPS',
+                'https://sdmx.oecd.org/public/rest/data/OECD.CTP.TPS,DSD_REV_COMP_GLOBAL@DF_RSGLOBAL,/BRA.TAX_REV.S13._T._T.PT_B1GQ.A?format=csvfilewithlabels')
+    if ind_id in ('inv_pub_gg', 'inv_pub_gc'):
+        setor = 'S13' if ind_id == 'inv_pub_gg' else 'S1311'
+        return ('https://data.imf.org/en/datasets/IMF.STA:GFS_SOO',
+                f'https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.STA/GFS_SOO/+/BRA.{setor}.*.N11A_A_T_MI.POGDP_PT.A')
     code = 'IP.PAT.RESD' if ind_id == 'pat_pm' else CODIGO_OFICIAL[ind_id]
     if code.startswith('GOV_WGI'):
         return WGI, API_BM.format(code) + '&source=3'

@@ -13,9 +13,9 @@
   </script>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Monitora Brasil</title>
-  <meta name="description" content="O Brasil comparado com o mundo em 41 indicadores econômicos, sociais, institucionais e ambientais, de 1995 a 2025, com escores por tema, coortes de países e comparação entre mandatos.">
+  <meta name="description" content="O Brasil comparado com o mundo em 44 indicadores econômicos, sociais, institucionais e ambientais, de 1995 a 2025, com escores por tema, coortes de países e comparação entre mandatos.">
   <meta property="og:title" content="Monitora Brasil">
-  <meta property="og:description" content="O Brasil comparado com o mundo em 41 indicadores, de 1995 a 2025.">
+  <meta property="og:description" content="O Brasil comparado com o mundo em 44 indicadores, de 1995 a 2025.">
   <meta property="og:type" content="website">
   <meta name="theme-color" content="#f3f5f2" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#101614" media="(prefers-color-scheme: dark)">
@@ -23,7 +23,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap">
-  <link rel="stylesheet" href="assets/css/styles.css?v=1.42">
+  <link rel="stylesheet" href="assets/css/styles.css?v=1.43">
 </head>
 <body>
   <a class="skip" href="#conteudo">Pular para o conteúdo</a>
@@ -86,7 +86,7 @@
         <div class="card-topo">
           <div>
             <div class="titulo-info"><h2 id="pl-titulo">Placar entre mandatos</h2><button class="info-btn" type="button" data-info-card="placar" aria-label="Como ler: placar entre mandatos"><svg class="ico-info" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" focusable="false"><circle cx="8" cy="8" r="6.6" fill="none" stroke="currentColor" stroke-width="1.25"/><path d="M8 7.3v3.9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="4.95" r=".95" fill="currentColor"/></svg></button><button class="info-btn fonte-btn" type="button" data-fonte="bases" aria-label="Fonte original dos dados"><svg class="ico-link" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M4.715 6.542 3.343 7.914a3 3 0 1 0 4.243 4.243l1.828-1.829A3 3 0 0 0 8.586 5.5L8 6.086a1 1 0 0 0-.154.199 2 2 0 0 1 .861 3.337L6.88 11.45a2 2 0 1 1-2.83-2.83l.793-.792a4 4 0 0 1-.128-1.287z"/><path d="M6.586 4.672A3 3 0 0 0 7.414 9.5l.775-.776a2 2 0 0 1-.896-3.346L9.12 3.55a2 2 0 1 1 2.83 2.83l-.793.792c.112.42.155.855.128 1.287l1.372-1.372a3 3 0 1 0-4.243-4.243z"/></svg></button></div>
-            <p class="nota" id="pl-sub">Em quantos dos 41 indicadores cada mandato teve média melhor, levando em conta se é melhor ter valor alto ou baixo.</p>
+            <p class="nota" id="pl-sub">Em quantos dos 44 indicadores cada mandato teve média melhor, levando em conta se é melhor ter valor alto ou baixo.</p>
           </div>
           <div class="controles">
             <label class="ctl">Mandato A <select id="pl-a"></select></label>
@@ -95,7 +95,7 @@
         </div>
         <p class="nota" id="pl-msg" hidden></p>
         <div class="placar-num" id="pl-num"></div>
-        <div class="waffle" id="pl-waffle" role="list" aria-label="Os 41 indicadores, um quadrado para cada"></div>
+        <div class="waffle" id="pl-waffle" role="list" aria-label="Os indicadores, um quadrado para cada"></div>
         <div class="waffle-leg" id="pl-leg"></div>
         <p class="nota" id="pl-rodape"></p>
       </article>
@@ -795,7 +795,7 @@
         <h3>APIs e bases oficiais</h3>
         <ul class="fontes">
           <li><a href="https://datahelpdesk.worldbank.org/knowledgebase/articles/889392-about-the-indicators-api-documentation" target="_blank" rel="noopener">API de Indicadores do Banco Mundial</a>: documentação. Endereço base: <code>https://api.worldbank.org/v2/</code>. Exemplo: <a href="https://api.worldbank.org/v2/country/BRA/indicator/NY.GDP.PCAP.PP.KD?format=json&amp;per_page=100" target="_blank" rel="noopener">PIB per capita do Brasil em JSON</a>.</li>
-          <li><a href="https://databank.worldbank.org/source/world-development-indicators" target="_blank" rel="noopener">World Development Indicators (DataBank)</a>: a base de 33 dos 41 indicadores. Os outros são os 6 de governança (WGI), o IDH (PNUD) e o saldo primário do governo (FMI).</li>
+          <li><a href="https://databank.worldbank.org/source/world-development-indicators" target="_blank" rel="noopener">World Development Indicators (DataBank)</a>: a base de 33 dos 44 indicadores. Os outros são os 6 de governança (WGI), o IDH (PNUD), o saldo primário e o investimento público (FMI) e a carga tributária total (OCDE).</li>
           <li><a href="https://www.imf.org/external/datamapper/GGXONLB_G01_GDP_PT@FM" target="_blank" rel="noopener">Fiscal Monitor do FMI (DataMapper)</a>: saldo primário do governo geral, com <a href="https://www.imf.org/external/datamapper/api/help" target="_blank" rel="noopener">API</a>.</li>
           <li><a href="https://www.worldbank.org/en/publication/worldwide-governance-indicators" target="_blank" rel="noopener">Worldwide Governance Indicators</a>: os seis indicadores de governança. Na API, use <code>source=3</code>.</li>
           <li><a href="https://hdr.undp.org/data-center/documentation-and-downloads" target="_blank" rel="noopener">Dados do Relatório de Desenvolvimento Humano (PNUD)</a>: IDH, com <a href="https://prism.hdrdata.org/docs" target="_blank" rel="noopener">API DataPRISM</a>.</li>
@@ -868,6 +868,6 @@
 
   <script src="assets/js/d3.v7.9.0.min.js"></script>
   <script src="assets/js/html-to-image.v1.11.11.min.js"></script>
-  <script src="assets/js/app.js?v=1.42"></script>
+  <script src="assets/js/app.js?v=1.43"></script>
 </body>
 </html>

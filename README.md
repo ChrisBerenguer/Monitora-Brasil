@@ -1,6 +1,6 @@
 # Monitora Brasil
 
-Painel que acompanha o desenvolvimento do Brasil em comparação com outros países. Ele cruza 41 indicadores econômicos, sociais, institucionais e ambientais, de 1995 a 2025, e os resume em **escores de 0 a 100** para cinco macrotemas.
+Painel que acompanha o desenvolvimento do Brasil em comparação com outros países. Ele cruza 44 indicadores econômicos, sociais, institucionais e ambientais, de 1995 a 2025, e os resume em **escores de 0 a 100** para cinco macrotemas.
 
 É um **trabalho voluntário e aberto ao público**. O objetivo é ajudar qualquer pessoa a entender, com dados oficiais e método transparente, como o Brasil está se saindo: em que avança, em que fica para trás e como se compara a outros países. Código, dados e cálculos estão todos neste repositório, para que qualquer um possa conferir, reproduzir e melhorar.
 

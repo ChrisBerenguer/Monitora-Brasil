@@ -14,6 +14,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fontes import CODIGO_OFICIAL  # noqa: E402
 
 DEF = {
+    'carga_trib_total': 'Receita total de impostos e contribuições sociais do governo geral (União, estados e municípios), em % do PIB, segundo a Global Revenue Statistics da OCDE, padronizada entre países. Indicador de contexto, fora do escore.',
+    'inv_pub_gg': 'Aquisição de ativos fixos (obras, máquinas, equipamentos, imóveis) pelo governo geral, em % do PIB, segundo as estatísticas de finanças públicas (GFS) do FMI. Investimento bruto, sem descontar a depreciação; não inclui estatais. Desde 2010. Contexto, fora do escore.',
+    'inv_pub_gc': 'Aquisição de ativos fixos pelo governo central (União), em % do PIB, segundo o GFS do FMI. Não inclui transferências a estados e municípios para obras. Desde 2010. Contexto, fora do escore.',
     'ggxonlb_g01_gdp_pt': 'Saldo primário do governo geral (receitas menos despesas, sem os juros da dívida), em % do PIB, segundo o Fiscal Monitor do FMI. Positivo é superávit. Os anos mais recentes podem ser estimativas do FMI.',
     'fp_cpi_totl_zg': 'Variação anual do índice de preços ao consumidor: quanto custa a mais, de um ano para o outro, uma cesta típica de bens e serviços das famílias.',
     'fr_inr_rinr': 'Taxa de juros de empréstimo bancário descontada a inflação medida pelo deflator do PIB. Não é a Selic: reflete o custo do crédito ao setor privado.',

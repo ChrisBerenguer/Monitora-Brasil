@@ -269,6 +269,41 @@ EXPLICACOES = {
         'atencao': "Não inclui contribuições para a previdência nem impostos estaduais e municipais (ICMS, ISS). A carga "
                    "tributária total do Brasil fica perto de um terço do PIB, bem acima deste número.",
     },
+    'carga_trib_total': {
+        'o_que_e': "Tudo o que União, estados e municípios arrecadam em impostos e contribuições (inclusive as da "
+                   "previdência), comparado com tudo o que o país produz em um ano (o PIB). É a carga tributária total.",
+        'como_ler': "Este indicador é só de contexto e não entra no escore. Não existe um nível ideal: países ricos da "
+                    "Europa arrecadam 40% do PIB ou mais, e os Estados Unidos, cerca de 25%. O que pesa é o que o Estado "
+                    "entrega em troca e quem paga a conta.",
+        'por_que_importa': "Mostra quanto da renda do país passa pelo Estado. O Brasil arrecada perto de um terço do PIB, "
+                           "muito acima dos vizinhos da América Latina (média perto de 22%) e no nível de países ricos.",
+        'atencao': "Vem da OCDE, que padroniza a conta para todos os países. Os números do Tesouro Nacional e da Receita "
+                   "Federal para o Brasil são parecidos, mas não idênticos. O último ano costuma ter dois anos de atraso.",
+    },
+    'inv_pub_gg': {
+        'o_que_e': "Quanto União, estados e municípios gastam juntos com obras, máquinas, equipamentos e imóveis (o "
+                   "investimento público), comparado com o tamanho da economia. É a parte do gasto público que aumenta o "
+                   "estoque de estradas, escolas, hospitais e redes, e não o gasto do dia a dia.",
+        'como_ler': "Este indicador é só de contexto e não entra no escore. Em geral, mais investimento significa mais "
+                    "infraestrutura no futuro. Países emergentes que cresceram rápido investiram 5% do PIB ou mais por anos.",
+        'por_que_importa': "Quando as contas apertam, o investimento costuma ser o primeiro gasto cortado, porque não é "
+                           "obrigatório como salários e aposentadorias. No Brasil, a maior parte do investimento público é "
+                           "feita por estados e municípios.",
+        'atencao': "Vem das estatísticas de finanças públicas do FMI, informadas pelo Tesouro Nacional, e começa em 2010. "
+                   "Mede a compra de ativos fixos, sem descontar o desgaste. Não inclui as estatais (Petrobras, por "
+                   "exemplo), que investem por conta própria.",
+    },
+    'inv_pub_gc': {
+        'o_que_e': "Quanto o governo federal gasta com obras, máquinas, equipamentos e imóveis, comparado com o tamanho "
+                   "da economia. É o investimento dentro da despesa primária da União.",
+        'como_ler': "Este indicador é só de contexto e não entra no escore. Mostra o espaço que sobra para obras depois das "
+                    "despesas obrigatórias, como previdência, salários e transferências.",
+        'por_que_importa': "O investimento federal caiu muito desde 2014: as despesas obrigatórias cresceram e o teto de "
+                           "gastos e o arcabouço fiscal limitaram o total. Ele mostra quanto do orçamento vai para o futuro.",
+        'atencao': "Conta só o que a União investe diretamente. O dinheiro que ela repassa a estados e municípios para "
+                   "obras (convênios, emendas) aparece como investimento de quem executa. Por isso o número do Tesouro "
+                   "para \"investimentos do governo central\", que inclui esses repasses, é maior. Começa em 2010.",
+    },
     # ---------------------------------------------------------------- Bem-estar e sustentabilidade
     'hdi': {
         'o_que_e': "O Índice de Desenvolvimento Humano é uma nota de 0 a 1 que junta três coisas: vida longa e saudável, "

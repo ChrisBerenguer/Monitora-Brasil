@@ -1,0 +1,32 @@
+name: Atualizar indicadores do painel (escores e séries)
+# Baixa as séries brutas (Banco Mundial, PNUD, FMI, OCDE) e recalcula percentis, escores, coortes e séries
+# (scripts/baixar_brutos.py e scripts/build_dados.py), e atualiza o dicionário de indicadores (docs/04).
+# Todo dia 5, ou à mão em Actions. O FMI e a OCDE não respondem a partir do ambiente de desenvolvimento,
+# por isso o cálculo roda aqui.
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 9 5 * *'   # dia 5 de cada mês, 06h23 em Brasília
+permissions:
+  contents: write
+concurrency: dados-painel
+jobs:
+  calcular:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - run: python scripts/baixar_brutos.py
+      - run: python scripts/build_dados.py | tail -40
+      - run: python scripts/gerar_dicionario.py
+      - name: Gravar no repositório se algo mudou
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dados site/data docs/04-dicionario-de-indicadores.md
+          git diff --cached --quiet && echo "Sem mudanças." && exit 0
+          git diff --cached --stat
+          git commit -m "Dados: indicadores do painel (Banco Mundial, PNUD, FMI, OCDE), cálculo automático"
+          for t in 1 2 3; do git pull --rebase -q && git push && break; sleep 10; false; done || exit 1

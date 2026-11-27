@@ -1,5 +1,14 @@
 # Histórico de versões
 
+## 1.43 — 26/11/2026
+
+### Adicionado
+- Séries temporais (e os outros cartões por indicador): três indicadores de contexto, fora do escore:
+  - **Carga tributária total** (% do PIB): impostos e contribuições sociais da União, estados e municípios, da Global Revenue Statistics da OCDE, comparável entre cerca de 130 países. Brasil de 1990 a 2024 (33,7% do PIB em 2024).
+  - **Investimento público (governo geral)** (% do PIB): obras, máquinas, equipamentos e imóveis comprados por União, estados e municípios, das estatísticas de finanças públicas (GFS) do FMI, de 2010 em diante (1,8% do PIB em 2025).
+  - **Investimento público (governo federal)** (% do PIB): o mesmo, só da União, o investimento dentro da despesa primária federal (0,27% do PIB em 2025).
+- Workflow `dados-painel.yml`: baixa as séries e recalcula os indicadores do painel no GitHub todo dia 5.
+
 ## 1.42 — 19/11/2026
 
 ### Adicionado

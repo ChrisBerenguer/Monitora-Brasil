@@ -4,7 +4,7 @@
 
 | Fonte | Instituição | O que fornece | Licença |
 |---|---|---|---|
-| World Development Indicators (WDI) | Banco Mundial | 33 dos 41 indicadores (um deles, patentes por milhão, calculado com a população), mais população e classificação de renda | CC BY 4.0 |
+| World Development Indicators (WDI) | Banco Mundial | 33 dos 44 indicadores (um deles, patentes por milhão, calculado com a população), mais população e classificação de renda | CC BY 4.0 |
 | Worldwide Governance Indicators (WGI) | Banco Mundial | 6 indicadores de governança (distribuídos junto com o WDI) | CC BY 4.0 |
 | Human Development Report | PNUD | IDH | CC BY 3.0 IGO |
 | Fiscal Monitor (DataMapper) | FMI | Saldo primário do governo geral (`GGXONLB_G01_GDP_PT`), % do PIB | Termos de uso do FMI (uso livre com citação) |
@@ -376,3 +376,15 @@ Coletor: `scripts/coletar_artigos.py`, com os temas em `scripts/temas_artigos.py
 | `temas.<chave>.assinatura` | hash dos artigos escolhidos; o resumo só é refeito quando muda |
 | `temas.<chave>.artigos[]` | `id` (OpenAlex), `titulo`, `ano`, `autores` (até 3), `fonte`, `citacoes`, `idioma`, `tipo`, `url` (DOI ou página), `pdf` (versão aberta), `trecho` (início do resumo) |
 | `temas.<chave>.resumo`, `resumo_em` | o resumo da IA e a data |
+
+## Carga tributária total e investimento público (aba Séries)
+
+Indicadores de contexto (fora do escore), baixados por `scripts/baixar_brutos.py` e calculados com os outros em `build_dados.py`. Como o FMI e a OCDE não respondem a partir do ambiente de desenvolvimento, o cálculo roda no workflow `dados-painel.yml`.
+
+| Indicador | Fonte | Recorte | Desde |
+|---|---|---|---|
+| `carga_trib_total` | OCDE, Global Revenue Statistics (`DSD_REV_COMP_GLOBAL@DF_RSGLOBAL`), API SDMX | receita de impostos e contribuições sociais do governo geral (`TAX_REV`, `S13`, total `_T`), % do PIB, cerca de 130 países | 1990 (Brasil) |
+| `inv_pub_gg` | FMI, GFS Statement of Operations (`GFS_SOO`), API SDMX 3.0 | aquisição de ativos fixos (`N11A_A_T_MI`) do governo geral (`S13`), % do PIB | 2010 |
+| `inv_pub_gc` | idem | idem, governo central (`S1311`) | 2010 |
+
+O investimento é bruto (sem descontar a depreciação) e não inclui estatais. No governo central, as transferências a estados e municípios para obras ficam com quem executa, por isso o número é menor que o de "investimentos" do Resultado do Tesouro Nacional.

@@ -47,6 +47,9 @@ IND = [
  ('gov_wgi_cc_est','Controle da corrupção','−2,5 a +2,5','inst',1,'Banco Mundial (WGI)'),
  ('vc_ihr_psrc_p5','Homicídios','por 100 mil hab.','inst',-1,'Banco Mundial (UNODC)'),
  ('gc_tax_totl_gd_zs','Receita tributária (gov. central)','% PIB','inst',0,'Banco Mundial (FMI)'),
+ ('carga_trib_total','Carga tributária total','% PIB','inst',0,'OCDE (Global Revenue Statistics)'),
+ ('inv_pub_gg','Investimento público (governo geral)','% PIB','inst',0,'FMI (GFS)'),
+ ('inv_pub_gc','Investimento público (governo federal)','% PIB','inst',0,'FMI (GFS)'),
  # V Bem-estar e sustentabilidade
  ('hdi','IDH','0–1','bem',1,'PNUD via Gapminder'),
  ('sp_dyn_le00_in','Expectativa de vida','anos','bem',1,'Banco Mundial (ONU)'),

@@ -90,3 +90,7 @@ Toda mudança de regra deve ser registrada em `docs/03-metodologia.md` no mesmo 
 - `OPENALEX_API_KEY`: chave da OpenAlex (openalex.org, conta gratuita). Desde fevereiro de 2026 a API exige chave; o plano grátis dá cerca de mil buscas por dia e a coleta usa umas 170.
 - `GROQ_API_KEY`: chave do Groq (console.groq.com). Sem ela, a lupa mostra só a lista de artigos.
 Se a cota acabar no meio, o script grava os temas já feitos e mantém os outros. Para mudar a busca de um cartão, edite `scripts/temas_artigos.py`; para um cartão novo, acrescente a chave lá e, se o assunto depender de uma escolha no cartão, em `temaDoCartao()` no app.js.
+
+## Indicadores do painel no GitHub
+
+`.github/workflows/dados-painel.yml` roda `baixar_brutos.py`, `build_dados.py` e `gerar_dicionario.py` todo dia 5 (ou à mão em Actions) e grava `dados/`, `site/data/` e `docs/04`. É o caminho mais simples desde a entrada da OCDE (carga tributária total) e do GFS do FMI (investimento público), que não respondem fora do GitHub.
