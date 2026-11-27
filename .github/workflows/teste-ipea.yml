@@ -7,7 +7,7 @@ jobs:
       - run: |
           for DF in GFS_SOO; do
           echo "== $DF BRA"
-          curl -sS -m 300 -H "Accept: application/vnd.sdmx.data+csv;version=2.0.0;labels=both" "https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.STA/$DF/+/BRA.*.*.*.*?c[TIME_PERIOD]=ge:2022&attributes=none" -o g.csv; wc -l g.csv; head -2 g.csv
+          curl -g -sS -m 300 -H "Accept: application/vnd.sdmx.data+csv;version=2.0.0;labels=both" "https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.STA/$DF/+/BRA.*.*.*.*?attributes=none" -o g.csv; wc -l g.csv; head -2 g.csv
           python3 -c "
           import csv
           r=list(csv.DictReader(open('g.csv')))
