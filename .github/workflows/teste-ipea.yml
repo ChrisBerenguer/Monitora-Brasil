@@ -5,11 +5,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "== OECD RSGLOBAL BRA 2021-2023"
-          curl -sS -m 300 "https://sdmx.oecd.org/public/rest/data/OECD.CTP.TPS,DSD_REV_COMP_GLOBAL@DF_RSGLOBAL,/all?startPeriod=2021&endPeriod=2023&format=csvfilewithlabels" -o rs.csv; wc -l rs.csv; head -2 rs.csv
-          grep -i "Brazil" rs.csv | head -30
-          echo "== IMF ids"
+          echo "== OECD total BRA"
+          curl -sS -m 300 "https://sdmx.oecd.org/public/rest/data/OECD.CTP.TPS,DSD_REV_COMP_GLOBAL@DF_RSGLOBAL,/BRA+CHL+USA.TAX_REV.S13._T._T.PT_B1GQ.A?startPeriod=1990&format=csvfilewithlabels" -o t.csv; wc -l t.csv; python3 -c "
+          import csv; r=list(csv.DictReader(open('t.csv'))); print(r[0].keys() if r else 'vazio')
+          for x in r:
+              if x['REF_AREA']=='BRA': print(x['TIME_PERIOD'], x['OBS_VALUE'])
+          print(sorted({x['REF_AREA'] for x in r}))"
+          echo "== IMF ids (todos)"
           curl -sS -m 120 -H "Accept: application/json" "https://api.imf.org/external/sdmx/3.0/structure/dataflow/*/*/+" -o imf.json; python3 -c "
           import json; d=json.load(open('imf.json')); fl=d['data']['dataflows']
-          print(' '.join(sorted(f['agencyID'].split('.')[-1]+':'+f['id'] for f in fl)))
-          "
+          for f in sorted(fl, key=lambda f:f['id']):
+              n=f.get('name') or f.get('names',{}).get('en','')
+              if 'VINTAGE' not in f['id']: print(f['agencyID'], f['id'], f['version'], '|', str(n)[:90])"
+          echo "== ICSD estrutura"
+          curl -sS -m 120 -H "Accept: application/json" "https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.FAD/ICSD/+/BRA.*.*?dimensionAtObservation=TIME_PERIOD&attributes=none&measures=all" -o icsd.json; head -c 1500 icsd.json; echo
