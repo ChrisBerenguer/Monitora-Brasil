@@ -120,15 +120,15 @@ Gerado por `scripts/gerar_dicionario.py`. Para cada indicador: código interno (
 - **Unidade:** % PIB
 - **Sentido no escore:** maior é melhor
 - **Fonte:** FMI (Fiscal Monitor) · [página oficial](https://www.imf.org/external/datamapper/GGXONLB_G01_GDP_PT@FM/BRA) · [API](https://www.imf.org/external/datamapper/api/v1/GGXONLB_G01_GDP_PT/BRA)
-- **Último ano na base (qualquer país):** 2025
-- **Brasil:** 25 anos com dado (2001–2025). Primeiro valor: 3,13 em 2001. Último valor: -0,13 em 2025.
+- **Último ano na base (qualquer país):** None
+- **Brasil:** sem dado para o Brasil. Primeiro valor: —. Último valor: —.
 
 **Em linguagem simples**
 
 - *O que é:* A diferença entre o que o governo arrecada e o que gasta, sem contar os juros da dívida, comparada com tudo o que o país produz em um ano (o PIB). Positivo é superávit: sobrou dinheiro para pagar juros. Negativo é déficit: faltou dinheiro até antes dos juros.
 - *Como ler:* Maior é melhor. Um superávit ajuda a segurar o crescimento da dívida; um déficit seguido faz a dívida crescer. Em crises, como a pandemia de 2020, quase todos os países fazem déficit de propósito.
 - *Por que importa:* É o termômetro das contas do governo usado nas metas fiscais do Brasil. Mostra se o governo vive dentro do que arrecada, sem precisar se endividar para pagar despesas do dia a dia.
-- *Atenção:* Vem do FMI e cobre o governo geral (União, estados e municípios), com regras iguais para todos os países. O número oficial do Brasil, do Banco Central, cobre também as estatais e sai um pouco diferente: ele aparece na aba Vida do Cidadão. O último ano pode ser estimativa do FMI.
+- *Atenção:* Vem do FMI e cobre o governo geral (União, estados e municípios), com regras iguais para todos os países. O número oficial do Brasil, do Banco Central, cobre também as estatais e sai um pouco diferente. O último ano pode ser estimativa do FMI.
 
 ### Crescimento real do PIB
 
@@ -567,6 +567,60 @@ Gerado por `scripts/gerar_dicionario.py`. Para cada indicador: código interno (
 - *Como ler:* Este indicador é só de contexto e não entra no escore. Não existe um nível ideal: países nórdicos arrecadam muito e são muito desenvolvidos.
 - *Por que importa:* Mostra o tamanho dos recursos que o Estado tem para financiar serviços públicos.
 - *Atenção:* Não inclui contribuições para a previdência nem impostos estaduais e municipais (ICMS, ISS). A carga tributária total do Brasil fica perto de um terço do PIB, bem acima deste número.
+
+### Carga tributária total
+
+- **Código interno:** `carga_trib_total`
+- **Código oficial:** `TAX_REV, S13, _T, PT_B1GQ (OCDE, DF_RSGLOBAL)`
+- **Definição:** Receita total de impostos e contribuições sociais do governo geral (União, estados e municípios), em % do PIB, segundo a Global Revenue Statistics da OCDE, padronizada entre países. Indicador de contexto, fora do escore.
+- **Unidade:** % PIB
+- **Sentido no escore:** contexto (sem escore)
+- **Fonte:** OCDE (Global Revenue Statistics) · [página oficial](https://data-explorer.oecd.org/vis?df[ds]=dsDisseminateFinalDMZ&df[id]=DSD_REV_COMP_GLOBAL%40DF_RSGLOBAL&df[ag]=OECD.CTP.TPS) · [API](https://sdmx.oecd.org/public/rest/data/OECD.CTP.TPS,DSD_REV_COMP_GLOBAL@DF_RSGLOBAL,/BRA.TAX_REV.S13._T._T.PT_B1GQ.A?format=csvfilewithlabels)
+- **Último ano na base (qualquer país):** 2025
+- **Brasil:** 30 anos com dado (1995–2024). Primeiro valor: 26,77 em 1995. Último valor: 33,68 em 2024.
+
+**Em linguagem simples**
+
+- *O que é:* Tudo o que União, estados e municípios arrecadam em impostos e contribuições (inclusive as da previdência), comparado com tudo o que o país produz em um ano (o PIB). É a carga tributária total.
+- *Como ler:* Este indicador é só de contexto e não entra no escore. Não existe um nível ideal: países ricos da Europa arrecadam 40% do PIB ou mais, e os Estados Unidos, cerca de 25%. O que pesa é o que o Estado entrega em troca e quem paga a conta.
+- *Por que importa:* Mostra quanto da renda do país passa pelo Estado. O Brasil arrecada perto de um terço do PIB, muito acima dos vizinhos da América Latina (média perto de 22%) e no nível de países ricos.
+- *Atenção:* Vem da OCDE, que padroniza a conta para todos os países. Os números do Tesouro Nacional e da Receita Federal para o Brasil são parecidos, mas não idênticos. O último ano costuma ter dois anos de atraso.
+
+### Investimento público (governo geral)
+
+- **Código interno:** `inv_pub_gg`
+- **Código oficial:** `N11A_A_T_MI, S13, POGDP_PT (FMI, GFS_SOO)`
+- **Definição:** Aquisição de ativos fixos (obras, máquinas, equipamentos, imóveis) pelo governo geral, em % do PIB, segundo as estatísticas de finanças públicas (GFS) do FMI. Investimento bruto, sem descontar a depreciação; não inclui estatais. Desde 2010. Contexto, fora do escore.
+- **Unidade:** % PIB
+- **Sentido no escore:** contexto (sem escore)
+- **Fonte:** FMI (GFS) · [página oficial](https://data.imf.org/en/datasets/IMF.STA:GFS_SOO) · [API](https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.STA/GFS_SOO/+/BRA.S13.*.N11A_A_T_MI.POGDP_PT.A)
+- **Último ano na base (qualquer país):** 2025
+- **Brasil:** 16 anos com dado (2010–2025). Primeiro valor: 2,84 em 2010. Último valor: 1,79 em 2025.
+
+**Em linguagem simples**
+
+- *O que é:* Quanto União, estados e municípios gastam juntos com obras, máquinas, equipamentos e imóveis (o investimento público), comparado com o tamanho da economia. É a parte do gasto público que aumenta o estoque de estradas, escolas, hospitais e redes, e não o gasto do dia a dia.
+- *Como ler:* Este indicador é só de contexto e não entra no escore. Em geral, mais investimento significa mais infraestrutura no futuro. Países emergentes que cresceram rápido investiram 5% do PIB ou mais por anos.
+- *Por que importa:* Quando as contas apertam, o investimento costuma ser o primeiro gasto cortado, porque não é obrigatório como salários e aposentadorias. No Brasil, a maior parte do investimento público é feita por estados e municípios.
+- *Atenção:* Vem das estatísticas de finanças públicas do FMI, informadas pelo Tesouro Nacional, e começa em 2010. Mede a compra de ativos fixos, sem descontar o desgaste. Não inclui as estatais (Petrobras, por exemplo), que investem por conta própria.
+
+### Investimento público (governo federal)
+
+- **Código interno:** `inv_pub_gc`
+- **Código oficial:** `N11A_A_T_MI, S1311, POGDP_PT (FMI, GFS_SOO)`
+- **Definição:** Aquisição de ativos fixos pelo governo central (União), em % do PIB, segundo o GFS do FMI. Não inclui transferências a estados e municípios para obras. Desde 2010. Contexto, fora do escore.
+- **Unidade:** % PIB
+- **Sentido no escore:** contexto (sem escore)
+- **Fonte:** FMI (GFS) · [página oficial](https://data.imf.org/en/datasets/IMF.STA:GFS_SOO) · [API](https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.STA/GFS_SOO/+/BRA.S1311.*.N11A_A_T_MI.POGDP_PT.A)
+- **Último ano na base (qualquer país):** 2025
+- **Brasil:** 16 anos com dado (2010–2025). Primeiro valor: 0,83 em 2010. Último valor: 0,27 em 2025.
+
+**Em linguagem simples**
+
+- *O que é:* Quanto o governo federal gasta com obras, máquinas, equipamentos e imóveis, comparado com o tamanho da economia. É o investimento dentro da despesa primária da União.
+- *Como ler:* Este indicador é só de contexto e não entra no escore. Mostra o espaço que sobra para obras depois das despesas obrigatórias, como previdência, salários e transferências.
+- *Por que importa:* O investimento federal caiu muito desde 2014: as despesas obrigatórias cresceram e o teto de gastos e o arcabouço fiscal limitaram o total. Ele mostra quanto do orçamento vai para o futuro.
+- *Atenção:* Conta só o que a União investe diretamente. O dinheiro que ela repassa a estados e municípios para obras (convênios, emendas) aparece como investimento de quem executa. Por isso o número do Tesouro para "investimentos do governo central", que inclui esses repasses, é maior. Começa em 2010.
 
 ## Bem-estar e sustentabilidade
 
