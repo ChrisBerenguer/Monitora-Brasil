@@ -5,17 +5,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          echo "== OECD total BRA"
-          curl -sS -m 300 "https://sdmx.oecd.org/public/rest/data/OECD.CTP.TPS,DSD_REV_COMP_GLOBAL@DF_RSGLOBAL,/BRA+CHL+USA.TAX_REV.S13._T._T.PT_B1GQ.A?startPeriod=1990&format=csvfilewithlabels" -o t.csv; wc -l t.csv; python3 -c "
-          import csv; r=list(csv.DictReader(open('t.csv'))); print(r[0].keys() if r else 'vazio')
+          for DF in GFS_SOO; do
+          echo "== $DF BRA"
+          curl -sS -m 300 -H "Accept: application/vnd.sdmx.data+csv;version=2.0.0;labels=both" "https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.STA/$DF/+/BRA.*.*.*.*?c[TIME_PERIOD]=ge:2022&attributes=none" -o g.csv; wc -l g.csv; head -2 g.csv
+          python3 -c "
+          import csv
+          r=list(csv.DictReader(open('g.csv')))
+          ks=[k for k in r[0] if k not in ('TIME_PERIOD','OBS_VALUE')]
+          print(ks)
+          seen=set()
           for x in r:
-              if x['REF_AREA']=='BRA': print(x['TIME_PERIOD'], x['OBS_VALUE'])
-          print(sorted({x['REF_AREA'] for x in r}))"
-          echo "== IMF ids (todos)"
-          curl -sS -m 120 -H "Accept: application/json" "https://api.imf.org/external/sdmx/3.0/structure/dataflow/*/*/+" -o imf.json; python3 -c "
-          import json; d=json.load(open('imf.json')); fl=d['data']['dataflows']
-          for f in sorted(fl, key=lambda f:f['id']):
-              n=f.get('name') or f.get('names',{}).get('en','')
-              if 'VINTAGE' not in f['id']: print(f['agencyID'], f['id'], f['version'], '|', str(n)[:90])"
-          echo "== ICSD estrutura"
-          curl -sS -m 120 -H "Accept: application/json" "https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.FAD/ICSD/+/BRA.*.*?dimensionAtObservation=TIME_PERIOD&attributes=none&measures=all" -o icsd.json; head -c 1500 icsd.json; echo
+              t=' | '.join(x[k] for k in ks)
+              if any(w in t.lower() for w in ['nonfinancial assets','investment','fixed assets','revenue','expense']) and ('gdp' in t.lower() or 'percent' in t.lower()):
+                  key=t
+                  if key in seen: continue
+                  seen.add(key); print(x['TIME_PERIOD'], x['OBS_VALUE'], '|', t[:260])
+          " | head -60
+          done
