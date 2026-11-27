@@ -5,19 +5,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          python3 - <<'P'
-          import json, urllib.request, re, unicodedata
-          def sa(s): return unicodedata.normalize('NFKD', s or '').encode('ascii','ignore').decode().lower()
-          d=json.loads(urllib.request.urlopen('http://www.ipeadata.gov.br/api/odata4/Metadados', timeout=300).read())['value']
-          print('chaves', list(d[0].keys()))
-          for m in d:
-              n=sa(m.get('SERNOME'))
-              if re.search(r'carga tribut|tributaria bruta|investimento|formacao bruta de capital fixo.*(adm|gov|publ)|despesa primaria', n):
-                  print('IPEA |', m.get('SERCODIGO'),'|',m.get('SERNOME'),'|',m.get('PERNOME'),'|',m.get('UNINOME'),'|',m.get('FNTSIGLA'),'|',str(m.get('SERMINDATA'))[:10],'|',str(m.get('SERMAXDATA'))[:10],'|',m.get('SERSTATUS'))
-          P
-          echo "== OECD"
-          curl -sS -m 120 "https://sdmx.oecd.org/public/rest/dataflow/all/all/latest" | grep -oiE 'id="[^"]*(REV|TAX)[^"]*"[^>]*agencyID="[^"]*"' | sort -u | head -30 || true
-          echo "== Tesouro CKAN"
-          curl -sS -m 60 "https://www.tesourotransparente.gov.br/ckan/api/3/action/package_search?q=carga&rows=10" | python3 -c "import json,sys; j=json.load(sys.stdin); [print('CKAN |',p['name'],'|',p['title'],'|',[ (r['name'],r['url']) for r in p['resources']][:4]) for p in j['result']['results']]" || true
-          curl -sS -m 60 "https://www.tesourotransparente.gov.br/ckan/api/3/action/package_show?id=e048826b-b6b0-4d92-9204-fd218b1f25b3" | python3 -c "import json,sys; p=json.load(sys.stdin)['result']; print('CKAN |',p['name'],'|',p['title']); [print('  RES |',r['name'],'|',r['format'],'|',r['url']) for r in p['resources']]" || true
-          for q in "estatisticas fiscais governo geral" "resultado do tesouro nacional" "investimento"; do curl -sS -m 60 "https://www.tesourotransparente.gov.br/ckan/api/3/action/package_search?rows=8&q=$(python3 -c "import urllib.parse,sys;print(urllib.parse.quote(sys.argv[1]))" "$q")" | python3 -c "import json,sys; j=json.load(sys.stdin); [print('CKAN q |',p['name'],'|',p['title']) for p in j['result']['results']]" || true; done
+          echo "== OECD fluxos de receita"
+          curl -sS -m 120 "https://sdmx.oecd.org/public/rest/dataflow/all/all/latest" | grep -oE 'id="DSD_REV[^"]*"[^>]*agencyID="[^"]*"' | grep -iv "AFRICA\|LAC@DF_REV[A-Z]\{3\}\"" | sort -u | head -40
+          echo "== OECD global"
+          curl -sS -m 120 "https://sdmx.oecd.org/public/rest/dataflow/all/all/latest" | grep -oE 'id="[^"]*GLOBAL[^"]*"[^>]*agencyID="[^"]*"' | sort -u | head
+          echo "== IMF dataflows"
+          curl -sS -m 120 -H "Accept: application/json" "https://api.imf.org/external/sdmx/3.0/structure/dataflow/*/*/+" -o imf.json; python3 -c "
+          import json; d=json.load(open('imf.json')); fl=d['data']['dataflows']
+          print(len(fl))
+          for f in fl:
+              n=(f.get('name') or '') if isinstance(f.get('name'),str) else str(f.get('names',{}).get('en',''))
+              if any(w in (f['id']+n).upper() for w in ['GFS','FM','FISCAL','ICSD','INVEST']): print(f['agencyID'], f['id'], f['version'], '|', n)
+          " || head -c 500 imf.json
