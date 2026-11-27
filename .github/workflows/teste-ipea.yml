@@ -1,0 +1,17 @@
+name: Teste catálogo Ipeadata (temporário)
+on: workflow_dispatch
+jobs:
+  t:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          python3 - <<'P'
+          import json, urllib.request, urllib.parse, re
+          u='http://www.ipeadata.gov.br/api/odata4/Metadados?$select=SERCODIGO,SERNOME,PERNOME,UNINOME,FNTSIGLA,SERMINDATA,SERMAXDATA,SERSTATUS,BASNOME'
+          d=json.loads(urllib.request.urlopen(u, timeout=300).read())['value']
+          print(len(d))
+          for m in d:
+              n=m['SERNOME'] or ''
+              if re.search(r'carga tribut|investimento.*(p[úu]blic|governo|federal|central|administra|uni[ãa]o)|fbcf.*(administra|governo|p[úu]blic)|forma[çc][ãa]o bruta de capital.*(administra|governo)|despesa prim', n, re.I):
+                  print(m['SERCODIGO'],'|',n,'|',m['PERNOME'],'|',m['UNINOME'],'|',m['FNTSIGLA'],'|',(m['SERMINDATA'] or '')[:10],'|',(m['SERMAXDATA'] or '')[:10],'|',m['SERSTATUS'],'|',m['BASNOME'])
+          P
