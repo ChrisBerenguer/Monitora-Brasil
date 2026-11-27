@@ -5,20 +5,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: |
-          for DF in GFS_SOO; do
-          echo "== $DF BRA"
-          curl -g -sS -m 300 -H "Accept: application/vnd.sdmx.data+csv;version=2.0.0;labels=both" "https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.STA/$DF/+/BRA.*.*.*.*?attributes=none" -o g.csv; wc -l g.csv; head -2 g.csv
+          echo "== GFS todos"
+          curl -g -sS -m 600 -H "Accept: application/vnd.sdmx.data+csv;version=2.0.0;labels=id" "https://api.imf.org/external/sdmx/3.0/data/dataflow/IMF.STA/GFS_SOO/+/*.S13+S1311+S1321.*.NNFAG_A_T+N11A_A_T_MI.POGDP_PT.A?attributes=none" -o g.csv; wc -l g.csv; head -3 g.csv
           python3 - <<'Q'
           import csv
+          from collections import defaultdict
           r=list(csv.DictReader(open('g.csv')))
-          col=lambda x,k: next(v for kk,v in x.items() if kk.startswith(k))
-          vis={}
+          print(r[0].keys() if r else 'vazio')
+          cob=defaultdict(set); bra=defaultdict(dict)
           for x in r:
-              if 'POGDP_PT' not in col(x,'TYPE_OF'): continue
-              ind=col(x,'INDICATOR'); sec=col(x,'SECTOR')
-              if any(w in ind.lower() for w in ['nonfinancial assets','fixed assets','revenue, trans','expense, trans','taxes, trans','gross operating']):
-                  vis.setdefault((sec,ind),{})[col(x,'TIME_PERIOD')]=col(x,'OBS_VALUE')
-          for (sec,ind),v in sorted(vis.items()):
-              ks=sorted(v); print(sec[:30],'|',ind[:110],'|',ks[0],'-',ks[-1],'|',{k:round(float(v[k]),2) for k in ks[-4:]})
+              k=(x['SECTOR'],x['INDICATOR'])
+              cob[k].add(x['COUNTRY'])
+              if x['COUNTRY']=='BRA': bra[k][x['TIME_PERIOD']]=round(float(x['OBS_VALUE']),2)
+          for k in sorted(cob): print(k, len(cob[k]), 'países;', 'BRA', dict(sorted(bra[k].items())))
+          # anos por país para S13 NNFAG
+          anos=defaultdict(list)
+          for x in r:
+              if x['SECTOR']=='S13' and x['INDICATOR']=='N11A_A_T_MI': anos[x['COUNTRY']].append(int(x['TIME_PERIOD']))
+          print({c:(min(v),max(v)) for c,v in list(sorted(anos.items()))[:200]})
           Q
-          done
